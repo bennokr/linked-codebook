@@ -9,7 +9,18 @@ The package is not on PyPI yet.
 The package needs Python 3.11 and has no dependencies. It also runs in [Pyodide](https://pyodide.org). The types of the data model are `TypedDict`s in `linked_codebook.types`.
 
 ```python
-from linked_codebook import build, parse, merge, to_frictionless, to_sssom, from_sssom, unmatched_sssom, infer_column, validate, run
+from linked_codebook import (
+    build,
+    parse,
+    merge,
+    to_frictionless,
+    to_sssom,
+    from_sssom,
+    unmatched_sssom,
+    infer_column,
+    validate,
+    run,
+)
 ```
 
 | Function | Result |
