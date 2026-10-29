@@ -1,7 +1,7 @@
 # Python
 
 ```bash
-pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.3.0-py3-none-any.whl
+pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.3.1-py3-none-any.whl
 ```
 
 The package is not on PyPI yet.

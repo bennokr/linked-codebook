@@ -1,6 +1,6 @@
 {
   "name": "linked-codebook",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Read, write and check codebooks of tables whose variables are linked to concepts.",
   "license": "MIT",
   "type": "module",

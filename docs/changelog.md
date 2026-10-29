@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- Times may end in ` UTC`.
+
 ## 0.3.0
 
 - Added the option `identifier` of the inference.

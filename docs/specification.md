@@ -1,6 +1,6 @@
 # Linked Codebook Specification
 
-Draft, version 0.3.0
+Draft, version 0.3.1
 
 ## Abstract
 
@@ -187,7 +187,7 @@ The values `null`, the empty text and `\N` are ignored. The kind of the column i
 | number | all values are numbers | `integer` if all are whole, else `number` | `numerical` |
 | text | none of the above | `string` | none |
 
-A *date* is `YYYY-MM-DD`, optionally followed by `T` or a space and a time `hh:mm`, `hh:mm:ss` or with fractions of seconds and an offset, or `d.m.yyyy`. The day MUST exist in the calendar. Dates with slashes are not recognised, because their order is ambiguous.
+A *date* is `YYYY-MM-DD`, optionally followed by `T` or a space and a time `hh:mm`, `hh:mm:ss` or with fractions of seconds, and an offset (`Z`, ` UTC` or `+hh:mm`), or `d.m.yyyy`. The day MUST exist in the calendar. Dates with slashes are not recognised, because their order is ambiguous.
 
 A *number* is a number, or text that matches the number pattern: an optional sign, digits with an optional fraction, and an optional exponent. Text with a leading zero, such as `007`, is not a number.
 

@@ -97,6 +97,10 @@
       "datatype": "string",
       "level": "categorical",
       "name": "12 text values among 120 rows"
+    },
+    {
+      "datatype": "datetime",
+      "name": "datetime with a zone"
     }
   ]
 }
