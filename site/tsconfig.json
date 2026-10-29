@@ -1,0 +1,5 @@
+{
+  "extends": "../packages/ts/tsconfig.json",
+  "compilerOptions": { "module": "esnext", "moduleResolution": "bundler", "types": [] },
+  "include": ["main.ts"]
+}

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { vocabulary } from '../src/constants.ts';
 import { build, inferColumn, merge, parse, validate, type Profile } from '../src/index.ts';
 
 const profile: Profile = {
@@ -38,4 +39,8 @@ test('value labels make a column categorical', () => {
 
 test('identifier names are not categories', () => {
   assert.equal(inferColumn(['a', 'b', 'a', 'b', 'a', 'b'], { name: 'patient_id' }).level, undefined);
+});
+
+test('every term is in its vocabulary', () => {
+  assert.deepEqual(vocabulary.unverified, []);
 });

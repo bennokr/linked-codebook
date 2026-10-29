@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Linked Codebook</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Linked Codebook</h1>
+      <p>
+        Run a command with the TypeScript library and with the Python library, in this page, and compare the outputs.
+        <a href="https://github.com/bennokr/linked-codebook">Source and documentation</a>.
+      </p>
+      <form id="form">
+        <label
+          >Example
+          <select id="example"></select
+        ></label>
+        <label
+          >Command
+          <select id="command"></select
+        ></label>
+        <div id="files"></div>
+        <button type="submit">Run</button>
+        <span id="status" role="status"></span>
+      </form>
+      <section class="results">
+        <div>
+          <h2>TypeScript</h2>
+          <pre id="ts"></pre>
+        </div>
+        <div>
+          <h2>Python</h2>
+          <pre id="py"></pre>
+        </div>
+      </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.5/full/pyodide.js"></script>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

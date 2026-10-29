@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 from linked_codebook import build, from_sssom, infer_column, merge, parse, run, validate
+from linked_codebook.constants import VOCABULARY
 from linked_codebook.types import Profile
 
 ROOT = Path(__file__).resolve().parents[3] / "conformance"
@@ -49,3 +50,7 @@ def test_value_labels_make_a_column_categorical() -> None:
     assert infer_column(codes).get("level") == "numerical"
     assert infer_column(codes, labelled=True).get("level") == "categorical"
     assert "level" not in infer_column(["a", "b", "a", "b", "a", "b"], "patient_id")
+
+
+def test_every_term_is_in_its_vocabulary() -> None:
+    assert VOCABULARY["unverified"] == []

@@ -19,5 +19,7 @@ const files = process.argv.slice(2).flatMap((directory) =>
     .filter((file) => file.endsWith('.ts') && !file.includes('generated'))
     .map((file) => join(directory, file)),
 );
-const total = files.map((file) => count(ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.ES2022, true))).reduce((a, b) => a + b, 0);
+const total = files
+  .map((file) => count(ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.ES2022, true)))
+  .reduce((a, b) => a + b, 0);
 console.log(total);

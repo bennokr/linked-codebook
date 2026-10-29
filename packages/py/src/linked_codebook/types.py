@@ -3,9 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Literal, NotRequired, TypeAlias
-
-from typing_extensions import TypedDict
+from typing import Literal, NotRequired, TypeAlias, TypedDict
 
 Datatype: TypeAlias = Literal[
     'string', 'number', 'integer', 'boolean', 'date', 'datetime'

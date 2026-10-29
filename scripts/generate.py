@@ -41,6 +41,56 @@ def constants() -> dict[str, Any]:
     }
 
 
+def model_page(profile: dict[str, Any]) -> str:
+    """The data model chapter of the specification, as Markdown."""
+    lines = ["# Data model", "", "<!-- Generated from spec/profile.yaml by scripts/generate.py. Do not edit. -->", ""]
+    for name, cls in profile["classes"].items():
+        lines += [
+            f"## {name}",
+            "",
+            cls["description"],
+            "",
+            "| Slot | Type | Required | Description |",
+            "| --- | --- | --- | --- |",
+        ]
+        for slot in cls["slots"]:
+            meta = profile["slots"][slot]
+            kind = meta.get("range", profile["default_range"])
+            kind = f"list of {kind}" if meta.get("multivalued") else kind
+            required = "yes" if meta.get("required") else "no"
+            lines.append(f"| `{slot}` | {kind} | {required} | {meta['description']} |")
+        lines.append("")
+    for name, enum in profile["enums"].items():
+        lines += [f"## {name}", "", enum["description"], "", "| Value | Meaning |", "| --- | --- |"]
+        lines += [
+            f"| `{value}` | {(meta or {}).get('meaning', '')} |" for value, meta in enum["permissible_values"].items()
+        ]
+        lines.append("")
+    return "\n".join(lines)
+
+
+def vocabulary_page(vocabulary: dict[str, Any]) -> str:
+    """The list of the terms that the JSON-LD form uses, as Markdown."""
+    lines = [
+        "# Vocabulary",
+        "",
+        "<!-- Generated from spec/vocabulary.yaml by scripts/generate.py. Do not edit. -->",
+        "",
+    ]
+    lines += [f"Every term below was found in its published vocabulary on {vocabulary['pinned_on']}.", ""]
+    for prefix, entry in vocabulary["vocabularies"].items():
+        terms = ", ".join(f"`{prefix}:{term}`" for term in entry["terms"])
+        lines += [
+            f"## `{prefix}`",
+            "",
+            f"Namespace: `{entry['namespace']}`. Source: <{entry['source']}>.",
+            "",
+            terms,
+            "",
+        ]
+    return "\n".join(lines)
+
+
 def main() -> None:
     schema = run("gen-json-schema", "--no-include-null", "spec/profile.yaml")
     # The top level is the Profile class; point to it instead of repeating it.
@@ -48,6 +98,8 @@ def main() -> None:
     root = {key: parsed[key] for key in ("$schema", "$id", "$defs")} | {"$ref": "#/$defs/Profile"}
     (SPEC / "generated").mkdir(exist_ok=True)
     (SPEC / "generated/profile.schema.json").write_text(json.dumps(root, indent=2) + "\n")
+    (ROOT / "docs/data-model.md").write_text(model_page(load("profile")))
+    (ROOT / "docs/vocabulary.md").write_text(vocabulary_page(load("vocabulary")))
     text = json.dumps(constants(), indent=2, sort_keys=True) + "\n"
     for target in (TS_GENERATED, PY_GENERATED):
         target.mkdir(parents=True, exist_ok=True)
@@ -75,9 +127,10 @@ def main() -> None:
         "packages/py/src/linked_codebook/types.py",
         "--disable-timestamp",
     )
-    # PEP 728 `closed=True` needs Python 3.15; the types are the same without it.
+    # PEP 728 `closed=True` needs typing_extensions and Python 3.15; the types are the same without it.
     types = PY_GENERATED / "types.py"
-    types.write_text(types.read_text().replace(", closed=True", ""))
+    text = types.read_text().replace(", closed=True", "").replace("\n\nfrom typing_extensions import TypedDict", "")
+    types.write_text(text.replace("TypeAlias\n", "TypeAlias, TypedDict\n", 1))
 
 
 if __name__ == "__main__":
