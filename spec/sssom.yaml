@@ -1,0 +1,19 @@
+# How mappings are written as SSSOM TSV (https://mapping-commons.github.io/sssom/).
+columns: [subject_id, subject_label, predicate_id, object_id, object_label, mapping_justification, confidence, mapping_provider, mapping_date, reviewer_id, comment]
+justification: "semapv:ManualMappingCuration"
+subject_prefix: ds
+prefixes:
+  skos: http://www.w3.org/2004/02/skos/core#
+  semapv: https://w3id.org/semapv/vocab/
+# Mapping slot -> SSSOM column, for slots that are copied as they are.
+fields:
+  object_label: object_label
+  confidence: confidence
+  provenance: mapping_provider
+  retrieved_at: mapping_date
+  reviewer_id: reviewer_id
+  description: comment
+# IRIs that are shortened to CURIEs.
+compact:
+  wd: http://www.wikidata.org/entity/
+obo: "http://purl.obolibrary.org/obo/([A-Za-z][A-Za-z0-9]*)_(.+)"

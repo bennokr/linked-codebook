@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "linked-codebook"
+version = "0.1.0"
+description = "Read, write and check codebooks of tables whose variables are linked to concepts."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = []
+classifiers = ["Typing :: Typed", "License :: OSI Approved :: MIT License"]
+
+[project.urls]
+Homepage = "https://github.com/bennokr/linked-codebook"
+
+[project.scripts]
+linked-codebook = "linked_codebook.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/linked_codebook"]

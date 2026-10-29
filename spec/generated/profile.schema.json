@@ -1,0 +1,259 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://bennokr.github.io/linked-codebook/profile",
+  "$defs": {
+    "Column": {
+      "additionalProperties": false,
+      "description": "One column of the table, described as a variable.",
+      "properties": {
+        "datatype": {
+          "$ref": "#/$defs/Datatype",
+          "description": "How values are stored."
+        },
+        "description": {
+          "description": "Definition of the dataset, column or value.",
+          "type": "string"
+        },
+        "label": {
+          "description": "Human-readable name of the column or value.",
+          "type": "string"
+        },
+        "level": {
+          "$ref": "#/$defs/Level",
+          "description": "Level of measurement."
+        },
+        "mappings": {
+          "description": "Links to concepts.",
+          "items": {
+            "$ref": "#/$defs/Mapping"
+          },
+          "type": "array"
+        },
+        "missing_range": {
+          "$ref": "#/$defs/Range",
+          "description": "Numbers that mean no value."
+        },
+        "missing_values": {
+          "description": "Codes that mean no value and have no label.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "name": {
+          "description": "Header of the column, exactly as in the table.",
+          "type": "string"
+        },
+        "unit": {
+          "description": "Unit as text, for example years.",
+          "type": "string"
+        },
+        "unit_iri": {
+          "description": "IRI of the unit, for example from QUDT.",
+          "type": "string"
+        },
+        "values": {
+          "description": "Codes of the column with their labels.",
+          "items": {
+            "$ref": "#/$defs/Value"
+          },
+          "type": "array"
+        },
+        "variable": {
+          "description": "IRI of the variable concept the column measures.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Column",
+      "type": "object"
+    },
+    "Datatype": {
+      "description": "Storage type, named as in CSV on the Web.",
+      "enum": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "date",
+        "datetime"
+      ],
+      "title": "Datatype",
+      "type": "string"
+    },
+    "Level": {
+      "description": "Level of measurement, as defined by DSV.",
+      "enum": [
+        "categorical",
+        "nominal",
+        "ordinal",
+        "numerical",
+        "interval",
+        "ratio"
+      ],
+      "title": "Level",
+      "type": "string"
+    },
+    "Mapping": {
+      "additionalProperties": false,
+      "description": "A link from a column or value to a concept. It is approved when it has a reviewer_id.",
+      "properties": {
+        "confidence": {
+          "description": "Confidence between 0 and 1.",
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "description": {
+          "description": "Definition of the dataset, column or value.",
+          "type": "string"
+        },
+        "match_type": {
+          "$ref": "#/$defs/MatchType",
+          "description": "How the concept relates to the column or value."
+        },
+        "object_id": {
+          "description": "IRI of the concept.",
+          "type": "string"
+        },
+        "object_label": {
+          "description": "Name of the concept.",
+          "type": "string"
+        },
+        "provenance": {
+          "description": "Where the link came from, for example the name of a service.",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "description": "When the link was made, as an ISO 8601 date or time.",
+          "type": "string"
+        },
+        "reviewer_id": {
+          "description": "Who approved the link. A link without a reviewer is a draft.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_type",
+        "object_id"
+      ],
+      "title": "Mapping",
+      "type": "object"
+    },
+    "MatchType": {
+      "description": "Relation of a concept to a column or value, as defined by SKOS.",
+      "enum": [
+        "exact",
+        "close",
+        "broad",
+        "narrow",
+        "related"
+      ],
+      "title": "MatchType",
+      "type": "string"
+    },
+    "Profile": {
+      "additionalProperties": false,
+      "description": "A dataset and its columns.",
+      "properties": {
+        "access_rights": {
+          "description": "Who may access the dataset.",
+          "type": "string"
+        },
+        "citation": {
+          "description": "Preferred citation.",
+          "type": "string"
+        },
+        "columns": {
+          "description": "Columns, in table order.",
+          "items": {
+            "$ref": "#/$defs/Column"
+          },
+          "type": "array"
+        },
+        "description": {
+          "description": "Definition of the dataset, column or value.",
+          "type": "string"
+        },
+        "identifier": {
+          "description": "Persistent identifier of the dataset. A DOI or URL is preferred.",
+          "type": "string"
+        },
+        "landing_page": {
+          "description": "IRI of a web page about the dataset.",
+          "type": "string"
+        },
+        "license": {
+          "description": "IRI of the license, or a statement of the terms of use.",
+          "type": "string"
+        },
+        "title": {
+          "description": "Name of the dataset.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "columns"
+      ],
+      "title": "Profile",
+      "type": "object"
+    },
+    "Range": {
+      "additionalProperties": false,
+      "description": "An inclusive range of numbers.",
+      "properties": {
+        "high": {
+          "description": "Largest number.",
+          "type": "number"
+        },
+        "low": {
+          "description": "Smallest number.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "low",
+        "high"
+      ],
+      "title": "Range",
+      "type": "object"
+    },
+    "Value": {
+      "additionalProperties": false,
+      "description": "A code that occurs in a column, with its label.",
+      "properties": {
+        "code": {
+          "description": "The code as stored in the table, as text.",
+          "type": "string"
+        },
+        "description": {
+          "description": "Definition of the dataset, column or value.",
+          "type": "string"
+        },
+        "label": {
+          "description": "Human-readable name of the column or value.",
+          "type": "string"
+        },
+        "mappings": {
+          "description": "Links to concepts.",
+          "items": {
+            "$ref": "#/$defs/Mapping"
+          },
+          "type": "array"
+        },
+        "missing": {
+          "description": "True if the code means no value.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code"
+      ],
+      "title": "Value",
+      "type": "object"
+    }
+  },
+  "$ref": "#/$defs/Profile"
+}

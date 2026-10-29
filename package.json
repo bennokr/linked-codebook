@@ -1,0 +1,19 @@
+{
+  "name": "linked-codebook-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/ts"],
+  "scripts": {
+    "lint": "eslint packages/ts site",
+    "typecheck": "tsc -p packages/ts --noEmit && tsc -p site --noEmit"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "esbuild": "^0.28.0",
+    "eslint": "^9.39.0",
+    "json-schema-to-typescript": "^16.0.0",
+    "playwright": "^1.64.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.72.0"
+  }
+}

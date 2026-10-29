@@ -1,0 +1,424 @@
+{
+  "enums": {
+    "Level": {
+      "categorical": "dsv:CategoricalDataType",
+      "interval": "dsv:IntervalDataType",
+      "nominal": "dsv:NominalDataType",
+      "numerical": "dsv:NumericalDataType",
+      "ordinal": "dsv:OrdinalDataType",
+      "ratio": "dsv:RatioDataType"
+    },
+    "MatchType": {
+      "broad": "skos:broadMatch",
+      "close": "skos:closeMatch",
+      "exact": "skos:exactMatch",
+      "narrow": "skos:narrowMatch",
+      "related": "skos:relatedMatch"
+    }
+  },
+  "inference": {
+    "identifier_names": "id|row.?number|resp?no|.*_id",
+    "level": {
+      "boolean": "categorical",
+      "categorical": "categorical",
+      "number": "numerical"
+    },
+    "limits": {
+      "number": 8,
+      "text": 50
+    },
+    "missing": [
+      "",
+      "\\N"
+    ],
+    "patterns": {
+      "date": "([0-9]{4})-([0-9]{2})-([0-9]{2})(?:[T ](.+))?",
+      "dotted_date": "([0-9]{1,2})\\.([0-9]{1,2})\\.([0-9]{4})",
+      "leading_zero": "[-+]?0[0-9].*",
+      "number": "[-+]?(?:[0-9]+\\.?[0-9]*|\\.[0-9]+)(?:[eE][-+]?[0-9]+)?",
+      "time": "([0-9]{2}):([0-9]{2})(?::([0-9]{2})(?:\\.[0-9]{1,9})?)?(?:Z|[+-][0-9]{2}:[0-9]{2})?"
+    },
+    "prose": {
+      "characters": 80,
+      "words": 7
+    },
+    "sequence_from": 9,
+    "small": 8,
+    "text_share": 0.1
+  },
+  "jsonld": {
+    "accepted": [
+      "schema:Dataset"
+    ],
+    "aliases": {
+      "columns": [
+        "column"
+      ],
+      "hasUnit": [
+        "unit"
+      ],
+      "titles": [
+        "csvw:titles"
+      ]
+    },
+    "context": {
+      "accessRights": "dct:accessRights",
+      "broadMatch": {
+        "@container": "@set",
+        "@id": "skos:broadMatch",
+        "@type": "@id"
+      },
+      "citation": "dct:bibliographicCitation",
+      "closeMatch": {
+        "@container": "@set",
+        "@id": "skos:closeMatch",
+        "@type": "@id"
+      },
+      "columnProperty": {
+        "@id": "dsv:columnProperty",
+        "@type": "@id"
+      },
+      "columns": {
+        "@container": "@set",
+        "@id": "dsv:column"
+      },
+      "csvw": "http://www.w3.org/ns/csvw#",
+      "datasetSchema": {
+        "@id": "dsv:datasetSchema",
+        "@type": "@id"
+      },
+      "datatype": "csvw:datatype",
+      "dcat": "http://www.w3.org/ns/dcat#",
+      "dct": "http://purl.org/dc/terms/",
+      "description": "dct:description",
+      "dsv": "https://w3id.org/dsv-ontology#",
+      "exactMatch": {
+        "@container": "@set",
+        "@id": "skos:exactMatch",
+        "@type": "@id"
+      },
+      "hasCodeBook": {
+        "@id": "dsv:hasCodeBook",
+        "@type": "@id"
+      },
+      "hasUnit": {
+        "@id": "qudt:hasUnit",
+        "@type": "@id"
+      },
+      "hasVariable": {
+        "@id": "dsv:hasVariable",
+        "@type": "@id"
+      },
+      "identifier": "dct:identifier",
+      "landingPage": {
+        "@id": "dcat:landingPage",
+        "@type": "@id"
+      },
+      "license": {
+        "@id": "dct:license",
+        "@type": "@id"
+      },
+      "name": "csvw:name",
+      "narrowMatch": {
+        "@container": "@set",
+        "@id": "skos:narrowMatch",
+        "@type": "@id"
+      },
+      "nullValues": {
+        "@container": "@set",
+        "@id": "csvw:null"
+      },
+      "qudt": "http://qudt.org/schema/qudt/",
+      "relatedMatch": {
+        "@container": "@set",
+        "@id": "skos:relatedMatch",
+        "@type": "@id"
+      },
+      "rights": "dct:rights",
+      "schema": "https://schema.org/",
+      "skos": "http://www.w3.org/2004/02/skos/core#",
+      "statisticalDataType": {
+        "@id": "dsv:statisticalDataType",
+        "@type": "@id"
+      },
+      "summaryStatistics": {
+        "@id": "dsv:summaryStatistics",
+        "@type": "@id"
+      },
+      "title": "dct:title",
+      "titles": "csvw:title",
+      "unitText": "schema:unitText"
+    },
+    "datatype_aliases": {
+      "byte": "integer",
+      "dateTime": "datetime",
+      "dateTimeStamp": "datetime",
+      "decimal": "number",
+      "double": "number",
+      "float": "number",
+      "int": "integer",
+      "long": "integer",
+      "nonNegativeInteger": "integer",
+      "positiveInteger": "integer",
+      "short": "integer"
+    },
+    "extensions": [
+      "missingRange"
+    ],
+    "iris": {
+      "code": "{variable}-codes-{code}",
+      "column": "{dataset}#column-{name}",
+      "dataset": "urn:linked-codebook:dataset:{id}",
+      "property": "{dataset}#property-{name}",
+      "schema": "{dataset}#schema",
+      "scheme": "{variable}-codes",
+      "statistics": "{dataset}#statistics-{name}",
+      "variable": "{dataset}#variable-{name}"
+    },
+    "keys": {
+      "column": {
+        "datatype": "datatype",
+        "label": "titles",
+        "name": "name"
+      },
+      "dataset": {
+        "access_rights": "accessRights",
+        "citation": "citation",
+        "description": "description",
+        "identifier": "identifier",
+        "landing_page": "landingPage",
+        "title": "title"
+      }
+    },
+    "node_keys": {
+      "definition": "skos:definition",
+      "in_scheme": "skos:inScheme",
+      "label": "skos:prefLabel",
+      "notation": "skos:notation",
+      "top": "skos:hasTopConcept"
+    },
+    "prefix_aliases": {
+      "dcterms": "dct"
+    },
+    "terms": {
+      "accessRights": "dct:accessRights",
+      "broadMatch": {
+        "@container": "@set",
+        "@id": "skos:broadMatch",
+        "@type": "@id"
+      },
+      "citation": "dct:bibliographicCitation",
+      "closeMatch": {
+        "@container": "@set",
+        "@id": "skos:closeMatch",
+        "@type": "@id"
+      },
+      "columnProperty": {
+        "@id": "dsv:columnProperty",
+        "@type": "@id"
+      },
+      "columns": {
+        "@container": "@set",
+        "@id": "dsv:column"
+      },
+      "datasetSchema": {
+        "@id": "dsv:datasetSchema",
+        "@type": "@id"
+      },
+      "datatype": "csvw:datatype",
+      "description": "dct:description",
+      "exactMatch": {
+        "@container": "@set",
+        "@id": "skos:exactMatch",
+        "@type": "@id"
+      },
+      "hasCodeBook": {
+        "@id": "dsv:hasCodeBook",
+        "@type": "@id"
+      },
+      "hasUnit": {
+        "@id": "qudt:hasUnit",
+        "@type": "@id"
+      },
+      "hasVariable": {
+        "@id": "dsv:hasVariable",
+        "@type": "@id"
+      },
+      "identifier": "dct:identifier",
+      "landingPage": {
+        "@id": "dcat:landingPage",
+        "@type": "@id"
+      },
+      "license": {
+        "@id": "dct:license",
+        "@type": "@id"
+      },
+      "name": "csvw:name",
+      "narrowMatch": {
+        "@container": "@set",
+        "@id": "skos:narrowMatch",
+        "@type": "@id"
+      },
+      "nullValues": {
+        "@container": "@set",
+        "@id": "csvw:null"
+      },
+      "relatedMatch": {
+        "@container": "@set",
+        "@id": "skos:relatedMatch",
+        "@type": "@id"
+      },
+      "rights": "dct:rights",
+      "statisticalDataType": {
+        "@id": "dsv:statisticalDataType",
+        "@type": "@id"
+      },
+      "summaryStatistics": {
+        "@id": "dsv:summaryStatistics",
+        "@type": "@id"
+      },
+      "title": "dct:title",
+      "titles": "csvw:title",
+      "unitText": "schema:unitText"
+    },
+    "types": {
+      "column": "dsv:Column",
+      "concept": "skos:Concept",
+      "dataset": [
+        "dcat:Dataset",
+        "dsv:Dataset"
+      ],
+      "property": "dsv:ColumnProperty",
+      "schema": "dsv:DatasetSchema",
+      "scheme": "skos:ConceptScheme",
+      "statistics": "dsv:SummaryStatistics"
+    }
+  },
+  "sssom": {
+    "columns": [
+      "subject_id",
+      "subject_label",
+      "predicate_id",
+      "object_id",
+      "object_label",
+      "mapping_justification",
+      "confidence",
+      "mapping_provider",
+      "mapping_date",
+      "reviewer_id",
+      "comment"
+    ],
+    "compact": {
+      "wd": "http://www.wikidata.org/entity/"
+    },
+    "fields": {
+      "confidence": "confidence",
+      "description": "comment",
+      "object_label": "object_label",
+      "provenance": "mapping_provider",
+      "retrieved_at": "mapping_date",
+      "reviewer_id": "reviewer_id"
+    },
+    "justification": "semapv:ManualMappingCuration",
+    "obo": "http://purl.obolibrary.org/obo/([A-Za-z][A-Za-z0-9]*)_(.+)",
+    "prefixes": {
+      "semapv": "https://w3id.org/semapv/vocab/",
+      "skos": "http://www.w3.org/2004/02/skos/core#"
+    },
+    "subject_prefix": "ds"
+  },
+  "vocabulary": {
+    "pinned_on": "2026-10-29",
+    "unverified": [],
+    "vocabularies": {
+      "csvw": {
+        "namespace": "http://www.w3.org/ns/csvw#",
+        "source": "https://www.w3.org/ns/csvw",
+        "terms": {
+          "datatype": "Property",
+          "name": "Property",
+          "null": "Property",
+          "title": "Property"
+        }
+      },
+      "dcat": {
+        "namespace": "http://www.w3.org/ns/dcat#",
+        "source": "https://www.w3.org/ns/dcat.ttl",
+        "terms": {
+          "Dataset": "Class",
+          "landingPage": "Property"
+        }
+      },
+      "dct": {
+        "namespace": "http://purl.org/dc/terms/",
+        "source": "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.ttl",
+        "terms": {
+          "accessRights": "Property",
+          "bibliographicCitation": "Property",
+          "description": "Property",
+          "identifier": "Property",
+          "license": "Property",
+          "rights": "Property",
+          "title": "Property"
+        }
+      },
+      "dsv": {
+        "namespace": "https://w3id.org/dsv-ontology#",
+        "source": "https://w3id.org/dsv-ontology",
+        "terms": {
+          "CategoricalDataType": "Class",
+          "Column": "Class",
+          "ColumnProperty": "Class",
+          "Dataset": "Class",
+          "DatasetSchema": "Class",
+          "IntervalDataType": "Class",
+          "NominalDataType": "Class",
+          "NumericalDataType": "Class",
+          "OrdinalDataType": "Class",
+          "RatioDataType": "Class",
+          "SummaryStatistics": "Class",
+          "column": "Object Property",
+          "columnProperty": "Object Property",
+          "datasetSchema": "Object Property",
+          "hasCodeBook": "Object Property",
+          "hasVariable": "Object Property",
+          "statisticalDataType": "Object Property",
+          "summaryStatistics": "Object Property"
+        }
+      },
+      "qudt": {
+        "namespace": "http://qudt.org/schema/qudt/",
+        "source": "http://qudt.org/schema/qudt/",
+        "terms": {
+          "hasUnit": "ObjectProperty"
+        }
+      },
+      "schema": {
+        "namespace": "https://schema.org/",
+        "source": "https://schema.org/version/latest/schemaorg-current-https.ttl",
+        "terms": {
+          "Dataset": "Class",
+          "unitText": "Property"
+        }
+      },
+      "skos": {
+        "namespace": "http://www.w3.org/2004/02/skos/core#",
+        "source": "https://www.w3.org/2004/02/skos/core.rdf",
+        "terms": {
+          "Concept": "Class",
+          "ConceptScheme": "Class",
+          "broadMatch": "ObjectProperty",
+          "closeMatch": "ObjectProperty",
+          "definition": "AnnotationProperty",
+          "exactMatch": "ObjectProperty",
+          "hasTopConcept": "ObjectProperty",
+          "inScheme": "ObjectProperty",
+          "narrowMatch": "ObjectProperty",
+          "notation": "DatatypeProperty",
+          "prefLabel": "AnnotationProperty",
+          "relatedMatch": "ObjectProperty"
+        }
+      }
+    }
+  }
+}

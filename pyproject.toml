@@ -1,0 +1,42 @@
+# Workspace root: development tools and lint settings. The library is packages/py.
+[project]
+name = "linked-codebook-workspace"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["linked-codebook"]
+
+[tool.uv.workspace]
+members = ["packages/py"]
+
+[tool.uv.sources]
+linked-codebook = { workspace = true }
+
+[dependency-groups]
+dev = ["linkml", "datamodel-code-generator", "rdflib", "pyyaml", "types-pyyaml", "ruff", "mypy", "pytest"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = ["packages/py/src/linked_codebook/types.py"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D203", "D213", "COM812", "ISC001", "S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["D", "PLR2004", "ANN"]
+"scripts/**" = ["T201", "S603", "S607", "INP001"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 8
+
+[tool.ruff.lint.pylint]
+max-statements = 25
+max-branches = 8
+max-args = 5
+max-returns = 4
+
+[tool.mypy]
+strict = true
+files = ["packages/py/src", "packages/py/tests", "scripts"]
+mypy_path = "packages/py/src"

@@ -1,0 +1,88 @@
+# The Linked Codebook data model, in LinkML (https://linkml.io).
+# JSON Schema, TypeScript types and Python types are generated from this file.
+id: https://bennokr.github.io/linked-codebook/profile
+name: linked_codebook
+title: Linked Codebook profile
+description: A dataset and the variables (columns) of its table, with their datatypes, levels, units, value labels, missing values and links to concepts.
+license: MIT
+prefixes:
+  lc: https://bennokr.github.io/linked-codebook/profile#
+  dsv: https://w3id.org/dsv-ontology#
+  skos: http://www.w3.org/2004/02/skos/core#
+  linkml: https://w3id.org/linkml/
+imports:
+  - linkml:types
+default_prefix: lc
+default_range: string
+
+classes:
+  Profile:
+    description: A dataset and its columns.
+    tree_root: true
+    slots: [title, description, identifier, license, citation, access_rights, landing_page, columns]
+  Column:
+    description: One column of the table, described as a variable.
+    slots: [name, label, description, datatype, level, unit, unit_iri, variable, values, missing_values, missing_range, mappings]
+  Value:
+    description: A code that occurs in a column, with its label.
+    slots: [code, label, description, missing, mappings]
+  Mapping:
+    description: A link from a column or value to a concept. It is approved when it has a reviewer_id.
+    slots: [match_type, object_id, object_label, confidence, provenance, retrieved_at, reviewer_id, description]
+  Range:
+    description: An inclusive range of numbers.
+    slots: [low, high]
+
+slots:
+  title: {description: "Name of the dataset."}
+  description: {description: "Definition of the dataset, column or value."}
+  identifier: {description: "Persistent identifier of the dataset. A DOI or URL is preferred."}
+  license: {description: "IRI of the license, or a statement of the terms of use."}
+  citation: {description: "Preferred citation."}
+  access_rights: {description: "Who may access the dataset."}
+  landing_page: {description: "IRI of a web page about the dataset."}
+  columns: {description: "Columns, in table order.", range: Column, multivalued: true, required: true, inlined_as_list: true}
+  name: {description: "Header of the column, exactly as in the table.", required: true}
+  label: {description: "Human-readable name of the column or value."}
+  datatype: {description: "How values are stored.", range: Datatype}
+  level: {description: "Level of measurement.", range: Level}
+  unit: {description: "Unit as text, for example years."}
+  unit_iri: {description: "IRI of the unit, for example from QUDT."}
+  variable: {description: "IRI of the variable concept the column measures."}
+  values: {description: "Codes of the column with their labels.", range: Value, multivalued: true, inlined_as_list: true}
+  missing_values: {description: "Codes that mean no value and have no label.", multivalued: true}
+  missing_range: {description: "Numbers that mean no value.", range: Range}
+  mappings: {description: "Links to concepts.", range: Mapping, multivalued: true, inlined_as_list: true}
+  code: {description: "The code as stored in the table, as text.", required: true}
+  missing: {description: "True if the code means no value.", range: boolean}
+  match_type: {description: "How the concept relates to the column or value.", range: MatchType, required: true}
+  object_id: {description: "IRI of the concept.", required: true}
+  object_label: {description: "Name of the concept."}
+  confidence: {description: "Confidence between 0 and 1.", range: float, minimum_value: 0, maximum_value: 1}
+  provenance: {description: "Where the link came from, for example the name of a service."}
+  retrieved_at: {description: "When the link was made, as an ISO 8601 date or time."}
+  reviewer_id: {description: "Who approved the link. A link without a reviewer is a draft."}
+  low: {description: "Smallest number.", range: float, required: true}
+  high: {description: "Largest number.", range: float, required: true}
+
+enums:
+  Datatype:
+    description: Storage type, named as in CSV on the Web.
+    permissible_values: {string: {}, number: {}, integer: {}, boolean: {}, date: {}, datetime: {}}
+  Level:
+    description: Level of measurement, as defined by DSV.
+    permissible_values:
+      categorical: {meaning: "dsv:CategoricalDataType"}
+      nominal: {meaning: "dsv:NominalDataType"}
+      ordinal: {meaning: "dsv:OrdinalDataType"}
+      numerical: {meaning: "dsv:NumericalDataType"}
+      interval: {meaning: "dsv:IntervalDataType"}
+      ratio: {meaning: "dsv:RatioDataType"}
+  MatchType:
+    description: Relation of a concept to a column or value, as defined by SKOS.
+    permissible_values:
+      exact: {meaning: "skos:exactMatch"}
+      close: {meaning: "skos:closeMatch"}
+      broad: {meaning: "skos:broadMatch"}
+      narrow: {meaning: "skos:narrowMatch"}
+      related: {meaning: "skos:relatedMatch"}

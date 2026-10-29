@@ -1,0 +1,16 @@
+{
+  "name": "linked-codebook",
+  "version": "0.1.0",
+  "description": "Read, write and check codebooks of tables whose variables are linked to concepts.",
+  "license": "MIT",
+  "type": "module",
+  "repository": "github:bennokr/linked-codebook",
+  "engines": { "node": ">=22.18" },
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+  "bin": { "linked-codebook": "dist/bin.js" },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "node --test 'test/*.test.ts'"
+  }
+}

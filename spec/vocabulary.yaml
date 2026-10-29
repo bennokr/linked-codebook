@@ -1,0 +1,77 @@
+pinned_on: '2026-10-29'
+unverified: []
+vocabularies:
+  csvw:
+    namespace: http://www.w3.org/ns/csvw#
+    source: https://www.w3.org/ns/csvw
+    terms:
+      datatype: Property
+      name: Property
+      'null': Property
+      title: Property
+  dcat:
+    namespace: http://www.w3.org/ns/dcat#
+    source: https://www.w3.org/ns/dcat.ttl
+    terms:
+      Dataset: Class
+      landingPage: Property
+  dct:
+    namespace: http://purl.org/dc/terms/
+    source: https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.ttl
+    terms:
+      accessRights: Property
+      bibliographicCitation: Property
+      description: Property
+      identifier: Property
+      license: Property
+      rights: Property
+      title: Property
+  dsv:
+    namespace: https://w3id.org/dsv-ontology#
+    source: https://w3id.org/dsv-ontology
+    terms:
+      CategoricalDataType: Class
+      Column: Class
+      ColumnProperty: Class
+      Dataset: Class
+      DatasetSchema: Class
+      IntervalDataType: Class
+      NominalDataType: Class
+      NumericalDataType: Class
+      OrdinalDataType: Class
+      RatioDataType: Class
+      SummaryStatistics: Class
+      column: Object Property
+      columnProperty: Object Property
+      datasetSchema: Object Property
+      hasCodeBook: Object Property
+      hasVariable: Object Property
+      statisticalDataType: Object Property
+      summaryStatistics: Object Property
+  qudt:
+    namespace: http://qudt.org/schema/qudt/
+    source: http://qudt.org/schema/qudt/
+    terms:
+      hasUnit: ObjectProperty
+  schema:
+    namespace: https://schema.org/
+    source: https://schema.org/version/latest/schemaorg-current-https.ttl
+    terms:
+      Dataset: Class
+      unitText: Property
+  skos:
+    namespace: http://www.w3.org/2004/02/skos/core#
+    source: https://www.w3.org/2004/02/skos/core.rdf
+    terms:
+      Concept: Class
+      ConceptScheme: Class
+      broadMatch: ObjectProperty
+      closeMatch: ObjectProperty
+      definition: AnnotationProperty
+      exactMatch: ObjectProperty
+      hasTopConcept: ObjectProperty
+      inScheme: ObjectProperty
+      narrowMatch: ObjectProperty
+      notation: DatatypeProperty
+      prefLabel: AnnotationProperty
+      relatedMatch: ObjectProperty

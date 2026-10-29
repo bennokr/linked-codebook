@@ -1,0 +1,111 @@
+# How a profile is written as JSON-LD, using the DSV ontology (https://w3id.org/dsv-ontology).
+# Every term here is checked against its vocabulary by `make pin` and recorded in vocabulary.yaml.
+
+prefixes:
+  csvw: http://www.w3.org/ns/csvw#
+  dsv: https://w3id.org/dsv-ontology#
+  skos: http://www.w3.org/2004/02/skos/core#
+  qudt: http://qudt.org/schema/qudt/
+  schema: https://schema.org/
+  dct: http://purl.org/dc/terms/
+  dcat: http://www.w3.org/ns/dcat#
+
+# Term definitions of the JSON-LD context.
+terms:
+  title: dct:title
+  description: dct:description
+  identifier: dct:identifier
+  license: {"@id": dct:license, "@type": "@id"}
+  rights: dct:rights
+  accessRights: dct:accessRights
+  citation: dct:bibliographicCitation
+  landingPage: {"@id": dcat:landingPage, "@type": "@id"}
+  datasetSchema: {"@id": dsv:datasetSchema, "@type": "@id"}
+  columns: {"@id": dsv:column, "@container": "@set"}
+  name: csvw:name
+  titles: csvw:title
+  datatype: csvw:datatype
+  nullValues: {"@id": csvw:null, "@container": "@set"}
+  columnProperty: {"@id": dsv:columnProperty, "@type": "@id"}
+  hasVariable: {"@id": dsv:hasVariable, "@type": "@id"}
+  hasCodeBook: {"@id": dsv:hasCodeBook, "@type": "@id"}
+  summaryStatistics: {"@id": dsv:summaryStatistics, "@type": "@id"}
+  statisticalDataType: {"@id": dsv:statisticalDataType, "@type": "@id"}
+  unitText: schema:unitText
+  hasUnit: {"@id": qudt:hasUnit, "@type": "@id"}
+  exactMatch: {"@id": skos:exactMatch, "@type": "@id", "@container": "@set"}
+  closeMatch: {"@id": skos:closeMatch, "@type": "@id", "@container": "@set"}
+  broadMatch: {"@id": skos:broadMatch, "@type": "@id", "@container": "@set"}
+  narrowMatch: {"@id": skos:narrowMatch, "@type": "@id", "@container": "@set"}
+  relatedMatch: {"@id": skos:relatedMatch, "@type": "@id", "@container": "@set"}
+
+# Keys that carry a model slot unchanged.
+keys:
+  dataset: {title: title, description: description, identifier: identifier, citation: citation, access_rights: accessRights, landing_page: landingPage}
+  column: {name: name, label: titles, datatype: datatype}
+
+# Classes of the nodes that are written.
+types:
+  dataset: [dcat:Dataset, dsv:Dataset]
+  schema: dsv:DatasetSchema
+  column: dsv:Column
+  property: dsv:ColumnProperty
+  concept: skos:Concept
+  scheme: skos:ConceptScheme
+  statistics: dsv:SummaryStatistics
+
+# Keys inside concept nodes.
+node_keys:
+  label: skos:prefLabel
+  definition: skos:definition
+  top: skos:hasTopConcept
+  in_scheme: skos:inScheme
+  notation: skos:notation
+
+# Terms that are accepted when reading and validating, but never written.
+accepted: [schema:Dataset]
+
+# Where each vocabulary is published, for `make pin`.
+sources:
+  dsv: {url: "https://w3id.org/dsv-ontology", format: widoco}
+  skos: {url: "https://www.w3.org/2004/02/skos/core.rdf", format: xml}
+  csvw: {url: "https://www.w3.org/ns/csvw", format: turtle}
+  dcat: {url: "https://www.w3.org/ns/dcat.ttl", format: turtle}
+  dct: {url: "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.ttl", format: turtle}
+  qudt: {url: "http://qudt.org/schema/qudt/", format: turtle}
+  schema: {url: "https://schema.org/version/latest/schemaorg-current-https.ttl", format: turtle}
+
+# Templates for the IRIs of the nodes that are written. Values are percent-encoded.
+iris:
+  dataset: "urn:linked-codebook:dataset:{id}"
+  schema: "{dataset}#schema"
+  column: "{dataset}#column-{name}"
+  property: "{dataset}#property-{name}"
+  statistics: "{dataset}#statistics-{name}"
+  variable: "{dataset}#variable-{name}"
+  scheme: "{variable}-codes"
+  code: "{variable}-codes-{code}"
+
+# Other spellings that a reader accepts, besides the term itself and its prefixed form.
+aliases:
+  columns: [column]
+  hasUnit: [unit]
+  titles: [csvw:titles]
+prefix_aliases: {dcterms: dct}
+
+# Other names for the datatypes, accepted when reading.
+datatype_aliases:
+  double: number
+  float: number
+  decimal: number
+  int: integer
+  long: integer
+  short: integer
+  byte: integer
+  nonNegativeInteger: integer
+  positiveInteger: integer
+  dateTime: datetime
+  dateTimeStamp: datetime
+
+# Keys that are not defined by any vocabulary. JSON-LD ignores them.
+extensions: [missingRange]
