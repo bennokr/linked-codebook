@@ -32,9 +32,10 @@ function repeated(profile: Record<string, unknown>): string[] {
 
 const namespaces = Object.fromEntries(Object.entries(vocabulary.vocabularies).map(([prefix, entry]) => [prefix, entry]));
 
+type Context = Record<string, string | { '@id': string }>;
+
 /** Expands a key or type of JSON-LD to an IRI through the context. */
-function expand(term: string): string {
-  const context = jsonld.context as Record<string, string | { '@id': string }>;
+function expand(term: string, context: Context): string {
   const entry = context[term];
   const target = typeof entry === 'object' ? entry['@id'] : (entry ?? term);
   const [prefix = '', rest = ''] = target.split(/:(.*)/s);
@@ -42,22 +43,25 @@ function expand(term: string): string {
   return typeof base === 'string' && base !== target && rest !== '' ? `${base}${rest}` : target;
 }
 
-const known = new Set(Object.values(namespaces).flatMap((entry) => Object.keys(entry.terms).map((term) => `${entry.namespace}${term}`)));
+const known = new Set(Object.values(vocabulary.vocabularies).flatMap((entry) => Object.keys(entry.terms).map((term) => `${entry.namespace}${term}`)));
 
 /** Errors for terms of a JSON-LD document that no pinned vocabulary defines. */
-function undefinedTerms(value: unknown): string[] {
-  if (Array.isArray(value)) return value.flatMap(undefinedTerms);
+function undefinedTerms(value: unknown, context: Context): string[] {
+  if (Array.isArray(value)) return value.flatMap((item) => undefinedTerms(item, context));
   if (typeof value !== 'object' || value === null) return [];
   const node = value as Record<string, unknown>;
   const types = [node['@type'] ?? []].flat().map(String);
   const keys = Object.keys(node).filter((key) => !key.startsWith('@') && !jsonld.extensions.includes(key));
-  const unknown = [...keys, ...types].filter((term) => !known.has(expand(term)) && !(jsonld.accepted as string[]).includes(term));
-  return [...unknown.map((term) => `${term}: not defined by a pinned vocabulary`), ...Object.entries(node).filter(([key]) => key !== '@context').flatMap(([, child]) => undefinedTerms(child))];
+  const unknown = [...keys, ...types].filter((term) => !known.has(expand(term, context)) && !(jsonld.accepted as string[]).includes(term));
+  const below = Object.entries(node).filter(([key]) => key !== '@context').flatMap(([, child]) => undefinedTerms(child, context));
+  return [...unknown.map((term) => `${term}: not defined by a pinned vocabulary`), ...below];
 }
 
 /** Checks a profile against the model, or a JSON-LD document against the vocabularies. */
 export function validate(document: unknown): string[] {
-  const linked = typeof document === 'object' && document !== null && '@context' in document;
-  const errors = linked ? undefinedTerms(document) : [...conform(document, schema as Schema, ''), ...repeated(document as Record<string, unknown>)];
-  return [...new Set(errors)];
+  const record = (typeof document === 'object' && document !== null ? document : {}) as Record<string, unknown>;
+  if (!('@context' in record)) return [...new Set([...conform(document, schema as Schema, ''), ...repeated(record)])];
+  const context = record['@context'];
+  const own = typeof context === 'object' && context !== null && !Array.isArray(context);
+  return [...new Set(undefinedTerms(document, (own ? context : jsonld.context) as Context))];
 }

@@ -1,0 +1,7 @@
+/title: expected string
+/extra: unknown property
+/columns/0/datatype: text is not one of string, number, integer, boolean, date, datetime
+/columns/1/mappings/0: object_id is required
+/columns/1/mappings/0/confidence: out of range
+column a occurs twice
+a: code 1 occurs twice

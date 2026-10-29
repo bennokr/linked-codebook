@@ -1,0 +1,201 @@
+{
+  "@context": {
+    "accessRights": "dct:accessRights",
+    "broadMatch": {
+      "@container": "@set",
+      "@id": "skos:broadMatch",
+      "@type": "@id"
+    },
+    "citation": "dct:bibliographicCitation",
+    "closeMatch": {
+      "@container": "@set",
+      "@id": "skos:closeMatch",
+      "@type": "@id"
+    },
+    "columnProperty": {
+      "@id": "dsv:columnProperty",
+      "@type": "@id"
+    },
+    "columns": {
+      "@container": "@set",
+      "@id": "dsv:column"
+    },
+    "csvw": "http://www.w3.org/ns/csvw#",
+    "datasetSchema": {
+      "@id": "dsv:datasetSchema",
+      "@type": "@id"
+    },
+    "datatype": "csvw:datatype",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dct": "http://purl.org/dc/terms/",
+    "description": "dct:description",
+    "dsv": "https://w3id.org/dsv-ontology#",
+    "exactMatch": {
+      "@container": "@set",
+      "@id": "skos:exactMatch",
+      "@type": "@id"
+    },
+    "hasCodeBook": {
+      "@id": "dsv:hasCodeBook",
+      "@type": "@id"
+    },
+    "hasUnit": {
+      "@id": "qudt:hasUnit",
+      "@type": "@id"
+    },
+    "hasVariable": {
+      "@id": "dsv:hasVariable",
+      "@type": "@id"
+    },
+    "identifier": "dct:identifier",
+    "landingPage": {
+      "@id": "dcat:landingPage",
+      "@type": "@id"
+    },
+    "license": {
+      "@id": "dct:license",
+      "@type": "@id"
+    },
+    "name": "csvw:name",
+    "narrowMatch": {
+      "@container": "@set",
+      "@id": "skos:narrowMatch",
+      "@type": "@id"
+    },
+    "nullValues": {
+      "@container": "@set",
+      "@id": "csvw:null"
+    },
+    "qudt": "http://qudt.org/schema/qudt/",
+    "relatedMatch": {
+      "@container": "@set",
+      "@id": "skos:relatedMatch",
+      "@type": "@id"
+    },
+    "rights": "dct:rights",
+    "schema": "https://schema.org/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "statisticalDataType": {
+      "@id": "dsv:statisticalDataType",
+      "@type": "@id"
+    },
+    "summaryStatistics": {
+      "@id": "dsv:summaryStatistics",
+      "@type": "@id"
+    },
+    "title": "dct:title",
+    "titles": "csvw:title",
+    "unitText": "schema:unitText"
+  },
+  "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample",
+  "@type": [
+    "dcat:Dataset",
+    "dsv:Dataset"
+  ],
+  "accessRights": "restricted",
+  "citation": "Doe, J. (2024). Full example.",
+  "datasetSchema": {
+    "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#schema",
+    "@type": "dsv:DatasetSchema",
+    "columns": [
+      {
+        "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#column-smoker",
+        "@type": "dsv:Column",
+        "columnProperty": {
+          "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#property-smoker",
+          "@type": "dsv:ColumnProperty",
+          "hasCodeBook": {
+            "@id": "https://example.org/variable/smoking-codes",
+            "@type": "skos:ConceptScheme",
+            "skos:hasTopConcept": [
+              {
+                "@id": "https://example.org/variable/smoking-codes-0",
+                "@type": "skos:Concept",
+                "exactMatch": [
+                  "http://purl.obolibrary.org/obo/NCIT_C49487"
+                ],
+                "skos:inScheme": {
+                  "@id": "https://example.org/variable/smoking-codes"
+                },
+                "skos:notation": "0",
+                "skos:prefLabel": "No"
+              },
+              {
+                "@id": "https://example.org/variable/smoking-codes-1",
+                "@type": "skos:Concept",
+                "skos:inScheme": {
+                  "@id": "https://example.org/variable/smoking-codes"
+                },
+                "skos:notation": "1",
+                "skos:prefLabel": "Yes"
+              },
+              {
+                "@id": "https://example.org/variable/smoking-codes-9",
+                "@type": "skos:Concept",
+                "skos:inScheme": {
+                  "@id": "https://example.org/variable/smoking-codes"
+                },
+                "skos:notation": "9",
+                "skos:prefLabel": "Unknown"
+              }
+            ]
+          },
+          "hasVariable": {
+            "@id": "https://example.org/variable/smoking",
+            "@type": "skos:Concept",
+            "closeMatch": [
+              "http://www.wikidata.org/entity/Q1075"
+            ],
+            "skos:definition": "Whether the person smokes.",
+            "skos:prefLabel": "Smoking status"
+          },
+          "unitText": "none"
+        },
+        "datatype": "integer",
+        "name": "smoker",
+        "nullValues": [
+          "99",
+          "9"
+        ],
+        "summaryStatistics": {
+          "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#statistics-smoker",
+          "@type": "dsv:SummaryStatistics",
+          "statisticalDataType": "dsv:CategoricalDataType"
+        },
+        "titles": "Smoking status"
+      },
+      {
+        "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#column-height",
+        "@type": "dsv:Column",
+        "columnProperty": {
+          "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#property-height",
+          "@type": "dsv:ColumnProperty",
+          "hasUnit": "http://qudt.org/vocab/unit/CentiM",
+          "hasVariable": {
+            "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#variable-height",
+            "@type": "skos:Concept",
+            "skos:prefLabel": "height"
+          },
+          "unitText": "cm"
+        },
+        "datatype": "number",
+        "missingRange": {
+          "high": -1,
+          "low": -9
+        },
+        "name": "height",
+        "summaryStatistics": {
+          "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#statistics-height",
+          "@type": "dsv:SummaryStatistics",
+          "statisticalDataType": "dsv:RatioDataType"
+        },
+        "titles": "height"
+      }
+    ]
+  },
+  "description": "Every slot of the model.",
+  "identifier": "doi:10.0000/example",
+  "landingPage": "https://example.org/full",
+  "rights": "Free for research",
+  "title": "Full example"
+}

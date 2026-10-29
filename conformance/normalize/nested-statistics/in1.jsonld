@@ -1,0 +1,19 @@
+{
+  "@context": {"dcterms": "http://purl.org/dc/terms/", "csvw": "http://www.w3.org/ns/csvw#", "dsv": "https://w3id.org/dsv-ontology#", "skos": "http://www.w3.org/2004/02/skos/core#"},
+  "@id": "https://example.org/ds/1",
+  "dcterms:title": "Nested statistics",
+  "dsv:datasetSchema": {
+    "dsv:column": [
+      {
+        "csvw:name": "bmi",
+        "csvw:title": "Body mass index",
+        "csvw:datatype": {"base": "double"},
+        "dsv:columnProperty": {
+          "dsv:hasVariable": {"@id": "https://example.org/variable/bmi", "skos:definition": "Weight over squared height", "skos:closeMatch": [{"@id": "http://www.wikidata.org/entity/Q128581"}]},
+          "dsv:summaryStatistics": {"dsv:statisticalDataType": {"@id": "https://w3id.org/dsv-ontology#RatioDataType"}}
+        },
+        "missingRange": [-1, 0]
+      }
+    ]
+  }
+}

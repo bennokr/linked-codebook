@@ -1,0 +1,102 @@
+{
+  "columns": [
+    {
+      "datatype": "number",
+      "level": "numerical",
+      "name": "plain numbers"
+    },
+    {
+      "datatype": "number",
+      "level": "numerical",
+      "name": "numeric text"
+    },
+    {
+      "datatype": "string",
+      "name": "leading zeros are identifiers"
+    },
+    {
+      "datatype": "string",
+      "name": "signed leading zeros"
+    },
+    {
+      "datatype": "string",
+      "name": "version numbers"
+    },
+    {
+      "datatype": "string",
+      "name": "lone punctuation"
+    },
+    {
+      "datatype": "integer",
+      "level": "numerical",
+      "name": "missing markers are ignored"
+    },
+    {
+      "datatype": "date",
+      "name": "ISO dates"
+    },
+    {
+      "datatype": "datetime",
+      "name": "ISO date and time"
+    },
+    {
+      "datatype": "date",
+      "name": "dotted dates"
+    },
+    {
+      "datatype": "string",
+      "name": "slash dates are not guessed"
+    },
+    {
+      "datatype": "string",
+      "name": "impossible date"
+    },
+    {
+      "datatype": "boolean",
+      "level": "categorical",
+      "name": "booleans"
+    },
+    {
+      "datatype": "string",
+      "level": "categorical",
+      "name": "repeated short labels"
+    },
+    {
+      "datatype": "string",
+      "name": "all distinct text"
+    },
+    {
+      "datatype": "string",
+      "name": "repeated prose"
+    },
+    {
+      "datatype": "integer",
+      "level": "categorical",
+      "name": "small integer codes"
+    },
+    {
+      "datatype": "integer",
+      "level": "numerical",
+      "name": "sequential integers"
+    },
+    {
+      "datatype": "number",
+      "level": "numerical",
+      "name": "decimals are not codes"
+    },
+    {
+      "datatype": "string",
+      "name": "empty column"
+    },
+    {
+      "datatype": "integer",
+      "level": "numerical",
+      "name": "12 numeric values among 120 rows"
+    },
+    {
+      "datatype": "string",
+      "level": "categorical",
+      "name": "12 text values among 120 rows"
+    }
+  ]
+}

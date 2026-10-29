@@ -1,0 +1,139 @@
+{
+  "@context": {
+    "dsv": "https://w3id.org/dsv-ontology#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "schema": "https://schema.org/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "qudt": "http://qudt.org/schema/qudt/",
+    "csvw": "http://www.w3.org/ns/csvw#",
+    "datasetSchema": { "@id": "dsv:datasetSchema", "@type": "@id" },
+    "column": { "@id": "dsv:column", "@type": "@id" },
+    "columnProperty": { "@id": "dsv:columnProperty", "@type": "@id" },
+    "hasVariable": { "@id": "dsv:hasVariable", "@type": "@id" },
+    "unit": { "@id": "qudt:hasUnit", "@type": "@id" },
+    "name": "csvw:name",
+    "prefLabel": "skos:prefLabel",
+    "title": "dcterms:title",
+    "description": "dcterms:description",
+    "license": { "@id": "dcterms:license", "@type": "@id" },
+    "identifier": { "@id": "dcterms:identifier", "@type": "@id" }
+  },
+  "@graph": [
+    {
+      "@id": "https://doi.org/10.24432/C5Z89R",
+      "@type": ["dsv:Dataset", "schema:Dataset"],
+      "title": "Heart Failure Clinical Records",
+      "description": "Medical records of 299 patients with heart failure collected during follow-up.",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "datasetSchema": { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/schema/calibration" }
+    },
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/schema/calibration",
+      "@type": "dsv:DatasetSchema",
+      "title": "Semantic calibration view",
+      "column": [
+        { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/column/age" },
+        { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/column/ejection-fraction" },
+        { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/column/serum-creatinine" },
+        { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/column/follow-up-time" },
+        { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/column/death-event" }
+      ]
+    },
+
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/column/age",
+      "@type": "dsv:Column",
+      "name": "age",
+      "columnProperty": { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/property/age" }
+    },
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/property/age",
+      "@type": "dsv:ColumnProperty",
+      "hasVariable": { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/variable/age" },
+      "unit": { "@id": "http://qudt.org/vocab/unit/YR" }
+    },
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/variable/age",
+      "@type": "skos:Concept",
+      "prefLabel": "Age"
+    },
+
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/column/ejection-fraction",
+      "@type": "dsv:Column",
+      "name": "ejection_fraction",
+      "columnProperty": { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/property/ejection-fraction" }
+    },
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/property/ejection-fraction",
+      "@type": "dsv:ColumnProperty",
+      "hasVariable": { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/variable/ejection-fraction" },
+      "unit": { "@id": "http://qudt.org/vocab/unit/PERCENT" }
+    },
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/variable/ejection-fraction",
+      "@type": "skos:Concept",
+      "prefLabel": "Left ventricular ejection fraction"
+    },
+
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/column/serum-creatinine",
+      "@type": "dsv:Column",
+      "name": "serum_creatinine",
+      "columnProperty": { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/property/serum-creatinine" }
+    },
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/property/serum-creatinine",
+      "@type": "dsv:ColumnProperty",
+      "hasVariable": { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/variable/serum-creatinine" },
+      "unit": { "@id": "http://qudt.org/vocab/unit/MilliGM-PER-DeciL" }
+    },
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/variable/serum-creatinine",
+      "@type": "skos:Concept",
+      "prefLabel": "Serum creatinine mass concentration"
+    },
+
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/column/follow-up-time",
+      "@type": "dsv:Column",
+      "name": "time",
+      "columnProperty": { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/property/follow-up-time" }
+    },
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/property/follow-up-time",
+      "@type": "dsv:ColumnProperty",
+      "hasVariable": { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/variable/follow-up-time" },
+      "unit": { "@id": "http://qudt.org/vocab/unit/DAY" }
+    },
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/variable/follow-up-time",
+      "@type": "skos:Concept",
+      "prefLabel": "Follow-up time"
+    },
+
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/column/death-event",
+      "@type": "dsv:Column",
+      "name": "DEATH_EVENT",
+      "columnProperty": { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/property/death-event" }
+    },
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/property/death-event",
+      "@type": "dsv:ColumnProperty",
+      "hasVariable": { "@id": "https://bennokr.github.io/modlet/examples/heart-failure/variable/death-event" },
+      "unit": { "@id": "http://qudt.org/vocab/unit/UNITLESS" }
+    },
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/variable/death-event",
+      "@type": "skos:Concept",
+      "prefLabel": "Death observed during follow-up"
+    },
+
+    {
+      "@id": "https://bennokr.github.io/modlet/examples/heart-failure/variable/survival-probability",
+      "@type": "skos:Concept",
+      "prefLabel": "Survival probability"
+    }
+  ]
+}

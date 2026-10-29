@@ -1,0 +1,44 @@
+{
+  "columns": [
+    {
+      "label": "A",
+      "level": "nominal",
+      "mappings": [
+        {
+          "match_type": "exact",
+          "object_id": "https://example.org/x",
+          "provenance": "new"
+        },
+        {
+          "match_type": "narrow",
+          "object_id": "https://example.org/y"
+        }
+      ],
+      "name": "a",
+      "values": [
+        {
+          "code": "1",
+          "label": "One"
+        },
+        {
+          "code": "2",
+          "label": "Deux"
+        },
+        {
+          "code": "3",
+          "label": "Trois"
+        }
+      ]
+    },
+    {
+      "datatype": "string",
+      "name": "b"
+    },
+    {
+      "datatype": "date",
+      "name": "c"
+    }
+  ],
+  "description": "Added",
+  "title": "Base"
+}

@@ -1,0 +1,252 @@
+{
+  "@context": {
+    "csvw": "http://www.w3.org/ns/csvw#",
+    "dsv": "https://w3id.org/dsv-ontology#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "qudt": "http://qudt.org/schema/qudt/",
+    "dct": "http://purl.org/dc/terms/",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "title": "dct:title",
+    "description": "dct:description",
+    "identifier": "dct:identifier",
+    "datasetSchema": {
+      "@id": "dsv:datasetSchema",
+      "@type": "@id"
+    },
+    "columns": {
+      "@id": "dsv:column",
+      "@container": "@set"
+    },
+    "name": "csvw:name",
+    "titles": "csvw:titles",
+    "datatype": "csvw:datatype",
+    "nullValues": {
+      "@id": "csvw:null",
+      "@container": "@set"
+    },
+    "columnProperty": {
+      "@id": "dsv:columnProperty",
+      "@type": "@id"
+    },
+    "hasVariable": {
+      "@id": "dsv:hasVariable",
+      "@type": "@id"
+    },
+    "hasCodeBook": {
+      "@id": "dsv:hasCodeBook",
+      "@type": "@id"
+    },
+    "summaryStatistics": {
+      "@id": "dsv:summaryStatistics",
+      "@type": "@id"
+    },
+    "statisticalDataType": {
+      "@id": "dsv:statisticalDataType",
+      "@type": "@id"
+    },
+    "numberOfRows": {
+      "@id": "dsv:numberOfRows",
+      "@type": "xsd:integer"
+    },
+    "numberOfColumns": {
+      "@id": "dsv:numberOfColumns",
+      "@type": "xsd:integer"
+    },
+    "columnCompleteness": {
+      "@id": "dsv:columnCompleteness",
+      "@type": "xsd:float"
+    },
+    "unitText": "schema:unitText",
+    "hasUnit": {
+      "@id": "qudt:hasUnit",
+      "@type": "@id"
+    },
+    "closeMatch": {
+      "@id": "skos:closeMatch",
+      "@type": "@id",
+      "@container": "@set"
+    }
+  },
+  "@id": "urn:statlet:dataset:ckd-demo",
+  "@type": [
+    "dcat:Dataset",
+    "dsv:Dataset"
+  ],
+  "title": "CKD demo",
+  "description": "Small demo from Statlet",
+  "identifier": "ckd-demo",
+  "summaryStatistics": {
+    "@id": "urn:statlet:dataset:ckd-demo#statistics",
+    "@type": "dsv:SummaryStatistics",
+    "numberOfRows": 3,
+    "numberOfColumns": 4
+  },
+  "datasetSchema": {
+    "@id": "urn:statlet:dataset:ckd-demo#schema",
+    "@type": "dsv:DatasetSchema",
+    "columns": [
+      {
+        "@id": "urn:statlet:dataset:ckd-demo#column-age",
+        "@type": "dsv:Column",
+        "name": "age",
+        "titles": "Age at baseline",
+        "datatype": "number",
+        "columnProperty": {
+          "@id": "urn:statlet:dataset:ckd-demo#property-age",
+          "@type": "dsv:ColumnProperty",
+          "hasVariable": {
+            "@id": "urn:statlet:dataset:ckd-demo#variable-age",
+            "@type": "skos:Concept",
+            "skos:prefLabel": "Age at baseline",
+            "skos:definition": "Age in whole years",
+            "closeMatch": [
+              "http://www.wikidata.org/entity/Q185836"
+            ]
+          },
+          "hasUnit": "http://qudt.org/vocab/unit/YR"
+        },
+        "summaryStatistics": {
+          "@id": "urn:statlet:dataset:ckd-demo#column-age-statistics",
+          "@type": "dsv:SummaryStatistics",
+          "statisticalDataType": "dsv:NumericalDataType",
+          "columnCompleteness": 1
+        }
+      },
+      {
+        "@id": "urn:statlet:dataset:ckd-demo#column-sex",
+        "@type": "dsv:Column",
+        "name": "sex",
+        "titles": "Sex",
+        "datatype": "string",
+        "nullValues": [
+          "99",
+          "9"
+        ],
+        "columnProperty": {
+          "@id": "urn:statlet:dataset:ckd-demo#property-sex",
+          "@type": "dsv:ColumnProperty",
+          "hasVariable": {
+            "@id": "urn:statlet:dataset:ckd-demo#variable-sex",
+            "@type": "skos:Concept",
+            "skos:prefLabel": "Sex"
+          },
+          "hasCodeBook": {
+            "@id": "urn:statlet:dataset:ckd-demo#variable-sex-codes",
+            "@type": "skos:ConceptScheme",
+            "skos:prefLabel": "Sex codebook",
+            "skos:hasTopConcept": [
+              {
+                "@id": "urn:statlet:dataset:ckd-demo#variable-sex-codes-1",
+                "@type": "skos:Concept",
+                "skos:inScheme": {
+                  "@id": "urn:statlet:dataset:ckd-demo#variable-sex-codes"
+                },
+                "skos:notation": "1",
+                "skos:prefLabel": "Male"
+              },
+              {
+                "@id": "urn:statlet:dataset:ckd-demo#variable-sex-codes-2",
+                "@type": "skos:Concept",
+                "skos:inScheme": {
+                  "@id": "urn:statlet:dataset:ckd-demo#variable-sex-codes"
+                },
+                "skos:notation": "2",
+                "skos:prefLabel": "Female"
+              },
+              {
+                "@id": "urn:statlet:dataset:ckd-demo#variable-sex-codes-9",
+                "@type": "skos:Concept",
+                "skos:inScheme": {
+                  "@id": "urn:statlet:dataset:ckd-demo#variable-sex-codes"
+                },
+                "skos:notation": "9",
+                "skos:prefLabel": "Unknown"
+              }
+            ]
+          }
+        },
+        "summaryStatistics": {
+          "@id": "urn:statlet:dataset:ckd-demo#column-sex-statistics",
+          "@type": "dsv:SummaryStatistics",
+          "statisticalDataType": "dsv:NominalDataType",
+          "columnCompleteness": 1
+        }
+      },
+      {
+        "@id": "urn:statlet:dataset:ckd-demo#column-egfr",
+        "@type": "dsv:Column",
+        "name": "egfr",
+        "titles": "eGFR",
+        "datatype": "number",
+        "columnProperty": {
+          "@id": "urn:statlet:dataset:ckd-demo#property-egfr",
+          "@type": "dsv:ColumnProperty",
+          "hasVariable": {
+            "@id": "urn:statlet:dataset:ckd-demo#variable-egfr",
+            "@type": "skos:Concept",
+            "skos:prefLabel": "eGFR"
+          },
+          "unitText": "mL/min/1.73m2"
+        },
+        "summaryStatistics": {
+          "@id": "urn:statlet:dataset:ckd-demo#column-egfr-statistics",
+          "@type": "dsv:SummaryStatistics",
+          "statisticalDataType": "dsv:NumericalDataType",
+          "columnCompleteness": 0.6666666666666666
+        }
+      },
+      {
+        "@id": "urn:statlet:dataset:ckd-demo#column-smoke",
+        "@type": "dsv:Column",
+        "name": "smoke",
+        "titles": "Smoker",
+        "datatype": "string",
+        "columnProperty": {
+          "@id": "urn:statlet:dataset:ckd-demo#property-smoke",
+          "@type": "dsv:ColumnProperty",
+          "hasVariable": {
+            "@id": "urn:statlet:dataset:ckd-demo#variable-smoke",
+            "@type": "skos:Concept",
+            "skos:prefLabel": "Smoker"
+          },
+          "hasCodeBook": {
+            "@id": "urn:statlet:dataset:ckd-demo#variable-smoke-codes",
+            "@type": "skos:ConceptScheme",
+            "skos:prefLabel": "Smoker codebook",
+            "skos:hasTopConcept": [
+              {
+                "@id": "urn:statlet:dataset:ckd-demo#variable-smoke-codes-0",
+                "@type": "skos:Concept",
+                "skos:inScheme": {
+                  "@id": "urn:statlet:dataset:ckd-demo#variable-smoke-codes"
+                },
+                "skos:notation": "0",
+                "skos:prefLabel": "No"
+              },
+              {
+                "@id": "urn:statlet:dataset:ckd-demo#variable-smoke-codes-1",
+                "@type": "skos:Concept",
+                "skos:inScheme": {
+                  "@id": "urn:statlet:dataset:ckd-demo#variable-smoke-codes"
+                },
+                "skos:notation": "1",
+                "skos:prefLabel": "Yes",
+                "closeMatch": [
+                  "http://purl.obolibrary.org/obo/NCIT_C19796"
+                ]
+              }
+            ]
+          }
+        },
+        "summaryStatistics": {
+          "@id": "urn:statlet:dataset:ckd-demo#column-smoke-statistics",
+          "@type": "dsv:SummaryStatistics",
+          "statisticalDataType": "dsv:OrdinalDataType",
+          "columnCompleteness": 1
+        }
+      }
+    ]
+  }
+}

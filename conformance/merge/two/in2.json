@@ -1,0 +1,1 @@
+{"description": "Added", "columns": [{"name": "a", "label": "", "level": "nominal", "values": [{"code": "2", "label": "Deux"}, {"code": "3", "label": "Trois"}], "mappings": [{"match_type": "exact", "object_id": "https://example.org/x", "provenance": "new"}, {"match_type": "narrow", "object_id": "https://example.org/y"}]}, {"name": "c", "datatype": "date"}]}

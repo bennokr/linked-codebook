@@ -1,0 +1,1 @@
+{"title": "Base", "columns": [{"name": "a", "label": "A", "values": [{"code": "1", "label": "One"}, {"code": "2", "label": "Two"}], "mappings": [{"match_type": "exact", "object_id": "https://example.org/x", "provenance": "old"}]}, {"name": "b", "datatype": "string"}]}

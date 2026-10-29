@@ -1,0 +1,46 @@
+{
+  "columns": [
+    {
+      "mappings": [
+        {
+          "confidence": 1,
+          "match_type": "close",
+          "object_id": "http://www.wikidata.org/entity/Q1075",
+          "object_label": "smoking",
+          "reviewer_id": "ann"
+        },
+        {
+          "match_type": "related",
+          "object_id": "https://example.org/draft"
+        }
+      ],
+      "name": "smoker",
+      "values": [
+        {
+          "code": "0",
+          "mappings": [
+            {
+              "confidence": 0.9,
+              "description": "checked",
+              "match_type": "exact",
+              "object_id": "http://purl.obolibrary.org/obo/NCIT_C49487",
+              "provenance": "search",
+              "retrieved_at": "2024-05-01",
+              "reviewer_id": "ann"
+            }
+          ]
+        },
+        {
+          "code": "1",
+          "mappings": [
+            {
+              "match_type": "broad",
+              "object_id": "http://www.wikidata.org/entity/Q5",
+              "object_label": "human"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+#curie_map:
+#  semapv: https://w3id.org/semapv/vocab/
+#  skos: http://www.w3.org/2004/02/skos/core#
+#  ds: urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#
+#  wd: http://www.wikidata.org/entity/
+#  NCIT: http://purl.obolibrary.org/obo/NCIT_
+#mapping_set_id: urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#mappings
+subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification	confidence	mapping_provider	mapping_date	reviewer_id	comment
+https://example.org/variable/smoking	Smoking status	skos:closeMatch	wd:Q1075	smoking	semapv:ManualMappingCuration	1			ann	
+https://example.org/variable/smoking	Smoking status	skos:relatedMatch	https://example.org/draft		semapv:ManualMappingCuration					
+https://example.org/variable/smoking-codes-0	No	skos:exactMatch	NCIT:C49487		semapv:ManualMappingCuration	0.9	search	2024-05-01	ann	checked
+https://example.org/variable/smoking-codes-1	Yes	skos:broadMatch	wd:Q5	human	semapv:ManualMappingCuration					

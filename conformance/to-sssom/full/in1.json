@@ -1,0 +1,31 @@
+{
+  "title": "Full example",
+  "description": "Every slot of the model.",
+  "identifier": "doi:10.0000/example",
+  "license": "Free for research",
+  "citation": "Doe, J. (2024). Full example.",
+  "access_rights": "restricted",
+  "landing_page": "https://example.org/full",
+  "columns": [
+    {
+      "name": "smoker",
+      "label": "Smoking status",
+      "description": "Whether the person smokes.",
+      "datatype": "integer",
+      "level": "categorical",
+      "variable": "https://example.org/variable/smoking",
+      "unit": "none",
+      "values": [
+        {"code": "0", "label": "No", "mappings": [{"match_type": "exact", "object_id": "http://purl.obolibrary.org/obo/NCIT_C49487", "reviewer_id": "ann", "confidence": 0.9, "provenance": "search", "retrieved_at": "2024-05-01T10:00:00Z", "description": "checked"}]},
+        {"code": "1", "label": "Yes", "mappings": [{"match_type": "broad", "object_id": "http://www.wikidata.org/entity/Q5", "object_label": "human"}]},
+        {"code": "9", "label": "Unknown", "missing": true}
+      ],
+      "missing_values": ["99"],
+      "mappings": [
+        {"match_type": "close", "object_id": "http://www.wikidata.org/entity/Q1075", "object_label": "smoking", "reviewer_id": "ann", "confidence": 1},
+        {"match_type": "related", "object_id": "https://example.org/draft"}
+      ]
+    },
+    {"name": "height", "datatype": "number", "level": "ratio", "unit": "cm", "unit_iri": "http://qudt.org/vocab/unit/CentiM", "missing_range": {"low": -9, "high": -1}}
+  ]
+}

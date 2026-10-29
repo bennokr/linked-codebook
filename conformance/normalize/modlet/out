@@ -1,0 +1,37 @@
+{
+  "columns": [
+    {
+      "label": "Age",
+      "name": "age",
+      "unit_iri": "http://qudt.org/vocab/unit/YR",
+      "variable": "https://bennokr.github.io/modlet/examples/heart-failure/variable/age"
+    },
+    {
+      "label": "Left ventricular ejection fraction",
+      "name": "ejection_fraction",
+      "unit_iri": "http://qudt.org/vocab/unit/PERCENT",
+      "variable": "https://bennokr.github.io/modlet/examples/heart-failure/variable/ejection-fraction"
+    },
+    {
+      "label": "Serum creatinine mass concentration",
+      "name": "serum_creatinine",
+      "unit_iri": "http://qudt.org/vocab/unit/MilliGM-PER-DeciL",
+      "variable": "https://bennokr.github.io/modlet/examples/heart-failure/variable/serum-creatinine"
+    },
+    {
+      "label": "Follow-up time",
+      "name": "time",
+      "unit_iri": "http://qudt.org/vocab/unit/DAY",
+      "variable": "https://bennokr.github.io/modlet/examples/heart-failure/variable/follow-up-time"
+    },
+    {
+      "label": "Death observed during follow-up",
+      "name": "DEATH_EVENT",
+      "unit_iri": "http://qudt.org/vocab/unit/UNITLESS",
+      "variable": "https://bennokr.github.io/modlet/examples/heart-failure/variable/death-event"
+    }
+  ],
+  "description": "Medical records of 299 patients with heart failure collected during follow-up.",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "title": "Heart Failure Clinical Records"
+}

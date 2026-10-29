@@ -1,0 +1,24 @@
+{
+  "columns": [
+    {
+      "datatype": "number",
+      "description": "Weight over squared height",
+      "label": "Body mass index",
+      "level": "ratio",
+      "mappings": [
+        {
+          "match_type": "close",
+          "object_id": "http://www.wikidata.org/entity/Q128581",
+          "reviewer_id": "imported"
+        }
+      ],
+      "missing_range": {
+        "high": 0,
+        "low": -1
+      },
+      "name": "bmi",
+      "variable": "https://example.org/variable/bmi"
+    }
+  ],
+  "title": "Nested statistics"
+}

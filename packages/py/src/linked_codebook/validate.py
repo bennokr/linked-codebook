@@ -47,9 +47,8 @@ def repeated(profile: dict[str, Any]) -> list[str]:
 KNOWN = {f"{entry['namespace']}{term}" for entry in VOCABULARY["vocabularies"].values() for term in entry["terms"]}
 
 
-def expand(term: str) -> str:
+def expand(term: str, context: dict[str, Any]) -> str:
     """Expands a key or type of JSON-LD to an IRI through the context."""
-    context = JSONLD["context"]
     entry = context.get(term, term)
     target = entry["@id"] if isinstance(entry, dict) else entry
     prefix, _, rest = target.partition(":")
@@ -57,21 +56,24 @@ def expand(term: str) -> str:
     return base + rest if isinstance(base, str) and base != target and rest else target
 
 
-def undefined_terms(value: Any) -> list[str]:  # noqa: ANN401
+def undefined_terms(value: Any, context: dict[str, Any]) -> list[str]:  # noqa: ANN401
     """Errors for terms of a JSON-LD document that no pinned vocabulary defines."""
     if isinstance(value, list):
-        return [error for item in value for error in undefined_terms(item)]
+        return [error for item in value for error in undefined_terms(item, context)]
     if not isinstance(value, dict):
         return []
     types = value.get("@type", [])
     keys = [key for key in value if not key.startswith("@") and key not in JSONLD["extensions"]]
-    unknown = [term for term in [*keys, *(show(t) for t in (types if isinstance(types, list) else [types]))] if expand(term) not in KNOWN and term not in JSONLD["accepted"]]
-    below = [error for key, child in value.items() if key != "@context" for error in undefined_terms(child)]
+    terms = [*keys, *(show(kind) for kind in (types if isinstance(types, list) else [types]))]
+    unknown = [term for term in terms if expand(term, context) not in KNOWN and term not in JSONLD["accepted"]]
+    below = [error for key, child in value.items() if key != "@context" for error in undefined_terms(child, context)]
     return [*(f"{term}: not defined by a pinned vocabulary" for term in unknown), *below]
 
 
 def validate(document: Any) -> list[str]:  # noqa: ANN401
     """Checks a profile against the model, or a JSON-LD document against the vocabularies."""
-    linked = isinstance(document, dict) and "@context" in document
-    errors = undefined_terms(document) if linked else [*conform(document, SCHEMA, ""), *repeated(document)]
-    return list(dict.fromkeys(errors))
+    record = document if isinstance(document, dict) else {}
+    if "@context" not in record:
+        return list(dict.fromkeys([*conform(document, SCHEMA, ""), *repeated(record)]))
+    context = record["@context"]
+    return list(dict.fromkeys(undefined_terms(document, context if isinstance(context, dict) else JSONLD["context"])))

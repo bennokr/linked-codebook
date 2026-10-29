@@ -1,0 +1,19 @@
+{
+  "columns": [
+    {
+      "datatype": "integer",
+      "missing_range": {
+        "high": 9,
+        "low": 0
+      },
+      "name": "a",
+      "values": [
+        {
+          "code": "1",
+          "label": "Yes"
+        }
+      ]
+    }
+  ],
+  "title": "Unsorted"
+}
