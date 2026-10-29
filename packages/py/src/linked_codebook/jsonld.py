@@ -32,7 +32,15 @@ def links(mappings: list[Mapping]) -> dict[str, list[str]]:
 
 
 def concept(iri: str, label: str | None, definition: str | None, mappings: list[Mapping]) -> Node:
-    return clean({"@id": iri, "@type": TYPES["concept"], NODE_KEYS["label"]: label, NODE_KEYS["definition"]: definition, **links(mappings)})
+    return clean(
+        {
+            "@id": iri,
+            "@type": TYPES["concept"],
+            NODE_KEYS["label"]: label,
+            NODE_KEYS["definition"]: definition,
+            **links(mappings),
+        }
+    )
 
 
 def code_book(column: Column, variable: str) -> Node | None:
@@ -40,7 +48,12 @@ def code_book(column: Column, variable: str) -> Node | None:
     top = [
         clean(
             {
-                **concept(code_iri(variable, value["code"]), value.get("label"), value.get("description"), value.get("mappings", [])),
+                **concept(
+                    code_iri(variable, value["code"]),
+                    value.get("label"),
+                    value.get("description"),
+                    value.get("mappings", []),
+                ),
                 NODE_KEYS["in_scheme"]: {"@id": scheme},
                 NODE_KEYS["notation"]: value["code"],
             },
@@ -57,7 +70,11 @@ def column_node(dataset: str, column: Column) -> Node:
     nulls = [*column.get("missing_values", []), *(value["code"] for value in values if value.get("missing"))]
     ids = {"dataset": dataset, "name": column["name"]}
     level = column.get("level")
-    statistics = {"@id": fill("statistics", ids), "@type": TYPES["statistics"], "statisticalDataType": ENUMS["Level"].get(level)}
+    statistics = {
+        "@id": fill("statistics", ids),
+        "@type": TYPES["statistics"],
+        "statisticalDataType": ENUMS["Level"].get(level or ""),
+    }
     return clean(
         {
             "@id": fill("column", ids),

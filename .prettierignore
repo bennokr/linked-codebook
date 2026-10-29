@@ -1,0 +1,4 @@
+packages/*/src/generated
+spec/generated
+conformance
+*.md

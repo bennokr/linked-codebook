@@ -1,36 +1,66 @@
 import { jsonld, schema, vocabulary } from './constants.ts';
 import { local } from './read.ts';
 
-type Schema = { $ref?: string; type?: string; enum?: string[]; items?: Schema; properties?: Record<string, Schema>; required?: string[]; additionalProperties?: boolean; minimum?: number; maximum?: number };
+interface Schema {
+  $ref?: string;
+  type?: string;
+  enum?: string[];
+  items?: Schema;
+  properties?: Record<string, Schema>;
+  required?: string[];
+  minimum?: number;
+  maximum?: number;
+}
 
 const definitions = schema.$defs as unknown as Record<string, Schema>;
-const kindOf = (value: unknown): string => (Array.isArray(value) ? 'array' : value === null ? 'null' : typeof value);
+
+function kindOf(value: unknown): string {
+  if (Array.isArray(value)) return 'array';
+  return value === null ? 'null' : typeof value;
+}
+
+function checkScalar(value: unknown, rule: Schema, path: string): string[] {
+  if (rule.enum && !rule.enum.includes(value as string))
+    return [`${path}: ${String(value)} is not one of ${rule.enum.join(', ')}`];
+  const outside =
+    typeof value === 'number' && (value < (rule.minimum ?? -Infinity) || value > (rule.maximum ?? Infinity));
+  return outside ? [`${path}: out of range`] : [];
+}
+
+function checkObject(value: Record<string, unknown>, rule: Schema, path: string): string[] {
+  const missing = (rule.required ?? []).filter((key) => !(key in value)).map((key) => `${path}: ${key} is required`);
+  const own = Object.entries(value).flatMap(([key, member]) => {
+    const property = rule.properties?.[key];
+    return property ? conform(member, property, `${path}/${key}`) : [`${path}/${key}: unknown property`];
+  });
+  return [...missing, ...own];
+}
 
 /** Errors of a value against the JSON Schema, which is generated from the model. */
 function conform(value: unknown, rule: Schema, path: string): string[] {
   const resolved = rule.$ref ? { ...definitions[local(rule.$ref)], ...rule } : rule;
   const kind = kindOf(value);
   if (resolved.type && kind !== resolved.type) return [`${path}: expected ${resolved.type}`];
-  if (resolved.enum && !resolved.enum.includes(value as string)) return [`${path}: ${String(value)} is not one of ${resolved.enum.join(', ')}`];
-  if (typeof value === 'number' && (value < (resolved.minimum ?? -Infinity) || value > (resolved.maximum ?? Infinity))) return [`${path}: out of range`];
-  const members = Object.entries((value ?? {}) as Record<string, unknown>);
-  const own = kind === 'object' ? members.flatMap(([key, member]) => (resolved.properties?.[key] ? conform(member, resolved.properties[key], `${path}/${key}`) : [`${path}/${key}: unknown property`])) : [];
-  const missing = kind === 'object' ? (resolved.required ?? []).filter((key) => !(key in (value as object))).map((key) => `${path}: ${key} is required`) : [];
-  const listed = kind === 'array' && resolved.items ? (value as unknown[]).flatMap((item, index) => conform(item, resolved.items as Schema, `${path}/${index}`)) : [];
-  return [...missing, ...own, ...listed];
+  if (kind === 'object') return checkObject(value as Record<string, unknown>, resolved, path);
+  if (kind === 'array' && resolved.items)
+    return (value as unknown[]).flatMap((item, index) => conform(item, resolved.items as Schema, `${path}/${index}`));
+  return checkScalar(value, resolved, path);
 }
 
 /** Names that must not occur twice in a list. */
 function repeated(profile: Record<string, unknown>): string[] {
   const columns = (profile['columns'] ?? []) as { name?: string; values?: { code?: string }[] }[];
-  const twice = (names: (string | undefined)[]): string[] => names.filter((name, index) => name !== undefined && names.indexOf(name) !== index) as string[];
+  const twice = (names: (string | undefined)[]): string[] =>
+    names.filter((name, index) => name !== undefined && names.indexOf(name) !== index) as string[];
   return [
     ...twice(columns.map((column) => column.name)).map((name) => `column ${name} occurs twice`),
-    ...columns.flatMap((column) => twice((column.values ?? []).map((value) => value.code)).map((code) => `${column.name}: code ${code} occurs twice`)),
+    ...columns.flatMap((column) =>
+      twice((column.values ?? []).map((value) => value.code)).map(
+        (code) => `${column.name}: code ${code} occurs twice`,
+      ),
+    ),
   ];
 }
-
-const namespaces = Object.fromEntries(Object.entries(vocabulary.vocabularies).map(([prefix, entry]) => [prefix, entry]));
 
 type Context = Record<string, string | { '@id': string }>;
 
@@ -43,7 +73,11 @@ function expand(term: string, context: Context): string {
   return typeof base === 'string' && base !== target && rest !== '' ? `${base}${rest}` : target;
 }
 
-const known = new Set(Object.values(vocabulary.vocabularies).flatMap((entry) => Object.keys(entry.terms).map((term) => `${entry.namespace}${term}`)));
+const known = new Set(
+  Object.values(vocabulary.vocabularies).flatMap((entry) =>
+    Object.keys(entry.terms).map((term) => `${entry.namespace}${term}`),
+  ),
+);
 
 /** Errors for terms of a JSON-LD document that no pinned vocabulary defines. */
 function undefinedTerms(value: unknown, context: Context): string[] {
@@ -52,8 +86,12 @@ function undefinedTerms(value: unknown, context: Context): string[] {
   const node = value as Record<string, unknown>;
   const types = [node['@type'] ?? []].flat().map(String);
   const keys = Object.keys(node).filter((key) => !key.startsWith('@') && !jsonld.extensions.includes(key));
-  const unknown = [...keys, ...types].filter((term) => !known.has(expand(term, context)) && !(jsonld.accepted as string[]).includes(term));
-  const below = Object.entries(node).filter(([key]) => key !== '@context').flatMap(([, child]) => undefinedTerms(child, context));
+  const unknown = [...keys, ...types].filter(
+    (term) => !known.has(expand(term, context)) && !(jsonld.accepted as string[]).includes(term),
+  );
+  const below = Object.entries(node)
+    .filter(([key]) => key !== '@context')
+    .flatMap(([, child]) => undefinedTerms(child, context));
   return [...unknown.map((term) => `${term}: not defined by a pinned vocabulary`), ...below];
 }
 

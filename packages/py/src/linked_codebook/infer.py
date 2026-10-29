@@ -2,6 +2,7 @@
 
 import math
 import re
+from collections.abc import Mapping, Sequence
 from typing import Literal, cast
 
 from .constants import INFERENCE as RULES
@@ -10,7 +11,9 @@ from .types import Datatype, Level, Profile
 Cell = str | int | float | bool | None
 Kind = Literal["empty", "boolean", "date", "datetime", "categorical", "number", "text"]
 
-NUMBER, LEADING_ZERO, DATE, DOTTED, TIME = (re.compile(RULES["patterns"][name]) for name in ("number", "leading_zero", "date", "dotted_date", "time"))
+NUMBER, LEADING_ZERO, DATE, DOTTED, TIME = (
+    re.compile(RULES["patterns"][name]) for name in ("number", "leading_zero", "date", "dotted_date", "time")
+)
 IDENTIFIER = re.compile(RULES["identifier_names"])
 DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
@@ -24,7 +27,12 @@ def is_numeric(cell: Cell) -> bool:
         return False
     if isinstance(cell, int | float):
         return math.isfinite(cell)
-    return isinstance(cell, str) and NUMBER.fullmatch(cell) is not None and LEADING_ZERO.fullmatch(cell) is None and math.isfinite(float(cell))
+    return (
+        isinstance(cell, str)
+        and NUMBER.fullmatch(cell) is not None
+        and LEADING_ZERO.fullmatch(cell) is None
+        and math.isfinite(float(cell))
+    )
 
 
 def number(cell: Cell) -> float:
@@ -63,7 +71,11 @@ def is_sequence(values: list[Cell], distinct: int) -> bool:
 
 def is_prose(cell: Cell) -> bool:
     text = str(cell)
-    return len(text) > RULES["prose"]["characters"] or re.search(r"[\r\n]", text) is not None or len(text.strip().split()) > RULES["prose"]["words"]
+    return (
+        len(text) > RULES["prose"]["characters"]
+        or re.search(r"[\r\n]", text) is not None
+        or len(text.strip().split()) > RULES["prose"]["words"]
+    )
 
 
 def is_text_category(values: list[Cell], distinct: int) -> bool:
@@ -80,7 +92,11 @@ def is_categorical(values: list[Cell], name: str, *, labelled: bool) -> bool:
         return distinct <= limits["text"] and (labelled or is_text_category(values, distinct))
     if is_sequence(values, distinct):
         return False
-    return distinct <= limits["text"] if labelled else all(is_integer(value) for value in values) and distinct <= limits["number"] and distinct < len(values)
+    return (
+        distinct <= limits["text"]
+        if labelled
+        else all(is_integer(value) for value in values) and distinct <= limits["number"] and distinct < len(values)
+    )
 
 
 def kind_of(values: list[Cell], name: str, *, labelled: bool) -> Kind:
@@ -96,7 +112,7 @@ def kind_of(values: list[Cell], name: str, *, labelled: bool) -> Kind:
     return "number" if all(is_numeric(value) for value in values) else "text"
 
 
-def infer_column(cells: list[Cell], name: str = "", *, labelled: bool = False) -> dict[str, Datatype | Level]:
+def infer_column(cells: Sequence[Cell], name: str = "", *, labelled: bool = False) -> dict[str, Datatype | Level]:
     """Proposes a datatype and a level for the values of a column."""
     values = [cell for cell in cells if not is_missing(cell)]
     kind = kind_of(values, name, labelled=labelled)
@@ -109,6 +125,6 @@ def infer_column(cells: list[Cell], name: str = "", *, labelled: bool = False) -
     return {"datatype": datatype, "level": level} if level else {"datatype": datatype}
 
 
-def infer(data: dict[str, list[Cell]]) -> Profile:
+def infer(data: Mapping[str, Sequence[Cell]]) -> Profile:
     """Proposes a datatype and a level for every column of `{name: [values]}`."""
     return cast("Profile", {"columns": [{"name": name, **infer_column(cells, name)} for name, cells in data.items()]})

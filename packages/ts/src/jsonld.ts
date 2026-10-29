@@ -9,7 +9,9 @@ const { keys, node_keys: nodeKeys, types } = jsonld;
 /** Drops the entries that have no value. */
 export const clean = (node: Node): Node =>
   Object.fromEntries(
-    Object.entries(node).filter(([, value]) => value !== undefined && value !== '' && !(Array.isArray(value) && value.length === 0)),
+    Object.entries(node).filter(
+      ([, value]) => value !== undefined && value !== '' && !(Array.isArray(value) && value.length === 0),
+    ),
   );
 
 const pick = (source: object, slots: Record<string, string>): Node =>
@@ -25,7 +27,13 @@ function links(mappings: Mapping[] = []): Record<string, string[]> {
 }
 
 function concept(id: string, label?: string, definition?: string, mappings?: Mapping[]): Node {
-  return clean({ '@id': id, '@type': types.concept, [nodeKeys.label]: label, [nodeKeys.definition]: definition, ...links(mappings) });
+  return clean({
+    '@id': id,
+    '@type': types.concept,
+    [nodeKeys.label]: label,
+    [nodeKeys.definition]: definition,
+    ...links(mappings),
+  });
 }
 
 function codeBook(column: Column, variable: string): Node | undefined {
@@ -43,7 +51,10 @@ function codeBook(column: Column, variable: string): Node | undefined {
 function columnNode(dataset: string, column: Column): Node {
   const variable = variableIri(dataset, column);
   const label = column.label ?? column.name;
-  const nulls = [...(column.missing_values ?? []), ...(column.values ?? []).filter((value) => value.missing).map((value) => value.code)];
+  const nulls = [
+    ...(column.missing_values ?? []),
+    ...(column.values ?? []).filter((value) => value.missing).map((value) => value.code),
+  ];
   const ids = { dataset, name: column.name };
   return clean({
     '@id': fill('column', ids),

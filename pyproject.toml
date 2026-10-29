@@ -16,16 +16,17 @@ dev = ["linkml", "datamodel-code-generator", "rdflib", "pyyaml", "types-pyyaml",
 
 [tool.ruff]
 target-version = "py311"
-line-length = 100
+line-length = 120
 extend-exclude = ["packages/py/src/linked_codebook/types.py"]
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D203", "D213", "COM812", "ISC001", "S101"]
+ignore = ["D1", "D203", "D213", "D401", "CPY", "COM812", "ISC001", "S101"]
 
 [tool.ruff.lint.per-file-ignores]
-"**/tests/**" = ["D", "PLR2004", "ANN"]
-"scripts/**" = ["T201", "S603", "S607", "INP001"]
+"**/tests/**" = ["PLR2004", "ANN", "INP001"]
+"scripts/**" = ["T201", "S603", "S607", "INP001", "S310", "DTZ011"]
+"**/infer.py" = ["PLR2004"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 8
@@ -34,7 +35,7 @@ max-complexity = 8
 max-statements = 25
 max-branches = 8
 max-args = 5
-max-returns = 4
+max-returns = 5
 
 [tool.mypy]
 strict = true

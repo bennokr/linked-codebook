@@ -14,7 +14,9 @@ const cell = (value: unknown): string => String(value ?? '').replace(/[\t\r\n]+/
 /** Shortens an IRI to a CURIE where SSSOM tools expect one, and records the prefix. */
 function shorten(iri: string, prefixes: Prefixes): string {
   const obo = new RegExp(`^(?:${sssom.obo})$`).exec(iri);
-  const [prefix, base] = obo ? [obo[1], iri.slice(0, iri.length - (obo[2] ?? '').length)] : (Object.entries(sssom.compact).find(([, known]) => iri.startsWith(known)) ?? []);
+  const [prefix, base] = obo
+    ? [obo[1], iri.slice(0, iri.length - (obo[2] ?? '').length)]
+    : (Object.entries(sssom.compact).find(([, known]) => iri.startsWith(known)) ?? []);
   if (!prefix || !base) return iri;
   prefixes.set(prefix, base);
   return `${prefix}:${iri.slice(base.length)}`;
@@ -27,7 +29,9 @@ function row(subject: string, label: string, mapping: Mapping, prefixes: Prefixe
     predicate_id: enums.MatchType[mapping.match_type] ?? '',
     object_id: shorten(mapping.object_id, prefixes),
     mapping_justification: sssom.justification,
-    ...Object.fromEntries(Object.entries(sssom.fields).map(([slot, name]) => [name, cell({ ...mapping }[slot as keyof Mapping])])),
+    ...Object.fromEntries(
+      Object.entries(sssom.fields).map(([slot, name]) => [name, cell({ ...mapping }[slot as keyof Mapping])]),
+    ),
   };
   slots['mapping_date'] = (slots['mapping_date'] ?? '').slice(0, 10);
   return sssom.columns.map((name) => slots[name] ?? '').join('\t');
@@ -35,11 +39,14 @@ function row(subject: string, label: string, mapping: Mapping, prefixes: Prefixe
 
 function rows(dataset: string, column: Column, prefixes: Prefixes): string[] {
   const variable = variableIri(dataset, column);
-  const short = (iri: string): string => (iri.startsWith(`${dataset}#`) ? `${sssom.subject_prefix}:${iri.slice(dataset.length + 1)}` : iri);
+  const short = (iri: string): string =>
+    iri.startsWith(`${dataset}#`) ? `${sssom.subject_prefix}:${iri.slice(dataset.length + 1)}` : iri;
   return [
     ...(column.mappings ?? []).map((mapping) => row(short(variable), column.label ?? column.name, mapping, prefixes)),
     ...(column.values ?? []).flatMap((value) =>
-      (value.mappings ?? []).map((mapping) => row(short(codeIri(variable, value.code)), value.label ?? value.code, mapping, prefixes)),
+      (value.mappings ?? []).map((mapping) =>
+        row(short(codeIri(variable, value.code)), value.label ?? value.code, mapping, prefixes),
+      ),
     ),
   ];
 }
@@ -49,7 +56,11 @@ export function toSssom(profile: Profile): string {
   const dataset = datasetIri(profile);
   const prefixes: Prefixes = new Map([...Object.entries(sssom.prefixes), [sssom.subject_prefix, `${dataset}#`]]);
   const body = profile.columns.flatMap((column) => rows(dataset, column, prefixes));
-  const header = ['#curie_map:', ...[...prefixes].map(([prefix, base]) => `#  ${prefix}: ${base}`), `#mapping_set_id: ${dataset}#mappings`];
+  const header = [
+    '#curie_map:',
+    ...[...prefixes].map(([prefix, base]) => `#  ${prefix}: ${base}`),
+    `#mapping_set_id: ${dataset}#mappings`,
+  ];
   return `${[...header, sssom.columns.join('\t'), ...body].join('\n')}\n`;
 }
 
@@ -69,15 +80,66 @@ function readTable(text: string): { prefixes: Prefixes; rows: Row[] } {
   }
   const [header = '', ...table] = lines.filter((line) => !line.startsWith('#'));
   const names = header.split('\t');
-  const rows = table.map((line) => Object.fromEntries(names.map((name, index) => [name, (line.split('\t')[index] ?? '').trim()])));
+  const rows = table.map((line) =>
+    Object.fromEntries(names.map((name, index) => [name, (line.split('\t')[index] ?? '').trim()])),
+  );
   return { prefixes, rows };
 }
 
 function mappingOf(row: Row, prefixes: Prefixes): Mapping | undefined {
   const predicate = local(expand(row['predicate_id'] ?? '', prefixes));
   const type = Object.entries(enums.MatchType).find(([, meaning]) => local(meaning) === predicate)?.[0];
-  const fields = Object.entries(sssom.fields).map(([slot, name]) => [slot, slot === 'confidence' ? (NUMBER.test(row[name] ?? '') ? Number(row[name]) : undefined) : row[name]]);
-  return type && row['object_id'] ? (clean({ match_type: type, object_id: expand(row['object_id'], prefixes), ...Object.fromEntries(fields) }) as unknown as Mapping) : undefined;
+  const fields = Object.entries(sssom.fields).map(([slot, name]) => [slot, row[name]]);
+  const confidence = NUMBER.test(row[sssom.fields.confidence] ?? '') ? Number(row[sssom.fields.confidence]) : undefined;
+  return type && row['object_id']
+    ? (clean({
+        match_type: type,
+        object_id: expand(row['object_id'], prefixes),
+        ...Object.fromEntries(fields),
+        confidence,
+      }) as unknown as Mapping)
+    : undefined;
+}
+
+interface Target {
+  iri: string;
+  name: string;
+  code?: string;
+}
+
+/** The IRIs that a subject can have: those of the variables and codes of the profile. */
+function targetsOf(profile: Profile): Target[] {
+  const dataset = datasetIri(profile);
+  return profile.columns.flatMap((column) => {
+    const variable = variableIri(dataset, column);
+    const codes = (column.values ?? []).map((value) => ({
+      iri: codeIri(variable, value.code),
+      name: column.name,
+      code: value.code,
+    }));
+    return [{ iri: variable, name: column.name }, ...codes];
+  });
+}
+
+/** The column that maps a row, found by IRI or else by the label of the column. */
+function targetOf(row: Row, prefixes: Prefixes, targets: Target[]): Target | undefined {
+  const subject = expand(row['subject_id'] ?? '', prefixes);
+  return (
+    targets.find((candidate) => candidate.iri === subject) ??
+    targets.find((candidate) => candidate.code === undefined && candidate.name === row['subject_label'])
+  );
+}
+
+function mapped(column: Column, found: { target: Target; mapping: Mapping }[]): Column[] {
+  const mine = found.filter((entry) => entry.target.name === column.name);
+  const mappingsOf = (code?: string): Mapping[] =>
+    mine.filter((entry) => entry.target.code === code).map((entry) => entry.mapping);
+  const values = (column.values ?? []).map((value) => ({ code: value.code, mappings: mappingsOf(value.code) }));
+  const mappings = mappingsOf();
+  const coded = values.filter((value) => value.mappings.length);
+  return mappings.length || coded.length
+    ? [clean({ name: column.name, mappings, values: coded }) as unknown as Column]
+    : [];
 }
 
 /**
@@ -86,22 +148,11 @@ function mappingOf(row: Row, prefixes: Prefixes): Mapping | undefined {
  */
 export function fromSssom(text: string, profile: Profile): Profile {
   const { prefixes, rows: table } = readTable(text);
-  const dataset = datasetIri(profile);
-  const targets = profile.columns.flatMap((column) => {
-    const variable = variableIri(dataset, column);
-    return [{ iri: variable, name: column.name, code: undefined as string | undefined }, ...(column.values ?? []).map((value) => ({ iri: codeIri(variable, value.code), name: column.name, code: value.code }))];
-  });
+  const targets = targetsOf(profile);
   const found = table.flatMap((row) => {
-    const subject = expand(row['subject_id'] ?? '', prefixes);
-    const target = targets.find((candidate) => candidate.iri === subject) ?? targets.find((candidate) => candidate.code === undefined && candidate.name === row['subject_label']);
+    const target = targetOf(row, prefixes, targets);
     const mapping = mappingOf(row, prefixes);
-    return target && mapping ? [{ ...target, mapping }] : [];
+    return target && mapping ? [{ target, mapping }] : [];
   });
-  const columns = profile.columns.flatMap((column) => {
-    const mine = found.filter((entry) => entry.name === column.name);
-    const values = (column.values ?? []).map((value) => ({ code: value.code, mappings: mine.filter((entry) => entry.code === value.code).map((entry) => entry.mapping) }));
-    const mappings = mine.filter((entry) => entry.code === undefined).map((entry) => entry.mapping);
-    return mappings.length || values.some((value) => value.mappings.length) ? [clean({ name: column.name, mappings, values: values.filter((value) => value.mappings.length) }) as unknown as Column] : [];
-  });
-  return { columns };
+  return { columns: profile.columns.flatMap((column) => mapped(column, found)) };
 }

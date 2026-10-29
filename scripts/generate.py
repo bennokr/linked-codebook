@@ -3,6 +3,7 @@
 import json
 import subprocess
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -12,15 +13,15 @@ TS_GENERATED = ROOT / "packages/ts/src/generated"
 PY_GENERATED = ROOT / "packages/py/src/linked_codebook"
 
 
-def load(name: str) -> dict:
-    return yaml.safe_load((SPEC / f"{name}.yaml").read_text())
+def load(name: str) -> dict[str, Any]:
+    return dict(yaml.safe_load((SPEC / f"{name}.yaml").read_text()))
 
 
 def run(*command: str) -> str:
-    return subprocess.run(command, check=True, capture_output=True, text=True, cwd=ROOT).stdout
+    return str(subprocess.run(command, check=True, capture_output=True, text=True, cwd=ROOT).stdout)
 
 
-def constants() -> dict:
+def constants() -> dict[str, Any]:
     profile, jsonld = load("profile"), load("jsonld")
     enums = {
         name: {value: (meta or {}).get("meaning") for value, meta in enum["permissible_values"].items()}
@@ -35,6 +36,7 @@ def constants() -> dict:
         "inference": load("inference"),
         "enums": enums,
         "vocabulary": load("vocabulary"),
+        "commands": load("commands"),
         "schema": schema,
     }
 
@@ -50,11 +52,28 @@ def main() -> None:
     for target in (TS_GENERATED, PY_GENERATED):
         target.mkdir(parents=True, exist_ok=True)
         (target / "constants.json").write_text(text)
-    run("npx", "json2ts", "-i", "spec/generated/profile.schema.json", "-o", "packages/ts/src/generated/types.ts", "--format=false")
     run(
-        "datamodel-codegen", "--input", "spec/generated/profile.schema.json", "--input-file-type", "jsonschema",
-        "--output-model-type", "typing.TypedDict", "--target-python-version", "3.11",
-        "--output", "packages/py/src/linked_codebook/types.py", "--disable-timestamp",
+        "npx",
+        "json2ts",
+        "-i",
+        "spec/generated/profile.schema.json",
+        "-o",
+        "packages/ts/src/generated/types.ts",
+        "--format=false",
+    )
+    run(
+        "datamodel-codegen",
+        "--input",
+        "spec/generated/profile.schema.json",
+        "--input-file-type",
+        "jsonschema",
+        "--output-model-type",
+        "typing.TypedDict",
+        "--target-python-version",
+        "3.11",
+        "--output",
+        "packages/py/src/linked_codebook/types.py",
+        "--disable-timestamp",
     )
     # PEP 728 `closed=True` needs Python 3.15; the types are the same without it.
     types = PY_GENERATED / "types.py"

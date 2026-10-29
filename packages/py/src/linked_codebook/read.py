@@ -30,7 +30,11 @@ def first(*values: Any) -> Any:  # noqa: ANN401
 
 def items(value: Any) -> list[Any]:  # noqa: ANN401
     found = value if isinstance(value, list) else [] if value is None else [value]
-    return [part for item in found for part in (items(item["@list"]) if isinstance(item, dict) and "@list" in item else [item])]
+    return [
+        part
+        for item in found
+        for part in (items(item["@list"]) if isinstance(item, dict) and "@list" in item else [item])
+    ]
 
 
 def named(node: Node) -> Node:
@@ -76,12 +80,22 @@ def datatype_of(value: Any) -> Datatype | None:  # noqa: ANN401
 
 def level_of(value: Any) -> Level | None:  # noqa: ANN401
     name = local(first(text(value), ""))
-    return next((cast("Level", level) for level, meaning in ENUMS["Level"].items() if local(meaning or "") == name), None)
+    return next(
+        (cast("Level", level) for level, meaning in ENUMS["Level"].items() if local(meaning or "") == name), None
+    )
 
 
 def mappings_of(concept: Node) -> list[Mapping]:
-    ids = ((match_type, text(target)) for match_type in ENUMS["MatchType"] for target in items(get(concept, f"{match_type}Match")))
-    return [cast("Mapping", {"match_type": match_type, "object_id": iri, "reviewer_id": JSONLD["imported_reviewer"]}) for match_type, iri in ids if iri]
+    ids = (
+        (match_type, text(target))
+        for match_type in ENUMS["MatchType"]
+        for target in items(get(concept, f"{match_type}Match"))
+    )
+    return [
+        cast("Mapping", {"match_type": match_type, "object_id": iri, "reviewer_id": JSONLD["imported_reviewer"]})
+        for match_type, iri in ids
+        if iri
+    ]
 
 
 def values_of(nodes: list[Node], prop: Node, nulls: list[str]) -> list[Value]:
@@ -107,7 +121,7 @@ def values_of(nodes: list[Node], prop: Node, nulls: list[str]) -> list[Value]:
     return values
 
 
-def range_of(value: Any) -> dict[str, float] | None:  # noqa: ANN401
+def range_of(value: Any) -> dict[str, Any] | None:  # noqa: ANN401
     low, high = (value.get("low"), value.get("high")) if isinstance(value, dict) else [*items(value), None, None][:2]
     numbers = all(isinstance(bound, int | float) and not isinstance(bound, bool) for bound in (low, high))
     return {"low": low, "high": high} if numbers else None
@@ -129,7 +143,9 @@ def column_of(nodes: list[Node], dataset: str, node: Node) -> Column:
                 "name": name,
                 "label": None if title == name else title,
                 "datatype": datatype_of(get(node, "datatype")),
-                "description": first(text(variable.get(local(NODE_KEYS["definition"]))), text(get(node, "description"))),
+                "description": first(
+                    text(variable.get(local(NODE_KEYS["definition"]))), text(get(node, "description"))
+                ),
                 "level": level_of(get(statistics, "statisticalDataType")),
                 "unit": text(get(prop, "unitText")),
                 "unit_iri": text(get(prop, "hasUnit")),

@@ -1,4 +1,50 @@
 {
+  "commands": {
+    "build": {
+      "files": [
+        "profile"
+      ],
+      "summary": "Print a profile as DSV JSON-LD."
+    },
+    "from-sssom": {
+      "files": [
+        "sssom",
+        "profile"
+      ],
+      "summary": "Print the mappings in an SSSOM TSV file for the columns and codes of a profile."
+    },
+    "infer": {
+      "files": [
+        "data"
+      ],
+      "summary": "Print a profile with the datatype and level of every column of a JSON object of value lists."
+    },
+    "merge": {
+      "files": [
+        "base",
+        "incoming"
+      ],
+      "summary": "Print the first profile completed with the second."
+    },
+    "normalize": {
+      "files": [
+        "profile"
+      ],
+      "summary": "Print a profile, read from profile JSON or DSV JSON-LD, as canonical JSON."
+    },
+    "to-sssom": {
+      "files": [
+        "profile"
+      ],
+      "summary": "Print the mappings of a profile as SSSOM TSV."
+    },
+    "validate": {
+      "files": [
+        "document"
+      ],
+      "summary": "Check a profile against the model, or DSV JSON-LD against the vocabularies. Exit code 1 if it does not conform."
+    }
+  },
   "enums": {
     "Datatype": {
       "boolean": null,

@@ -4,7 +4,18 @@ import { build, inferColumn, merge, parse, validate, type Profile } from '../src
 
 const profile: Profile = {
   title: 'Example',
-  columns: [{ name: 'sex', label: 'Sex', datatype: 'string', level: 'nominal', values: [{ code: '1', label: 'Male' }, { code: '9', label: 'Unknown', missing: true }] }],
+  columns: [
+    {
+      name: 'sex',
+      label: 'Sex',
+      datatype: 'string',
+      level: 'nominal',
+      values: [
+        { code: '1', label: 'Male' },
+        { code: '9', label: 'Unknown', missing: true },
+      ],
+    },
+  ],
 };
 
 test('a profile survives being written as JSON-LD and read back', () => {

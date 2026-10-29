@@ -8,6 +8,7 @@ import re
 import urllib.request
 from datetime import date
 from pathlib import Path
+from typing import Any
 
 import yaml
 from rdflib import RDF, Graph
@@ -24,27 +25,31 @@ def curies(value: object) -> set[str]:
     return set().union(*(curies(item) for item in items)) if items else set()
 
 
-def used_terms(jsonld: dict, profile: dict) -> set[str]:
-    meanings = [meta["meaning"] for enum in profile["enums"].values() for meta in enum["permissible_values"].values() if meta]
+def used_terms(jsonld: dict[str, Any], profile: dict[str, Any]) -> set[str]:
+    meanings = [
+        meta["meaning"] for enum in profile["enums"].values() for meta in enum["permissible_values"].values() if meta
+    ]
     keys = ("terms", "types", "node_keys", "accepted")
     return curies([jsonld[key] for key in keys]) | set(meanings)
 
 
 def fetch(url: str, kind: str) -> str:
     request = urllib.request.Request(url, headers={"Accept": FORMATS[kind], "User-Agent": "linked-codebook"})
-    with urllib.request.urlopen(request, timeout=60) as response:  # noqa: S310
-        return response.read().decode()
+    with urllib.request.urlopen(request, timeout=60) as response:
+        return str(response.read().decode())
 
 
-def kinds(source: dict, namespace: str) -> dict[str, str]:
+def kinds(source: dict[str, Any], namespace: str) -> dict[str, str]:
     """Map each term defined by a vocabulary to the kind of thing it is."""
     text = fetch(source["url"], source["format"])
     if source["format"] == "widoco":
-        found = re.finditer(r'id="([A-Za-z]+)"[^>]*>(?:(?!id=").){0,400}?(Class|Object Property|Data Property)\s+ToC', text, re.S)
+        found = re.finditer(
+            r'id="([A-Za-z]+)"[^>]*>(?:(?!id=").){0,400}?(Class|Object Property|Data Property)\s+ToC', text, re.DOTALL
+        )
         return {match[1]: match[2] for match in found}
     graph = Graph().parse(data=text, format=source["format"])
     return {
-        str(subject)[len(namespace):]: str(next(graph.objects(subject, RDF.type), "")).rsplit("#", 1)[-1]
+        str(subject)[len(namespace) :]: str(next(graph.objects(subject, RDF.type), "")).rsplit("#", 1)[-1]
         for subject in set(graph.subjects(RDF.type, None))
         if str(subject).startswith(namespace)
     }
@@ -57,7 +62,7 @@ def main() -> None:
     for term in sorted(used_terms(jsonld, profile)):
         prefix, local = term.split(":")
         wanted.setdefault(prefix, []).append(local)
-    result: dict = {"pinned_on": date.today().isoformat(), "vocabularies": {}, "unverified": []}
+    result: dict[str, Any] = {"pinned_on": date.today().isoformat(), "vocabularies": {}, "unverified": []}
     for prefix, locals_ in wanted.items():
         namespace = jsonld["prefixes"][prefix]
         found = kinds(jsonld["sources"][prefix], namespace)

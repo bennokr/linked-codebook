@@ -48,7 +48,10 @@ def rows(dataset: str, column: Column, prefixes: Prefixes) -> list[str]:
     def short(iri: str) -> str:
         return f"{SSSOM['subject_prefix']}:{iri[len(dataset) + 1 :]}" if iri.startswith(f"{dataset}#") else iri
 
-    own = [row(short(variable), column.get("label", column["name"]), mapping, prefixes) for mapping in column.get("mappings", [])]
+    own = [
+        row(short(variable), column.get("label", column["name"]), mapping, prefixes)
+        for mapping in column.get("mappings", [])
+    ]
     coded = [
         row(short(code_iri(variable, value["code"])), value.get("label", value["code"]), mapping, prefixes)
         for value in column.get("values", [])
@@ -62,7 +65,11 @@ def to_sssom(profile: Profile) -> str:
     dataset = dataset_iri(profile)
     prefixes: Prefixes = {**SSSOM["prefixes"], SSSOM["subject_prefix"]: f"{dataset}#"}
     body = [line for column in profile["columns"] for line in rows(dataset, column, prefixes)]
-    header = ["#curie_map:", *(f"#  {prefix}: {base}" for prefix, base in prefixes.items()), f"#mapping_set_id: {dataset}#mappings"]
+    header = [
+        "#curie_map:",
+        *(f"#  {prefix}: {base}" for prefix, base in prefixes.items()),
+        f"#mapping_set_id: {dataset}#mappings",
+    ]
     return "\n".join([*header, "\t".join(SSSOM["columns"]), *body]) + "\n"
 
 
@@ -82,13 +89,16 @@ def read_table(text: str) -> tuple[Prefixes, list[Row]]:
             prefixes[declared[1]] = declared[2]
     header, *table = (line for line in lines if not line.startswith("#"))
     names = header.split("\t")
-    return prefixes, [{name: (line.split("\t") + [""] * len(names))[index].strip() for index, name in enumerate(names)} for line in table]
+    return prefixes, [
+        {name: (line.split("\t") + [""] * len(names))[index].strip() for index, name in enumerate(names)}
+        for line in table
+    ]
 
 
 def mapping_of(row: Row, prefixes: Prefixes) -> Mapping | None:
     predicate = local(expand(row.get("predicate_id", ""), prefixes))
     kind = next((key for key, meaning in ENUMS["MatchType"].items() if local(meaning or "") == predicate), None)
-    fields = {slot: row.get(name) for slot, name in SSSOM["fields"].items()}
+    fields: dict[str, Any] = {slot: row.get(name) for slot, name in SSSOM["fields"].items()}
     if fields["confidence"] is not None:
         fields["confidence"] = float(fields["confidence"]) if NUMBER.fullmatch(fields["confidence"]) else None
     if not kind or not row.get("object_id"):
@@ -106,19 +116,35 @@ def from_sssom(text: str, profile: Profile) -> Profile:
     targets: list[tuple[str, str, str | None]] = []
     for column in profile["columns"]:
         variable = variable_iri(dataset, column)
-        targets += [(variable, column["name"], None), *((code_iri(variable, value["code"]), column["name"], value["code"]) for value in column.get("values", []))]
+        targets += [
+            (variable, column["name"], None),
+            *((code_iri(variable, value["code"]), column["name"], value["code"]) for value in column.get("values", [])),
+        ]
     found = []
     for line in table:
         subject = expand(line.get("subject_id", ""), prefixes)
-        target = next((t for t in targets if t[0] == subject), None) or next((t for t in targets if t[2] is None and t[1] == line.get("subject_label")), None)
+        target = next((t for t in targets if t[0] == subject), None) or next(
+            (t for t in targets if t[2] is None and t[1] == line.get("subject_label")), None
+        )
         mapping = mapping_of(line, prefixes)
         if target and mapping:
             found.append((target[1], target[2], mapping))
     columns = []
     for column in profile["columns"]:
         mine = [(code, mapping) for name, code, mapping in found if name == column["name"]]
-        values = [{"code": value["code"], "mappings": [mapping for code, mapping in mine if code == value["code"]]} for value in column.get("values", [])]
+        values = [
+            {"code": value["code"], "mappings": [mapping for code, mapping in mine if code == value["code"]]}
+            for value in column.get("values", [])
+        ]
         mappings = [mapping for code, mapping in mine if code is None]
         if mappings or any(value["mappings"] for value in values):
-            columns.append(clean({"name": column["name"], "mappings": mappings, "values": [value for value in values if value["mappings"]]}))
+            columns.append(
+                clean(
+                    {
+                        "name": column["name"],
+                        "mappings": mappings,
+                        "values": [value for value in values if value["mappings"]],
+                    }
+                )
+            )
     return cast("Profile", {"columns": columns})

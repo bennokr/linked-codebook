@@ -1,24 +1,36 @@
 import type { Profile } from './generated/types.ts';
 
-type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
+// A recursive alias cannot use Record, so this is an interface with an index signature.
+interface Dict {
+  [key: string]: Json;
+}
+type Json = null | boolean | number | string | Json[] | Dict;
 
 /** The slot that identifies the entries of each list of objects. */
 const IDENTIFIERS: Record<string, string> = { columns: 'name', values: 'code', mappings: 'object_id' };
 
-const isObject = (value: Json | undefined): value is { [key: string]: Json } => typeof value === 'object' && value !== null && !Array.isArray(value);
+const isDict = (value: Json | undefined): value is Dict =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const isEmpty = (value: Json | undefined): boolean =>
+  value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0);
+
+function joinLists(base: Json[], incoming: Json[], identifier: string): Json[] {
+  const key = (entry: Json): Json | undefined => (isDict(entry) ? entry[identifier] : undefined);
+  const found = (list: Json[], entry: Json): Json | undefined => list.find((other) => key(other) === key(entry));
+  return [...base, ...incoming.filter((entry) => !found(base, entry))].map(
+    (entry) => join(entry, found(incoming, entry), '') ?? null,
+  );
+}
 
 function join(base: Json | undefined, incoming: Json | undefined, slot: string): Json | undefined {
-  const identifier = IDENTIFIERS[slot];
-  if (isObject(base) && isObject(incoming)) {
+  if (isDict(base) && isDict(incoming)) {
     const keys = new Set([...Object.keys(base), ...Object.keys(incoming)]);
     return Object.fromEntries([...keys].map((key) => [key, join(base[key], incoming[key], key)])) as Json;
   }
-  if (identifier && Array.isArray(base) && Array.isArray(incoming)) {
-    const key = (entry: Json): Json | undefined => (isObject(entry) ? entry[identifier] : undefined);
-    const found = (list: Json[], entry: Json): Json | undefined => list.find((other) => key(other) === key(entry));
-    return [...base, ...incoming.filter((entry) => !found(base, entry))].map((entry) => join(entry, found(incoming, entry), '') ?? null);
-  }
-  return incoming === undefined || incoming === null || incoming === '' || (Array.isArray(incoming) && incoming.length === 0) ? base : incoming;
+  const identifier = IDENTIFIERS[slot];
+  if (identifier && Array.isArray(base) && Array.isArray(incoming)) return joinLists(base, incoming, identifier);
+  return isEmpty(incoming) ? base : incoming;
 }
 
 /** Adds what the second profile says to the first. Columns, values and mappings are matched by name, code and concept. */

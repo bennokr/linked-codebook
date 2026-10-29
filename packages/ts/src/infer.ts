@@ -16,7 +16,16 @@ export interface Options {
 type Kind = 'empty' | 'boolean' | 'date' | 'datetime' | 'categorical' | 'number' | 'text';
 
 const whole = (pattern: string): RegExp => new RegExp(`^(?:${pattern})$`);
-const { number: NUMBER, leading_zero: LEADING_ZERO, date: DATE, dotted_date: DOTTED, time: TIME } = Object.fromEntries(Object.entries(rules.patterns).map(([name, pattern]) => [name, whole(pattern)])) as Record<keyof typeof rules.patterns, RegExp>;
+const {
+  number: NUMBER,
+  leading_zero: LEADING_ZERO,
+  date: DATE,
+  dotted_date: DOTTED,
+  time: TIME,
+} = Object.fromEntries(Object.entries(rules.patterns).map(([name, pattern]) => [name, whole(pattern)])) as Record<
+  keyof typeof rules.patterns,
+  RegExp
+>;
 const IDENTIFIER = whole(rules.identifier_names);
 const DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
@@ -27,10 +36,12 @@ function isNumeric(cell: Cell): boolean {
   return typeof cell === 'string' && NUMBER.test(cell) && !LEADING_ZERO.test(cell) && Number.isFinite(Number(cell));
 }
 
-function isDay(year: number, month: number, day: number): boolean {
+function daysIn(year: number, month: number): number {
   const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
-  return month >= 1 && month <= 12 && day >= 1 && day <= (DAYS[month - 1] ?? 0) + (leap && month === 2 ? 1 : 0);
+  return month === 2 && leap ? 29 : (DAYS[month - 1] ?? 0);
 }
+
+const isDay = (year: number, month: number, day: number): boolean => day >= 1 && day <= daysIn(year, month);
 
 function isTime(text: string): boolean {
   const [, hours, minutes, seconds] = TIME.exec(text) ?? [];
@@ -41,19 +52,25 @@ function isTime(text: string): boolean {
 function dateKind(cell: Cell): 'date' | 'datetime' | undefined {
   const iso = DATE.exec(String(cell));
   const dotted = DOTTED.exec(String(cell));
-  if (iso) return isDay(Number(iso[1]), Number(iso[2]), Number(iso[3])) && (!iso[4] || isTime(iso[4])) ? (iso[4] ? 'datetime' : 'date') : undefined;
-  return dotted && isDay(Number(dotted[3]), Number(dotted[2]), Number(dotted[1])) ? 'date' : undefined;
+  if (!iso) return dotted && isDay(Number(dotted[3]), Number(dotted[2]), Number(dotted[1])) ? 'date' : undefined;
+  const time = iso[4];
+  if (!isDay(Number(iso[1]), Number(iso[2]), Number(iso[3])) || (time && !isTime(time))) return undefined;
+  return time ? 'datetime' : 'date';
 }
 
 const isInteger = (cell: Cell): boolean => Number.isInteger(Number(cell));
 
 /** 1, 2, 3, and so on without a gap: a row counter. */
 const isSequence = (values: Cell[], distinct: number): boolean =>
-  values.length >= rules.sequence_from && distinct === values.length && values.every((value, index) => Number(value) === index + Number(values[0]));
+  values.length >= rules.sequence_from &&
+  distinct === values.length &&
+  values.every((value, index) => Number(value) === index + Number(values[0]));
 
 function isProse(cell: Cell): boolean {
   const text = String(cell);
-  return text.length > rules.prose.characters || /[\r\n]/.test(text) || text.trim().split(/\s+/u).length > rules.prose.words;
+  return (
+    text.length > rules.prose.characters || /[\r\n]/.test(text) || text.trim().split(/\s+/u).length > rules.prose.words
+  );
 }
 
 function isTextCategory(values: Cell[], distinct: number): boolean {
@@ -61,13 +78,18 @@ function isTextCategory(values: Cell[], distinct: number): boolean {
   return values.length >= 3 && !values.some(isProse) && distinct < values.length && few;
 }
 
+const distinctCount = (values: Cell[]): number => new Set(values.map((value) => `${typeof value}:${value}`)).size;
+
+const isCodeList = (values: Cell[], distinct: number): boolean =>
+  values.every(isInteger) && distinct <= rules.limits.number && distinct < values.length;
+
 function isCategorical(values: Cell[], options: Options): boolean {
-  const distinct = new Set(values.map((value) => `${typeof value}:${value}`)).size;
-  const { limits } = rules;
+  const distinct = distinctCount(values);
+  const few = distinct <= rules.limits.text;
   if (IDENTIFIER.test((options.name ?? '').toLowerCase())) return false;
-  if (!values.every(isNumeric)) return distinct <= limits.text && (options.labelled || isTextCategory(values, distinct));
+  if (!values.every(isNumeric)) return few && (options.labelled || isTextCategory(values, distinct));
   if (isSequence(values, distinct)) return false;
-  return options.labelled ? distinct <= limits.text : values.every(isInteger) && distinct <= limits.number && distinct < values.length;
+  return options.labelled ? few : isCodeList(values, distinct);
 }
 
 function kindOf(values: Cell[], options: Options): Kind {
@@ -79,15 +101,18 @@ function kindOf(values: Cell[], options: Options): Kind {
   return values.every(isNumeric) ? 'number' : 'text';
 }
 
+function datatypeOf(kind: Kind, values: Cell[]): Datatype {
+  if (kind === 'boolean' || kind === 'date' || kind === 'datetime') return kind;
+  if (!values.length || !values.every(isNumeric)) return 'string';
+  return values.every(isInteger) ? 'integer' : 'number';
+}
+
 /** Proposes a datatype and a level for the values of a column. */
 export function inferColumn(cells: Cell[], options: Options = {}): Inferred {
   const values = cells.filter((cell) => !isMissing(cell));
   const kind = kindOf(values, options);
   const level = (rules.level as Record<string, Level | undefined>)[kind];
-  let datatype: Datatype = 'string';
-  if (kind === 'boolean' || kind === 'date' || kind === 'datetime') datatype = kind;
-  else if (values.length && values.every(isNumeric)) datatype = values.every(isInteger) ? 'integer' : 'number';
-  return level ? { datatype, level } : { datatype };
+  return level ? { datatype: datatypeOf(kind, values), level } : { datatype: datatypeOf(kind, values) };
 }
 
 /** Proposes a datatype and a level for every column of `{ name: [values] }`. */

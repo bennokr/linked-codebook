@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-
 from linked_codebook import build, from_sssom, infer_column, merge, parse, run, validate
 from linked_codebook.types import Profile
 

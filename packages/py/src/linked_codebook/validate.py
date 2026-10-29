@@ -1,13 +1,20 @@
 """Checking profiles against the model and JSON-LD against the vocabularies."""
 
-import re
 from typing import Any
 
 from .constants import JSONLD, SCHEMA, VOCABULARY
 from .read import local, show
 
 DEFINITIONS: dict[str, dict[str, Any]] = SCHEMA["$defs"]
-KINDS = {bool: "boolean", int: "number", float: "number", str: "string", list: "array", dict: "object", type(None): "null"}
+KINDS = {
+    bool: "boolean",
+    int: "number",
+    float: "number",
+    str: "string",
+    list: "array",
+    dict: "object",
+    type(None): "null",
+}
 
 
 def conform(value: Any, rule: dict[str, Any], path: str) -> list[str]:  # noqa: ANN401
@@ -18,16 +25,28 @@ def conform(value: Any, rule: dict[str, Any], path: str) -> list[str]:  # noqa: 
         return [f"{path}: expected {resolved['type']}"]
     if "enum" in resolved and value not in resolved["enum"]:
         return [f"{path}: {show(value)} is not one of {', '.join(resolved['enum'])}"]
-    if kind == "number" and not resolved.get("minimum", float("-inf")) <= value <= resolved.get("maximum", float("inf")):
+    if kind == "number" and not resolved.get("minimum", float("-inf")) <= value <= resolved.get(
+        "maximum", float("inf")
+    ):
         return [f"{path}: out of range"]
     properties = resolved.get("properties", {})
-    missing = [f"{path}: {key} is required" for key in resolved.get("required", []) if kind == "object" and key not in value]
+    missing = [
+        f"{path}: {key} is required" for key in resolved.get("required", []) if kind == "object" and key not in value
+    ]
     own = [
         error
         for key, member in (value.items() if kind == "object" else [])
-        for error in (conform(member, properties[key], f"{path}/{key}") if key in properties else [f"{path}/{key}: unknown property"])
+        for error in (
+            conform(member, properties[key], f"{path}/{key}")
+            if key in properties
+            else [f"{path}/{key}: unknown property"]
+        )
     ]
-    listed = [error for index, item in enumerate(value if kind == "array" and "items" in resolved else []) for error in conform(item, resolved["items"], f"{path}/{index}")]
+    listed = [
+        error
+        for index, item in enumerate(value if kind == "array" and "items" in resolved else [])
+        for error in conform(item, resolved["items"], f"{path}/{index}")
+    ]
     return [*missing, *own, *listed]
 
 
@@ -40,7 +59,11 @@ def repeated(profile: dict[str, Any]) -> list[str]:
     columns = profile.get("columns", [])
     return [
         *(f"column {name} occurs twice" for name in twice([column.get("name") for column in columns])),
-        *(f"{column.get('name')}: code {code} occurs twice" for column in columns for code in twice([value.get("code") for value in column.get("values", [])])),
+        *(
+            f"{column.get('name')}: code {code} occurs twice"
+            for column in columns
+            for code in twice([value.get("code") for value in column.get("values", [])])
+        ),
     ]
 
 
@@ -53,7 +76,7 @@ def expand(term: str, context: dict[str, Any]) -> str:
     target = entry["@id"] if isinstance(entry, dict) else entry
     prefix, _, rest = target.partition(":")
     base = context.get(prefix)
-    return base + rest if isinstance(base, str) and base != target and rest else target
+    return str(base + rest if isinstance(base, str) and base != target and rest else target)
 
 
 def undefined_terms(value: Any, context: dict[str, Any]) -> list[str]:  # noqa: ANN401

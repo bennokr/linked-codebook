@@ -2,10 +2,10 @@
 
 import json
 from collections.abc import Callable
-from inspect import signature
 from typing import NamedTuple, cast
 
 from .canonical import canonical
+from .constants import COMMANDS as SPEC
 from .infer import infer
 from .jsonld import build
 from .merge import merge
@@ -46,14 +46,17 @@ COMMANDS: dict[str, Callable[..., Result]] = {
     "validate": check,
 }
 
-USAGE = f"usage: linked-codebook <command> <file>...\ncommands: {', '.join(COMMANDS)}\n"
+USAGE = "usage: linked-codebook <command> <file>...\n\n" + "".join(
+    f"  {' '.join([name, *(f'<{file}>' for file in entry['files'])])}\n      {entry['summary']}\n"
+    for name, entry in SPEC.items()
+)
 
 
 def run(args: list[str], texts: dict[str, str]) -> Result:
     """Runs a command on the texts of the files it names. It does no input or output itself."""
     name, *files = args or [""]
     command = COMMANDS.get(name)
-    if command is None or len(signature(command).parameters) != len(files):
+    if command is None or len(SPEC[name]["files"]) != len(files):
         return Result(USAGE, 2)
     try:
         missing = next((file for file in files if file not in texts), None)

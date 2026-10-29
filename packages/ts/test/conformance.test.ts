@@ -10,8 +10,13 @@ const read = (...parts: string[]): string => readFileSync(join(ROOT, ...parts), 
 for (const command of readdirSync(ROOT)) {
   for (const name of readdirSync(join(ROOT, command))) {
     test(`${command}/${name}`, () => {
-      const files = readdirSync(join(ROOT, command, name)).filter((file) => file.startsWith('in')).sort();
-      const { stdout, code } = run([command, ...files], Object.fromEntries(files.map((file) => [file, read(command, name, file)])));
+      const files = readdirSync(join(ROOT, command, name))
+        .filter((file) => file.startsWith('in'))
+        .sort();
+      const { stdout, code } = run(
+        [command, ...files],
+        Object.fromEntries(files.map((file) => [file, read(command, name, file)])),
+      );
       assert.equal(stdout, read(command, name, 'out'));
       assert.equal(code, existsSync(join(ROOT, command, name, 'code')) ? Number(read(command, name, 'code')) : 0);
     });

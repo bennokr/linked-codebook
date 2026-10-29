@@ -10,28 +10,34 @@ const isNode = (value: unknown): value is Node => typeof value === 'object' && v
 /** The name of a term without its prefix or namespace, so that dct:title, dcterms:title and title are alike. */
 export const local = (name: string): string => name.split(/[:#/]/).pop() ?? name;
 
-const items = (value: unknown): unknown[] => [value ?? []].flat().flatMap((item) => (isNode(item) && '@list' in item ? items(item['@list']) : [item]));
+const items = (value: unknown): unknown[] =>
+  [value ?? []].flat().flatMap((item) => (isNode(item) && '@list' in item ? items(item['@list']) : [item]));
 
-const named = (node: Node): Node => Object.fromEntries(Object.entries(node).map(([key, value]) => [key.startsWith('@') ? key : local(key), value]));
+const named = (node: Node): Node =>
+  Object.fromEntries(Object.entries(node).map(([key, value]) => [key.startsWith('@') ? key : local(key), value]));
 
 /** Every object of the document, with unprefixed keys. */
 function collect(document: unknown): Node[] {
   if (Array.isArray(document)) return document.flatMap(collect);
   if (!isNode(document)) return [];
-  const below = Object.entries(document).filter(([key]) => key !== '@context').flatMap(([, value]) => collect(value));
+  const below = Object.entries(document)
+    .filter(([key]) => key !== '@context')
+    .flatMap(([, value]) => collect(value));
   return [named(document), ...below];
 }
 
 /** The node a value refers to, completed with the other nodes of the document that have its id. */
 function resolve(nodes: Node[], value: unknown): Node {
   const first = items(value)[0];
-  const node = isNode(first) ? named(first) : typeof first === 'string' ? { '@id': first } : {};
+  const node = isNode(first) ? named(first) : { '@id': first };
   const same = nodes.filter((candidate) => node['@id'] !== undefined && candidate['@id'] === node['@id']);
   return Object.assign({}, ...same, node) as Node;
 }
 
 function get(node: Node, term: string): unknown {
-  return [term, ...((aliases as Record<string, string[]>)[term] ?? [])].map((name) => node[name]).find((value) => value !== undefined);
+  return [term, ...((aliases as Record<string, string[]>)[term] ?? [])]
+    .map((name) => node[name])
+    .find((value) => value !== undefined);
 }
 
 function text(value: unknown): string | undefined {

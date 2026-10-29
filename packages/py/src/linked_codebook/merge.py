@@ -20,10 +20,16 @@ def join(base: Any, incoming: Any, slot: str) -> Any:  # noqa: ANN401
         def found(entries: list[Any], entry: Any) -> Any:  # noqa: ANN401
             return next((other for other in entries if key(other) == key(entry)), None)
 
-        return [join(entry, found(incoming, entry), "") for entry in [*base, *(entry for entry in incoming if found(base, entry) is None)]]
+        return [
+            join(entry, found(incoming, entry), "")
+            for entry in [*base, *(entry for entry in incoming if found(base, entry) is None)]
+        ]
     return base if incoming is None or incoming in ("", []) else incoming
 
 
 def merge(base: Profile, incoming: Profile) -> Profile:
-    """Adds what the second profile says to the first. Columns, values and mappings are matched by name, code and concept."""
+    """Adds what the second profile says to the first.
+
+    Columns, values and mappings are matched by name, code and concept.
+    """
     return cast("Profile", join(base, incoming, ""))
