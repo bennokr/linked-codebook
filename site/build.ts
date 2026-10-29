@@ -1,4 +1,5 @@
-// Builds the test page into site/dist: the bundle, the wheel of the Python library and the examples.
+// Builds the test page into site/dist: the bundle, the examples and the packages of both libraries.
+// The packages are named by version, so that other projects can install them from this site.
 import { execFileSync } from 'node:child_process';
 import { cpSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -21,10 +22,11 @@ execFileSync('uv', ['build', '--wheel', '--out-dir', join(dist, 'wheel'), 'packa
   cwd: root,
   stdio: 'inherit',
 });
-cpSync(
-  join(dist, 'wheel', readdirSync(join(dist, 'wheel')).find((file) => file.endsWith('.whl')) ?? ''),
-  join(dist, 'linked_codebook.whl'),
-);
+const wheel = readdirSync(join(dist, 'wheel')).find((file) => file.endsWith('.whl')) ?? '';
+cpSync(join(dist, 'wheel', wheel), join(dist, 'linked_codebook.whl'));
+cpSync(join(dist, 'wheel', wheel), join(dist, wheel));
+execFileSync('npm', ['run', 'build', '-w', 'linked-codebook'], { cwd: root, stdio: 'inherit' });
+execFileSync('npm', ['pack', '-w', 'linked-codebook', '--pack-destination', dist], { cwd: root, stdio: 'inherit' });
 
 const conformance = join(root, 'conformance');
 const examples = readdirSync(conformance).flatMap((command) =>

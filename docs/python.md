@@ -1,8 +1,10 @@
 # Python
 
 ```bash
-pip install linked-codebook
+pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.1.0-py3-none-any.whl
 ```
+
+The package is not on PyPI yet.
 
 The package needs Python 3.11 and has no dependencies. It also runs in [Pyodide](https://pyodide.org). The types of the data model are `TypedDict`s in `linked_codebook.types`.
 

@@ -23,8 +23,14 @@ linked-codebook to-frictionless profile.json > schema.json # write a Frictionles
 linked-codebook validate profile.jsonld              # check the terms against their vocabularies
 ```
 
-Install with `npm install linked-codebook` or `pip install linked-codebook`.
-Neither package is published yet; until then, install from this repository.
+Neither package is on npm or PyPI yet. Both are built for every release of the test page, and named by version:
+
+```bash
+npm install https://bennokr.github.io/linked-codebook/linked-codebook-0.1.0.tgz
+pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.1.0-py3-none-any.whl
+```
+
+Only the current version is kept there. Raise the version in `packages/ts/package.json` and `packages/py/pyproject.toml` for every change that other projects should receive.
 
 ## Development
 

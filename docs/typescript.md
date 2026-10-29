@@ -1,8 +1,10 @@
 # TypeScript
 
 ```bash
-npm install linked-codebook
+npm install https://bennokr.github.io/linked-codebook/linked-codebook-0.1.0.tgz
 ```
+
+The package is not on npm yet.
 
 The package needs Node 22 or a browser. It has no dependencies. The types of the data model are exported.
 
