@@ -122,11 +122,17 @@ def targets_of(profile: Profile) -> list[Target]:
     return targets
 
 
+def plain(name: str) -> str:
+    """A name without case, spaces, hyphens and underscores, so that `serum-creatinine` and `Serum creatinine` agree."""
+    return re.sub(r"[\s_-]+", "", name.lower())
+
+
 def target_of(line: Row, prefixes: Prefixes, targets: list[Target]) -> Target | None:
-    """The column or value that a row maps, found by IRI or else by the label of the column."""
+    """The column or value that a row maps, found by IRI or else by the label of the column or the end of the IRI."""
     subject = expand(line.get("subject_id", ""), prefixes)
+    names = [plain(line.get("subject_label", "")), plain(re.sub(r"^variable-", "", re.split(r"[#/:]", subject)[-1]))]
     by_iri = next((t for t in targets if t[0] == subject), None)
-    return by_iri or next((t for t in targets if t[2] is None and t[1] == line.get("subject_label")), None)
+    return by_iri or next((t for t in targets if t[2] is None and plain(t[1]) in names), None)
 
 
 def unmatched_sssom(text: str, profile: Profile) -> list[str]:

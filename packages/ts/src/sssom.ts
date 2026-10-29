@@ -121,12 +121,22 @@ function targetsOf(profile: Profile): Target[] {
   });
 }
 
-/** The column that maps a row, found by IRI or else by the label of the column. */
+/** A name without case, spaces, hyphens and underscores, so that `serum-creatinine` and `Serum creatinine` agree. */
+const plain = (name: string): string => name.toLowerCase().replace(/[\s_-]+/g, '');
+
+/** The column that maps a row, found by IRI or else by the label of the column or the end of the IRI. */
 function targetOf(row: Row, prefixes: Prefixes, targets: Target[]): Target | undefined {
   const subject = expand(row['subject_id'] ?? '', prefixes);
+  const names = [
+    row['subject_label'],
+    subject
+      .split(/[#/:]/)
+      .pop()
+      ?.replace(/^variable-/, ''),
+  ].map((name) => plain(name ?? ''));
   return (
     targets.find((candidate) => candidate.iri === subject) ??
-    targets.find((candidate) => candidate.code === undefined && candidate.name === row['subject_label'])
+    targets.find((candidate) => candidate.code === undefined && names.includes(plain(candidate.name)))
   );
 }
 

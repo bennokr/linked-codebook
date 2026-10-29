@@ -1,0 +1,24 @@
+{
+  "columns": [
+    {
+      "mappings": [
+        {
+          "match_type": "exact",
+          "object_id": "https://loinc.org/10230-1",
+          "object_label": "Left ventricular Ejection fraction"
+        }
+      ],
+      "name": "ejection_fraction"
+    },
+    {
+      "mappings": [
+        {
+          "match_type": "exact",
+          "object_id": "https://loinc.org/2160-0",
+          "object_label": "Creatinine [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "name": "serum_creatinine"
+    }
+  ]
+}

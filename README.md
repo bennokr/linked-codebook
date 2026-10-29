@@ -26,8 +26,8 @@ linked-codebook validate profile.jsonld              # check the terms against t
 Neither package is on npm or PyPI yet. Both are built for every release of the test page, and named by version:
 
 ```bash
-npm install https://bennokr.github.io/linked-codebook/linked-codebook-0.2.0.tgz
-pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.2.0-py3-none-any.whl
+npm install https://bennokr.github.io/linked-codebook/linked-codebook-0.2.1.tgz
+pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.2.1-py3-none-any.whl
 ```
 
 Only the current version is kept there. Raise the version in `packages/ts/package.json` and `packages/py/pyproject.toml` for every change that other projects should receive.

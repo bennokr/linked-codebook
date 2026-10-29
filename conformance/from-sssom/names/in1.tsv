@@ -1,0 +1,13 @@
+#curie_map:
+#  LOINC: https://loinc.org/
+#  modmap: https://bennokr.github.io/modlet/mapping/
+#  modvar: https://bennokr.github.io/modlet/examples/heart-failure/variable/
+#  semapv: https://w3id.org/semapv/vocab/
+#  skos: http://www.w3.org/2004/02/skos/core#
+#mapping_set_id: modmap:heart-failure-loinc
+#mapping_set_description: Manually curated mappings from the Modlet heart-failure demo variables to LOINC observations.
+#license: https://creativecommons.org/licenses/by/4.0/
+#mapping_date: 2026-09-12
+subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification
+modvar:ejection-fraction	Left ventricular ejection fraction	skos:exactMatch	LOINC:10230-1	Left ventricular Ejection fraction	semapv:ManualMappingCuration
+modvar:serum-creatinine	Serum creatinine mass concentration	skos:exactMatch	LOINC:2160-0	Creatinine [Mass/volume] in Serum or Plasma	semapv:ManualMappingCuration

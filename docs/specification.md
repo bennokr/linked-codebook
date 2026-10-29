@@ -1,6 +1,6 @@
 # Linked Codebook Specification
 
-Draft, version 0.2.0
+Draft, version 0.2.1
 
 ## Abstract
 
@@ -164,7 +164,7 @@ Tabs and line breaks in a cell are replaced by a space. Drafts have an empty `re
 A processor reads SSSOM TSV for the columns and values of a profile it is given.
 
 1. Lines that start with `#` and look like `#  prefix: IRI` define prefixes, in addition to those in `spec/sssom.yaml`.
-2. The subject is expanded. If it is the IRI of the variable or of a code of the profile, the row belongs to that column or value. Otherwise, if the `subject_label` is the name of a column, the row belongs to that column.
+2. The subject is expanded. If it is the IRI of the variable or of a code of the profile, the row belongs to that column or value. Otherwise, if the `subject_label` or the last part of the subject IRI, after `variable-` if that comes first, is the name of a column, the row belongs to that column. Case, spaces, hyphens and underscores are ignored in this comparison.
 3. The `predicate_id` is matched by its name without prefix against the meanings of the match types.
 4. The `confidence` is kept if it is a number.
 5. Rows that match no column or no match type are dropped.

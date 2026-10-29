@@ -1,7 +1,7 @@
 # TypeScript
 
 ```bash
-npm install https://bennokr.github.io/linked-codebook/linked-codebook-0.2.0.tgz
+npm install https://bennokr.github.io/linked-codebook/linked-codebook-0.2.1.tgz
 ```
 
 The package is not on npm yet.

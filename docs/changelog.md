@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Rows of SSSOM files are also matched to columns by the end of the subject IRI.
+
 ## 0.2.0
 
 - Added the Frictionless Table Schema projection and the command `to-frictionless`.
