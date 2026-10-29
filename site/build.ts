@@ -1,7 +1,7 @@
 // Builds the test page into site/dist: the bundle, the examples and the packages of both libraries.
 // The packages are named by version, so that other projects can install them from this site.
 import { execFileSync } from 'node:child_process';
-import { cpSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { build } from 'esbuild';
 
@@ -25,6 +25,7 @@ execFileSync('uv', ['build', '--wheel', '--out-dir', join(dist, 'wheel'), 'packa
 const wheel = readdirSync(join(dist, 'wheel')).find((file) => file.endsWith('.whl')) ?? '';
 cpSync(join(dist, 'wheel', wheel), join(dist, 'linked_codebook.whl'));
 cpSync(join(dist, 'wheel', wheel), join(dist, wheel));
+rmSync(join(dist, 'wheel'), { recursive: true });
 execFileSync('npm', ['run', 'build', '-w', 'linked-codebook'], { cwd: root, stdio: 'inherit' });
 execFileSync('npm', ['pack', '-w', 'linked-codebook', '--pack-destination', dist], { cwd: root, stdio: 'inherit' });
 

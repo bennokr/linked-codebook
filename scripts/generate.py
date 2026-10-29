@@ -1,6 +1,7 @@
 """Generate the JSON Schema, the types of both libraries and their constants from spec/*.yaml."""
 
 import json
+import re
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -70,6 +71,13 @@ def model_page(profile: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def command_table(commands: dict[str, Any]) -> str:
+    """The table of commands of the command line page, as Markdown."""
+    lines = ["| Command | Files | Result |", "| --- | --- | --- |"]
+    lines += [f"| `{name}` | {', '.join(entry['files'])} | {entry['summary']} |" for name, entry in commands.items()]
+    return "\n".join(lines)
+
+
 def vocabulary_page(vocabulary: dict[str, Any]) -> str:
     """The list of the terms that the JSON-LD form uses, as Markdown."""
     lines = [
@@ -101,6 +109,16 @@ def main() -> None:
     (SPEC / "generated/profile.schema.json").write_text(json.dumps(root, indent=2) + "\n")
     (ROOT / "docs/data-model.md").write_text(model_page(load("profile")))
     (ROOT / "docs/vocabulary.md").write_text(vocabulary_page(load("vocabulary")))
+    cli = ROOT / "docs/cli.md"
+    table = command_table(load("commands"))
+    cli.write_text(
+        re.sub(
+            r"(<!-- commands:.*?-->\n).*?(<!-- /commands -->)",
+            lambda m: f"{m[1]}{table}\n{m[2]}",
+            cli.read_text(),
+            flags=re.DOTALL,
+        )
+    )
     text = json.dumps(constants(), indent=2, sort_keys=True) + "\n"
     for target in (TS_GENERATED, PY_GENERATED):
         target.mkdir(parents=True, exist_ok=True)
