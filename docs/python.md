@@ -1,7 +1,7 @@
 # Python
 
 ```bash
-pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.1.0-py3-none-any.whl
+pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.2.0-py3-none-any.whl
 ```
 
 The package is not on PyPI yet.
@@ -9,7 +9,7 @@ The package is not on PyPI yet.
 The package needs Python 3.11 and has no dependencies. It also runs in [Pyodide](https://pyodide.org). The types of the data model are `TypedDict`s in `linked_codebook.types`.
 
 ```python
-from linked_codebook import build, parse, merge, to_frictionless, to_sssom, from_sssom, infer_column, validate, run
+from linked_codebook import build, parse, merge, to_frictionless, to_sssom, from_sssom, unmatched_sssom, infer_column, validate, run
 ```
 
 | Function | Result |
@@ -20,9 +20,11 @@ from linked_codebook import build, parse, merge, to_frictionless, to_sssom, from
 | `to_frictionless(profile)` | A Frictionless Table Schema. |
 | `to_sssom(profile)` | SSSOM TSV as text. |
 | `from_sssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
+| `unmatched_sssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |
 | `infer(data)` | A `Profile` with the datatype and level of every column of `{name: values}`. |
-| `infer_column(values, name="", *, labelled=False)` | `{"datatype": ..., "level": ...}` for one column. `name` marks identifiers and `labelled` counts value labels. |
+| `infer_column(values, name="", *, labelled=False, limits=None)` | `{"datatype": ..., "level": ...}` for one column. `name` marks identifiers, `labelled` counts value labels and `limits` replaces the limits on distinct values. |
 | `validate(document)` | A list of errors. It is empty if the document conforms. |
+| `is_numeric(value)` | True for a number, or for text that is a plain number. |
 | `canonical(value)` | JSON text with sorted keys. |
 | `run(args, texts)` | The [command line](cli.md) as a function. It returns `(stdout, code)`. |
 

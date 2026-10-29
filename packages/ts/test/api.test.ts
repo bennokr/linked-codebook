@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { vocabulary } from '../src/constants.ts';
-import { build, inferColumn, merge, parse, validate, type Profile } from '../src/index.ts';
+import { build, inferColumn, merge, parse, unmatchedSssom, validate, type Profile } from '../src/index.ts';
 
 const profile: Profile = {
   title: 'Example',
@@ -43,4 +43,16 @@ test('identifier names are not categories', () => {
 
 test('every term is in its vocabulary', () => {
   assert.deepEqual(vocabulary.unverified, []);
+});
+
+test('limits can be raised', () => {
+  const codes = Array.from({ length: 120 }, (_unused, index) => index % 12);
+  assert.equal(inferColumn(codes).level, 'numerical');
+  assert.equal(inferColumn(codes, { limits: { number: 12 } }).level, 'categorical');
+});
+
+test('unmatched rows are listed', () => {
+  const tsv =
+    'subject_id\tsubject_label\tpredicate_id\tobject_id\nx:1\tnope\tskos:exactMatch\thttp://e/1\nx:2\tsex\tskos:exactMatch\thttp://e/2\n';
+  assert.deepEqual(unmatchedSssom(tsv, profile), ['nope']);
 });

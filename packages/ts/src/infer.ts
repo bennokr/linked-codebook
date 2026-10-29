@@ -11,6 +11,8 @@ export interface Options {
   name?: string;
   /** True if the column has value labels, which count as evidence for categories. */
   labelled?: boolean;
+  /** Replaces the most distinct values of a text or numeric column that can still be categories. */
+  limits?: Partial<Record<'text' | 'number', number>>;
 }
 
 type Kind = 'empty' | 'boolean' | 'date' | 'datetime' | 'categorical' | 'number' | 'text';
@@ -80,16 +82,17 @@ function isTextCategory(values: Cell[], distinct: number): boolean {
 
 const distinctCount = (values: Cell[]): number => new Set(values.map((value) => `${typeof value}:${value}`)).size;
 
-const isCodeList = (values: Cell[], distinct: number): boolean =>
-  values.every(isInteger) && distinct <= rules.limits.number && distinct < values.length;
+const isCodeList = (values: Cell[], distinct: number, limit: number): boolean =>
+  values.every(isInteger) && distinct <= limit && distinct < values.length;
 
 function isCategorical(values: Cell[], options: Options): boolean {
   const distinct = distinctCount(values);
-  const few = distinct <= rules.limits.text;
+  const limits = { ...rules.limits, ...options.limits };
+  const few = distinct <= limits.text;
   if (IDENTIFIER.test((options.name ?? '').toLowerCase())) return false;
   if (!values.every(isNumeric)) return few && (options.labelled || isTextCategory(values, distinct));
   if (isSequence(values, distinct)) return false;
-  return options.labelled ? few : isCodeList(values, distinct);
+  return options.labelled ? few : isCodeList(values, distinct, limits.number);
 }
 
 function kindOf(values: Cell[], options: Options): Kind {

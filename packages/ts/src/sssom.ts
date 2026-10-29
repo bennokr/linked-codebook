@@ -142,6 +142,15 @@ function mapped(column: Column, found: { target: Target; mapping: Mapping }[]): 
     : [];
 }
 
+/** The labels of the rows of an SSSOM text that match no column, value or match type of the profile. */
+export function unmatchedSssom(text: string, profile: Profile): string[] {
+  const { prefixes, rows: table } = readTable(text);
+  const targets = targetsOf(profile);
+  return table
+    .filter((row) => !targetOf(row, prefixes, targets) || !mappingOf(row, prefixes))
+    .map((row) => row['subject_label'] || row['subject_id'] || '');
+}
+
 /**
  * Reads SSSOM TSV into the columns and values of a profile that it maps. A subject is found by
  * its IRI or else by the label of the column; rows with other subjects are dropped.

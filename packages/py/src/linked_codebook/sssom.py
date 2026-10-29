@@ -106,26 +106,50 @@ def mapping_of(row: Row, prefixes: Prefixes) -> Mapping | None:
     return cast("Mapping", clean({"match_type": kind, "object_id": expand(row["object_id"], prefixes), **fields}))
 
 
-def from_sssom(text: str, profile: Profile) -> Profile:
-    """Reads SSSOM TSV into the columns and values of a profile that it maps.
+Target = tuple[str, str, str | None]
 
-    A subject is found by its IRI or else by the label of the column; rows with other subjects are dropped.
-    """
-    prefixes, table = read_table(text)
+
+def targets_of(profile: Profile) -> list[Target]:
+    """The IRIs that a subject can have, with their column name and code: those of the variables and codes."""
     dataset = dataset_iri(profile)
-    targets: list[tuple[str, str, str | None]] = []
+    targets: list[Target] = []
     for column in profile["columns"]:
         variable = variable_iri(dataset, column)
         targets += [
             (variable, column["name"], None),
             *((code_iri(variable, value["code"]), column["name"], value["code"]) for value in column.get("values", [])),
         ]
+    return targets
+
+
+def target_of(line: Row, prefixes: Prefixes, targets: list[Target]) -> Target | None:
+    """The column or value that a row maps, found by IRI or else by the label of the column."""
+    subject = expand(line.get("subject_id", ""), prefixes)
+    by_iri = next((t for t in targets if t[0] == subject), None)
+    return by_iri or next((t for t in targets if t[2] is None and t[1] == line.get("subject_label")), None)
+
+
+def unmatched_sssom(text: str, profile: Profile) -> list[str]:
+    """The labels of the rows of an SSSOM text that match no column, value or match type of the profile."""
+    prefixes, table = read_table(text)
+    targets = targets_of(profile)
+    return [
+        line.get("subject_label") or line.get("subject_id") or ""
+        for line in table
+        if target_of(line, prefixes, targets) is None or mapping_of(line, prefixes) is None
+    ]
+
+
+def from_sssom(text: str, profile: Profile) -> Profile:
+    """Reads SSSOM TSV into the columns and values of a profile that it maps.
+
+    A subject is found by its IRI or else by the label of the column; rows with other subjects are dropped.
+    """
+    prefixes, table = read_table(text)
+    targets = targets_of(profile)
     found = []
     for line in table:
-        subject = expand(line.get("subject_id", ""), prefixes)
-        target = next((t for t in targets if t[0] == subject), None) or next(
-            (t for t in targets if t[2] is None and t[1] == line.get("subject_label")), None
-        )
+        target = target_of(line, prefixes, targets)
         mapping = mapping_of(line, prefixes)
         if target and mapping:
             found.append((target[1], target[2], mapping))

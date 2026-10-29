@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from linked_codebook import build, from_sssom, infer_column, merge, parse, run, validate
+from linked_codebook import build, from_sssom, infer_column, merge, parse, run, unmatched_sssom, validate
 from linked_codebook.constants import VOCABULARY
 from linked_codebook.types import Profile
 
@@ -54,3 +54,14 @@ def test_value_labels_make_a_column_categorical() -> None:
 
 def test_every_term_is_in_its_vocabulary() -> None:
     assert VOCABULARY["unverified"] == []
+
+
+def test_limits_can_be_raised() -> None:
+    codes = [index % 12 for index in range(120)]
+    assert infer_column(codes).get("level") == "numerical"
+    assert infer_column(codes, limits={"number": 12}).get("level") == "categorical"
+
+
+def test_unmatched_rows_are_listed() -> None:
+    tsv = "subject_id\tsubject_label\tpredicate_id\tobject_id\nx:1\tnope\tskos:exactMatch\thttp://e/1\nx:2\tsex\tskos:exactMatch\thttp://e/2\n"
+    assert unmatched_sssom(tsv, PROFILE) == ["nope"]

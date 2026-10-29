@@ -83,9 +83,8 @@ def is_text_category(values: list[Cell], distinct: int) -> bool:
     return len(values) >= 3 and not any(is_prose(value) for value in values) and distinct < len(values) and few
 
 
-def is_categorical(values: list[Cell], name: str, *, labelled: bool) -> bool:
+def is_categorical(values: list[Cell], name: str, *, labelled: bool, limits: Mapping[str, int]) -> bool:
     distinct = len({(isinstance(value, str), isinstance(value, bool), value) for value in values})
-    limits = RULES["limits"]
     if IDENTIFIER.fullmatch(name.lower()):
         return False
     if not all(is_numeric(value) for value in values):
@@ -99,7 +98,7 @@ def is_categorical(values: list[Cell], name: str, *, labelled: bool) -> bool:
     )
 
 
-def kind_of(values: list[Cell], name: str, *, labelled: bool) -> Kind:
+def kind_of(values: list[Cell], name: str, *, labelled: bool, limits: Mapping[str, int]) -> Kind:
     dates = [date_kind(value) for value in values]
     if not values:
         return "empty"
@@ -107,15 +106,21 @@ def kind_of(values: list[Cell], name: str, *, labelled: bool) -> Kind:
         return "boolean"
     if all(dates):
         return "datetime" if "datetime" in dates else "date"
-    if is_categorical(values, name, labelled=labelled):
+    if is_categorical(values, name, labelled=labelled, limits=limits):
         return "categorical"
     return "number" if all(is_numeric(value) for value in values) else "text"
 
 
-def infer_column(cells: Sequence[Cell], name: str = "", *, labelled: bool = False) -> dict[str, Datatype | Level]:
+def infer_column(
+    cells: Sequence[Cell],
+    name: str = "",
+    *,
+    labelled: bool = False,
+    limits: Mapping[str, int] | None = None,
+) -> dict[str, Datatype | Level]:
     """Proposes a datatype and a level for the values of a column."""
     values = [cell for cell in cells if not is_missing(cell)]
-    kind = kind_of(values, name, labelled=labelled)
+    kind = kind_of(values, name, labelled=labelled, limits={**RULES["limits"], **(limits or {})})
     level: Level | None = RULES["level"].get(kind)
     datatype: Datatype = "string"
     if kind in ("boolean", "date", "datetime"):
