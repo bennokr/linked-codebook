@@ -86,12 +86,18 @@ iris:
   scheme: "{variable}-codes"
   code: "{variable}-codes-{code}"
 
-# Other spellings that a reader accepts, besides the term itself and its prefixed form.
+# A reader ignores the prefix of a key, so csvw:title, dct:title and title are the same key.
+# These are the other names under which it also looks for a term.
 aliases:
   columns: [column]
   hasUnit: [unit]
-  titles: [csvw:titles]
-prefix_aliases: {dcterms: dct}
+  titles: [title]
+
+# Placeholders of the IRI templates that are IRIs already. All others are percent-encoded.
+raw: [dataset, variable]
+
+# Reviewer recorded for links read from JSON-LD, which only contains approved links.
+imported_reviewer: imported
 
 # Other names for the datatypes, accepted when reading.
 datatype_aliases:

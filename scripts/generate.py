@@ -23,17 +23,19 @@ def run(*command: str) -> str:
 def constants() -> dict:
     profile, jsonld = load("profile"), load("jsonld")
     enums = {
-        name: {value: meta["meaning"] for value, meta in enum["permissible_values"].items() if meta}
+        name: {value: (meta or {}).get("meaning") for value, meta in enum["permissible_values"].items()}
         for name, enum in profile["enums"].items()
     }
     jsonld.pop("sources")
-    context = {**jsonld.pop("prefixes"), **jsonld["terms"]}
+    context = {**jsonld["prefixes"], **jsonld["terms"]}
+    schema = json.loads((SPEC / "generated/profile.schema.json").read_text())
     return {
         "jsonld": {**jsonld, "context": context},
         "sssom": load("sssom"),
         "inference": load("inference"),
-        "enums": {name: values for name, values in enums.items() if values},
+        "enums": enums,
         "vocabulary": load("vocabulary"),
+        "schema": schema,
     }
 
 
