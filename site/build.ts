@@ -28,6 +28,9 @@ cpSync(join(dist, 'wheel', wheel), join(dist, wheel));
 execFileSync('npm', ['run', 'build', '-w', 'linked-codebook'], { cwd: root, stdio: 'inherit' });
 execFileSync('npm', ['pack', '-w', 'linked-codebook', '--pack-destination', dist], { cwd: root, stdio: 'inherit' });
 
+// Released packages are kept in the repository, so that every version stays available to the projects that use it.
+cpSync(join(root, 'releases'), dist, { recursive: true });
+
 const conformance = join(root, 'conformance');
 const examples = readdirSync(conformance).flatMap((command) =>
   readdirSync(join(conformance, command)).map((name) => {

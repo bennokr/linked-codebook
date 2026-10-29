@@ -30,7 +30,7 @@ npm install https://bennokr.github.io/linked-codebook/linked-codebook-0.3.1.tgz
 pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.3.1-py3-none-any.whl
 ```
 
-Only the current version is kept there. Raise the version in `packages/ts/package.json` and `packages/py/pyproject.toml` for every change that other projects should receive.
+Every released version stays available there. A release is the pair of packages in [`releases/`](releases); see [Contributing](docs/contributing.md).
 
 ## Development
 

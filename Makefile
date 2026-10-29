@@ -1,4 +1,4 @@
-.PHONY: setup generate pin golden lint test budget site smoke check
+.PHONY: setup generate pin golden lint test budget site smoke check release
 
 setup:
 	uv sync --group dev
@@ -40,3 +40,11 @@ smoke: site
 	node --test site/smoke.test.ts
 
 check: lint test budget
+
+# Add the packages of the current version to releases/. Commit them: they are published with the test page.
+release:
+	test -z "$$(ls releases/*-$$(node -p "require('./packages/ts/package.json').version")* 2>/dev/null)" || { echo "This version is already released. Raise the version."; exit 1; }
+	npm run build -w linked-codebook
+	npm pack -w linked-codebook --pack-destination releases
+	uv build --wheel --out-dir releases packages/py
+	rm -f releases/.gitignore
