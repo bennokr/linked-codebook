@@ -7,6 +7,7 @@ Linked Codebook is a data model for the variables of a table, and the tools to r
 | [Specification](specification.md) | The rules that every implementation follows. |
 | [Data model](data-model.md) | The slots of each class and the values of each enumeration. |
 | [Vocabulary](vocabulary.md) | The terms of external vocabularies that the JSON-LD form uses. |
+| [Rationale](rationale.md) | Why the profile looks as it does, and how it compares with other standards. |
 | [Command line](cli.md) | The commands, their inputs and exit codes. |
 | [TypeScript](typescript.md) | The TypeScript library. |
 | [Python](python.md) | The Python library. |
