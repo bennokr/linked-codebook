@@ -15,8 +15,8 @@ TYPES = JSONLD["types"]
 
 
 def clean(node: Node) -> Node:
-    """Drops the entries that have no value."""
-    return {key: value for key, value in node.items() if value is not None and value not in ("", [])}
+    """Drops the entries that have no value: nothing, empty text, empty lists and empty objects."""
+    return {key: value for key, value in node.items() if value is not None and value not in ("", [], {})}
 
 
 def pick(source: Any, slots: dict[str, str]) -> Node:  # noqa: ANN401

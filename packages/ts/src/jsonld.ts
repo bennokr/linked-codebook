@@ -6,13 +6,15 @@ export type Node = Record<string, unknown>;
 
 const { keys, node_keys: nodeKeys, types } = jsonld;
 
-/** Drops the entries that have no value. */
+const isEmpty = (value: unknown): boolean =>
+  value === undefined ||
+  value === '' ||
+  (Array.isArray(value) && value.length === 0) ||
+  (typeof value === 'object' && value !== null && !Array.isArray(value) && Object.keys(value).length === 0);
+
+/** Drops the entries that have no value: nothing, empty text, empty lists and empty objects. */
 export const clean = (node: Node): Node =>
-  Object.fromEntries(
-    Object.entries(node).filter(
-      ([, value]) => value !== undefined && value !== '' && !(Array.isArray(value) && value.length === 0),
-    ),
-  );
+  Object.fromEntries(Object.entries(node).filter(([, value]) => !isEmpty(value)));
 
 export const pick = (source: object, slots: Record<string, string>): Node =>
   clean(Object.fromEntries(Object.entries(slots).map(([slot, key]) => [key, (source as Node)[slot]])));

@@ -113,7 +113,7 @@ The document is one node, the dataset, with these properties.
 | Code book | `skos:ConceptScheme` | `skos:hasTopConcept` lists a concept for every value. |
 | Code concept | `skos:Concept` | `skos:notation` is the code, `skos:prefLabel` the label, `skos:definition` the description and `skos:inScheme` the code book. |
 
-Properties without a value MUST be left out. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it.
+Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it.
 
 Only approved mappings are written. A mapping becomes the property `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch` or `relatedMatch`, according to its `match_type`, of the variable concept or of the code concept. The properties list the `object_id` values. Draft mappings, labels, confidence, provenance and reviewers are not written.
 
