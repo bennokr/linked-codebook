@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+
+- Added the option `identifier` of the inference.
+
 ## 0.2.1
 
 - Rows of SSSOM files are also matched to columns by the end of the subject IRI.

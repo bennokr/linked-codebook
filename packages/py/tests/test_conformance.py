@@ -65,3 +65,9 @@ def test_limits_can_be_raised() -> None:
 def test_unmatched_rows_are_listed() -> None:
     tsv = "subject_id\tsubject_label\tpredicate_id\tobject_id\nx:1\tnope\tskos:exactMatch\thttp://e/1\nx:2\tsex\tskos:exactMatch\thttp://e/2\n"
     assert unmatched_sssom(tsv, PROFILE) == ["nope"]
+
+
+def test_a_known_identifier_overrides_the_name() -> None:
+    codes = [1, 2, 1, 2, 1, 2]
+    assert infer_column(codes, "id", identifier=False).get("level") == "categorical"
+    assert infer_column(codes, "group", identifier=True).get("level") == "numerical"

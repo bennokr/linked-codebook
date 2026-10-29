@@ -83,9 +83,11 @@ def is_text_category(values: list[Cell], distinct: int) -> bool:
     return len(values) >= 3 and not any(is_prose(value) for value in values) and distinct < len(values) and few
 
 
-def is_categorical(values: list[Cell], name: str, *, labelled: bool, limits: Mapping[str, int]) -> bool:
+def is_categorical(
+    values: list[Cell], name: str, *, labelled: bool, identifier: bool | None, limits: Mapping[str, int]
+) -> bool:
     distinct = len({(isinstance(value, str), isinstance(value, bool), value) for value in values})
-    if IDENTIFIER.fullmatch(name.lower()):
+    if IDENTIFIER.fullmatch(name.lower()) is not None if identifier is None else identifier:
         return False
     if not all(is_numeric(value) for value in values):
         return distinct <= limits["text"] and (labelled or is_text_category(values, distinct))
@@ -98,7 +100,9 @@ def is_categorical(values: list[Cell], name: str, *, labelled: bool, limits: Map
     )
 
 
-def kind_of(values: list[Cell], name: str, *, labelled: bool, limits: Mapping[str, int]) -> Kind:
+def kind_of(
+    values: list[Cell], name: str, *, labelled: bool, identifier: bool | None, limits: Mapping[str, int]
+) -> Kind:
     dates = [date_kind(value) for value in values]
     if not values:
         return "empty"
@@ -106,7 +110,7 @@ def kind_of(values: list[Cell], name: str, *, labelled: bool, limits: Mapping[st
         return "boolean"
     if all(dates):
         return "datetime" if "datetime" in dates else "date"
-    if is_categorical(values, name, labelled=labelled, limits=limits):
+    if is_categorical(values, name, labelled=labelled, identifier=identifier, limits=limits):
         return "categorical"
     return "number" if all(is_numeric(value) for value in values) else "text"
 
@@ -116,11 +120,12 @@ def infer_column(
     name: str = "",
     *,
     labelled: bool = False,
+    identifier: bool | None = None,
     limits: Mapping[str, int] | None = None,
 ) -> dict[str, Datatype | Level]:
     """Proposes a datatype and a level for the values of a column."""
     values = [cell for cell in cells if not is_missing(cell)]
-    kind = kind_of(values, name, labelled=labelled, limits={**RULES["limits"], **(limits or {})})
+    kind = kind_of(values, name, labelled=labelled, identifier=identifier, limits={**RULES["limits"], **(limits or {})})
     level: Level | None = RULES["level"].get(kind)
     datatype: Datatype = "string"
     if kind in ("boolean", "date", "datetime"):

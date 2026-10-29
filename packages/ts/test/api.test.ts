@@ -56,3 +56,9 @@ test('unmatched rows are listed', () => {
     'subject_id\tsubject_label\tpredicate_id\tobject_id\nx:1\tnope\tskos:exactMatch\thttp://e/1\nx:2\tsex\tskos:exactMatch\thttp://e/2\n';
   assert.deepEqual(unmatchedSssom(tsv, profile), ['nope']);
 });
+
+test('a known identifier overrides the name', () => {
+  const codes = [1, 2, 1, 2, 1, 2];
+  assert.equal(inferColumn(codes, { name: 'id', identifier: false }).level, 'categorical');
+  assert.equal(inferColumn(codes, { name: 'group', identifier: true }).level, 'numerical');
+});

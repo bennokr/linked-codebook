@@ -9,6 +9,8 @@ export interface Inferred {
 export interface Options {
   /** The header of the column; names such as id mark identifiers. */
   name?: string;
+  /** Whether the column is an identifier, if that is known. Replaces the decision from the name. */
+  identifier?: boolean;
   /** True if the column has value labels, which count as evidence for categories. */
   labelled?: boolean;
   /** Replaces the most distinct values of a text or numeric column that can still be categories. */
@@ -85,11 +87,14 @@ const distinctCount = (values: Cell[]): number => new Set(values.map((value) => 
 const isCodeList = (values: Cell[], distinct: number, limit: number): boolean =>
   values.every(isInteger) && distinct <= limit && distinct < values.length;
 
+const isIdentifier = (options: Options): boolean =>
+  options.identifier ?? IDENTIFIER.test((options.name ?? '').toLowerCase());
+
 function isCategorical(values: Cell[], options: Options): boolean {
   const distinct = distinctCount(values);
   const limits = { ...rules.limits, ...options.limits };
   const few = distinct <= limits.text;
-  if (IDENTIFIER.test((options.name ?? '').toLowerCase())) return false;
+  if (isIdentifier(options)) return false;
   if (!values.every(isNumeric)) return few && (options.labelled || isTextCategory(values, distinct));
   if (isSequence(values, distinct)) return false;
   return options.labelled ? few : isCodeList(values, distinct, limits.number);

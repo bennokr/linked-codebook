@@ -1,7 +1,7 @@
 # TypeScript
 
 ```bash
-npm install https://bennokr.github.io/linked-codebook/linked-codebook-0.2.1.tgz
+npm install https://bennokr.github.io/linked-codebook/linked-codebook-0.3.0.tgz
 ```
 
 The package is not on npm yet.
@@ -22,7 +22,7 @@ import { build, parse, merge, toFrictionless, toSssom, fromSssom, unmatchedSssom
 | `fromSssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatchedSssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |
 | `infer(data)` | A `Profile` with the datatype and level of every column of `{ name: values }`. |
-| `inferColumn(values, options?)` | `{ datatype, level? }` for one column. `options.name` marks identifiers, `options.labelled` counts value labels and `options.limits` replaces the limits on distinct values. |
+| `inferColumn(values, options?)` | `{ datatype, level? }` for one column. `options.name` marks identifiers, `options.identifier` says whether the column is one, `options.labelled` counts value labels and `options.limits` replaces the limits on distinct values. |
 | `validate(document)` | A list of errors. It is empty if the document conforms. |
 | `isNumeric(value)` | True for a number, or for text that is a plain number. |
 | `canonical(value)` | JSON text with sorted keys. |

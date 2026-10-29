@@ -1,6 +1,6 @@
 # Linked Codebook Specification
 
-Draft, version 0.2.1
+Draft, version 0.3.0
 
 ## Abstract
 
@@ -197,7 +197,7 @@ A column is *categorical* if its name is not an identifier and one of the follow
 - **Numbers.** All values are whole numbers, there are at most 8 distinct values and fewer distinct values than values. The values are not a sequence: 9 or more distinct values that increase by one.
 - **Value labels.** If the column has value labels, at most 50 distinct values suffice, except for a sequence.
 
-A name is an identifier name if its lower-case form matches the pattern `id|row.?number|resp?no|.*_id`.
+A name is an identifier name if its lower-case form matches the pattern `id|row.?number|resp?no|.*_id`. A processor MAY let its caller say whether a column is an identifier, which replaces the decision from the name.
 
 Numeric columns have a lower limit than text columns because a few distinct numbers are less often codes than a few distinct words. A processor MAY let its caller replace the two limits of 50 and 8.
 
