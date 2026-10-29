@@ -19,6 +19,7 @@ Both libraries have no dependencies and give the same output for the same input.
 linked-codebook infer data.json > profile.json       # propose datatypes and levels
 linked-codebook build profile.json > profile.jsonld  # write DSV JSON-LD
 linked-codebook to-sssom profile.json > mappings.tsv # write the links as SSSOM
+linked-codebook to-frictionless profile.json > schema.json # write a Frictionless Table Schema
 linked-codebook validate profile.jsonld              # check the terms against their vocabularies
 ```
 

@@ -7,7 +7,7 @@ pip install linked-codebook
 The package needs Python 3.11 and has no dependencies. It also runs in [Pyodide](https://pyodide.org). The types of the data model are `TypedDict`s in `linked_codebook.types`.
 
 ```python
-from linked_codebook import build, parse, merge, to_sssom, from_sssom, infer_column, validate, run
+from linked_codebook import build, parse, merge, to_frictionless, to_sssom, from_sssom, infer_column, validate, run
 ```
 
 | Function | Result |
@@ -15,6 +15,7 @@ from linked_codebook import build, parse, merge, to_sssom, from_sssom, infer_col
 | `build(profile)` | DSV JSON-LD. |
 | `parse(document)` | A `Profile` read from DSV JSON-LD. |
 | `merge(base, incoming)` | `base` completed with `incoming`. |
+| `to_frictionless(profile)` | A Frictionless Table Schema. |
 | `to_sssom(profile)` | SSSOM TSV as text. |
 | `from_sssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `infer(data)` | A `Profile` with the datatype and level of every column of `{name: values}`. |

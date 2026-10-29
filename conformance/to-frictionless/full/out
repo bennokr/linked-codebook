@@ -1,0 +1,101 @@
+{
+  "fields": [
+    {
+      "categories": [
+        {
+          "label": "No",
+          "value": 0
+        },
+        {
+          "label": "Yes",
+          "value": 1
+        },
+        {
+          "label": "Unknown",
+          "value": 9
+        }
+      ],
+      "description": "Whether the person smokes.",
+      "missingValues": [
+        "99",
+        "9"
+      ],
+      "name": "smoker",
+      "title": "Smoking status",
+      "type": "integer",
+      "x-linked-codebook": {
+        "level": "categorical",
+        "mappings": [
+          {
+            "confidence": 1,
+            "match_type": "close",
+            "object_id": "http://www.wikidata.org/entity/Q1075",
+            "object_label": "smoking",
+            "reviewer_id": "ann"
+          },
+          {
+            "match_type": "related",
+            "object_id": "https://example.org/draft"
+          }
+        ],
+        "unit": "none",
+        "values": [
+          {
+            "code": "0",
+            "label": "No",
+            "mappings": [
+              {
+                "confidence": 0.9,
+                "description": "checked",
+                "match_type": "exact",
+                "object_id": "http://purl.obolibrary.org/obo/NCIT_C49487",
+                "provenance": "search",
+                "retrieved_at": "2024-05-01T10:00:00Z",
+                "reviewer_id": "ann"
+              }
+            ]
+          },
+          {
+            "code": "1",
+            "label": "Yes",
+            "mappings": [
+              {
+                "match_type": "broad",
+                "object_id": "http://www.wikidata.org/entity/Q5",
+                "object_label": "human"
+              }
+            ]
+          },
+          {
+            "code": "9",
+            "label": "Unknown",
+            "missing": true
+          }
+        ],
+        "variable": "https://example.org/variable/smoking"
+      }
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "x-linked-codebook": {
+        "level": "ratio",
+        "missing_range": {
+          "high": -1,
+          "low": -9
+        },
+        "unit": "cm",
+        "unit_iri": "http://qudt.org/vocab/unit/CentiM"
+      }
+    }
+  ],
+  "x-linked-codebook": {
+    "access_rights": "restricted",
+    "citation": "Doe, J. (2024). Full example.",
+    "description": "Every slot of the model.",
+    "identifier": "doi:10.0000/example",
+    "landing_page": "https://example.org/full",
+    "license": "Free for research",
+    "title": "Full example"
+  }
+}

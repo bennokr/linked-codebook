@@ -7,7 +7,7 @@ npm install linked-codebook
 The package needs Node 22 or a browser. It has no dependencies. The types of the data model are exported.
 
 ```ts
-import { build, parse, merge, toSssom, fromSssom, inferColumn, validate, run } from 'linked-codebook';
+import { build, parse, merge, toFrictionless, toSssom, fromSssom, inferColumn, validate, run } from 'linked-codebook';
 ```
 
 | Function | Result |
@@ -15,6 +15,7 @@ import { build, parse, merge, toSssom, fromSssom, inferColumn, validate, run } f
 | `build(profile)` | DSV JSON-LD. |
 | `parse(document)` | A `Profile` read from DSV JSON-LD. |
 | `merge(base, incoming)` | `base` completed with `incoming`. |
+| `toFrictionless(profile)` | A Frictionless Table Schema. |
 | `toSssom(profile)` | SSSOM TSV as text. |
 | `fromSssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `infer(data)` | A `Profile` with the datatype and level of every column of `{ name: values }`. |

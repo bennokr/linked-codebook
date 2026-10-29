@@ -6,6 +6,7 @@ from typing import NamedTuple, cast
 
 from .canonical import canonical
 from .constants import COMMANDS as SPEC
+from .frictionless import to_frictionless
 from .infer import infer
 from .jsonld import build
 from .merge import merge
@@ -39,6 +40,7 @@ def check(text: str) -> Result:
 COMMANDS: dict[str, Callable[..., Result]] = {
     "normalize": lambda profile: done(canonical(load(profile))),
     "build": lambda profile: done(canonical(build(load(profile)))),
+    "to-frictionless": lambda profile: done(canonical(to_frictionless(load(profile)))),
     "to-sssom": lambda profile: done(to_sssom(load(profile))),
     "from-sssom": lambda sssom, profile: done(canonical(from_sssom(sssom, load(profile)))),
     "merge": lambda base, incoming: done(canonical(merge(load(base), load(incoming)))),

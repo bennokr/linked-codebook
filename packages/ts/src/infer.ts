@@ -31,7 +31,7 @@ const DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 const isMissing = (cell: Cell): boolean => cell === null || rules.missing.includes(String(cell));
 
-function isNumeric(cell: Cell): boolean {
+export function isNumeric(cell: Cell): boolean {
   if (typeof cell === 'number') return Number.isFinite(cell);
   return typeof cell === 'string' && NUMBER.test(cell) && !LEADING_ZERO.test(cell) && Number.isFinite(Number(cell));
 }

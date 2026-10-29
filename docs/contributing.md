@@ -16,6 +16,7 @@ This needs [uv](https://docs.astral.sh/uv/), Node 22 and `make`.
 | A term of the JSON-LD form, an IRI template or an alias | `spec/jsonld.yaml` | `make pin` and `make generate` |
 | The SSSOM columns or prefixes | `spec/sssom.yaml` | `make generate` |
 | An inference limit or pattern | `spec/inference.yaml` | `make generate` |
+| The Frictionless projection | `spec/frictionless.yaml` | `make generate` |
 | A command | `spec/commands.yaml` and both `cli` files | `make generate` |
 | The behaviour | both libraries | `make golden`, and read the diff |
 

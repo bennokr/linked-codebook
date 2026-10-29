@@ -21,8 +21,9 @@ This is a draft. It may change without notice. Changes are listed in the [change
 7. [Inference](#7-inference)
 8. [Merging](#8-merging)
 9. [Validation](#9-validation)
-10. [Command line](#10-command-line)
-11. [References](#11-references)
+10. [Frictionless](#10-frictionless)
+11. [Command line](#11-command-line)
+12. [References](#12-references)
 
 ## 1. Introduction
 
@@ -68,7 +69,7 @@ This specification has three conformance classes.
 
 **JSON-LD document.** A JSON-LD document conforms if it follows [section 5](#5-json-ld) and the check of [section 9.2](#92-json-ld-documents) finds no errors.
 
-**Processor.** A processor is a program that reads or writes profiles. It conforms if it follows sections 4 to 10 and prints, for every case of the [conformance suite](https://github.com/bennokr/linked-codebook/tree/main/conformance), exactly the expected output.
+**Processor.** A processor is a program that reads or writes profiles. It conforms if it follows sections 4 to 11 and prints, for every case of the [conformance suite](https://github.com/bennokr/linked-codebook/tree/main/conformance), exactly the expected output.
 
 ## 3. Data model
 
@@ -226,13 +227,34 @@ A JSON-LD document has no errors if every key and every `@type` expands, through
 
 A document is checked for the terms it uses, not for the shape of its graph.
 
-## 10. Command line
+## 10. Frictionless
+
+A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. The projection is one-way. Slots that the Table Schema has no property for are kept in the extension property `x-linked-codebook`, so that nothing is lost. The rules are in [`spec/frictionless.yaml`](../spec/frictionless.yaml).
+
+| Profile | Table Schema |
+| --- | --- |
+| `columns` | `fields`, in the same order |
+| `name`, `label`, `description`, `datatype` | the field properties `name`, `title`, `description`, `type` |
+| `missing_values`, and the codes of values with `missing` set | the field property `missingValues` |
+| `values` | the field property `categories`: `{ "value": …, "label": … }`, or only the value if there is no label |
+| `level`, `unit`, `unit_iri`, `variable`, `values`, `missing_range`, `mappings` | the field property `x-linked-codebook` |
+| the slots of the dataset | the property `x-linked-codebook` of the schema |
+
+Codes of `integer` and `number` fields are written as numbers if they are numbers, as defined in [section 7](#7-inference), and as text otherwise.
+
+Notes:
+
+- Frictionless tools read `categories` but do not enforce them, and they do not know the extension property. They keep it when they read and write the schema, as tested with frictionless-py 5.21.
+- A Table Schema has no title, license or citation. These are kept in the extension property, because a Data Package needs the path of a data file that a profile does not have.
+
+## 11. Command line
 
 The command line is defined in [Command line](cli.md). A processor MUST provide the commands listed there, MUST print the same text as every other processor and MUST use the same exit codes.
 
-## 11. References
+## 12. References
 
 - [DSV][dsv]: Dataset-Variable Ontology.
+- [Table Schema][frictionless]: Frictionless Data specification.
 - [CSVW][csvw]: Model for Tabular Data and Metadata on the Web.
 - [SKOS][skos]: Simple Knowledge Organization System Reference.
 - [SSSOM][sssom]: Simple Standard for Sharing Ontological Mappings.
@@ -242,6 +264,7 @@ The command line is defined in [Command line](cli.md). A processor MUST provide 
 - [RFC 3987][rfc3987]: Internationalized Resource Identifiers.
 
 [dsv]: https://w3id.org/dsv-ontology
+[frictionless]: https://specs.frictionlessdata.io/table-schema/
 [csvw]: https://www.w3.org/TR/tabular-data-model/
 [skos]: https://www.w3.org/TR/skos-reference/
 [sssom]: https://mapping-commons.github.io/sssom/

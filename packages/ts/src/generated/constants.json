@@ -32,6 +32,12 @@
       ],
       "summary": "Print a profile, read from profile JSON or DSV JSON-LD, as canonical JSON."
     },
+    "to-frictionless": {
+      "files": [
+        "profile"
+      ],
+      "summary": "Print the profile as a Frictionless Table Schema, with the other slots in the property x-linked-codebook."
+    },
     "to-sssom": {
       "files": [
         "profile"
@@ -68,6 +74,24 @@
       "exact": "skos:exactMatch",
       "narrow": "skos:narrowMatch",
       "related": "skos:relatedMatch"
+    }
+  },
+  "frictionless": {
+    "extension": "x-linked-codebook",
+    "extension_slots": [
+      "level",
+      "unit",
+      "unit_iri",
+      "variable",
+      "values",
+      "missing_range",
+      "mappings"
+    ],
+    "field": {
+      "datatype": "type",
+      "description": "description",
+      "label": "title",
+      "name": "name"
     }
   },
   "inference": {

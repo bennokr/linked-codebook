@@ -10,6 +10,7 @@ The TypeScript package and the Python package install the same command. Both rea
 | --- | --- | --- |
 | `normalize` | profile | The profile as canonical JSON. |
 | `build` | profile | The profile as DSV JSON-LD. |
+| `to-frictionless` | profile | The profile as a Frictionless Table Schema. |
 | `to-sssom` | profile | The mappings of the profile as SSSOM TSV. |
 | `from-sssom` | sssom, profile | The mappings in the SSSOM file for the columns and codes of the profile. |
 | `merge` | base, incoming | The first profile completed with the second. |

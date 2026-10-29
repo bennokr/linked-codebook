@@ -2,6 +2,7 @@
 
 from .canonical import canonical
 from .cli import Result, run
+from .frictionless import to_frictionless
 from .infer import infer, infer_column
 from .jsonld import build
 from .merge import merge
@@ -19,6 +20,7 @@ __all__ = [
     "merge",
     "parse",
     "run",
+    "to_frictionless",
     "to_sssom",
     "validate",
 ]

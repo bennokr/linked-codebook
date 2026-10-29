@@ -5,6 +5,7 @@ import { infer } from './infer.ts';
 import { build } from './jsonld.ts';
 import { merge } from './merge.ts';
 import { parse } from './read.ts';
+import { toFrictionless } from './frictionless.ts';
 import { fromSssom, toSssom } from './sssom.ts';
 import { validate } from './validate.ts';
 
@@ -26,6 +27,7 @@ function load(text: string): Profile {
 const commands: Record<string, (...texts: string[]) => Result> = {
   normalize: (profile) => done(canonical(load(profile))),
   build: (profile) => done(canonical(build(load(profile)))),
+  'to-frictionless': (profile) => done(canonical(toFrictionless(load(profile)))),
   'to-sssom': (profile) => done(toSssom(load(profile))),
   'from-sssom': (sssom, profile) => done(canonical(fromSssom(sssom, load(profile)))),
   merge: (base, incoming) => done(canonical(merge(load(base), load(incoming)))),

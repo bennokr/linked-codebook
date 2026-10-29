@@ -14,7 +14,7 @@ export const clean = (node: Node): Node =>
     ),
   );
 
-const pick = (source: object, slots: Record<string, string>): Node =>
+export const pick = (source: object, slots: Record<string, string>): Node =>
   clean(Object.fromEntries(Object.entries(slots).map(([slot, key]) => [key, (source as Node)[slot]])));
 
 /** Only approved links are asserted; a link is approved when it has a reviewer. */
