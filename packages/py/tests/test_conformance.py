@@ -71,3 +71,10 @@ def test_a_known_identifier_overrides_the_name() -> None:
     codes = [1, 2, 1, 2, 1, 2]
     assert infer_column(codes, "id", identifier=False).get("level") == "categorical"
     assert infer_column(codes, "group", identifier=True).get("level") == "numerical"
+
+
+def test_statistics_survive_json_ld() -> None:
+    counted: Profile = {"rows": 3, "columns": [{"name": "a", "completeness": 0.5}]}
+    assert parse(build(counted)) == counted
+    assert validate(counted) == []
+    assert validate({"rows": 1.5, "columns": []}) != []

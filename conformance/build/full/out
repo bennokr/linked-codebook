@@ -12,6 +12,10 @@
       "@id": "skos:closeMatch",
       "@type": "@id"
     },
+    "columnCompleteness": {
+      "@id": "dsv:columnCompleteness",
+      "@type": "xsd:float"
+    },
     "columnProperty": {
       "@id": "dsv:columnProperty",
       "@type": "@id"
@@ -66,6 +70,14 @@
       "@container": "@set",
       "@id": "csvw:null"
     },
+    "numberOfColumns": {
+      "@id": "dsv:numberOfColumns",
+      "@type": "xsd:integer"
+    },
+    "numberOfRows": {
+      "@id": "dsv:numberOfRows",
+      "@type": "xsd:integer"
+    },
     "qudt": "http://qudt.org/schema/qudt/",
     "relatedMatch": {
       "@container": "@set",
@@ -85,7 +97,8 @@
     },
     "title": "dct:title",
     "titles": "csvw:title",
-    "unitText": "schema:unitText"
+    "unitText": "schema:unitText",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
   },
   "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample",
   "@type": [
@@ -187,6 +200,7 @@
         "summaryStatistics": {
           "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#statistics-height",
           "@type": "dsv:SummaryStatistics",
+          "columnCompleteness": 0.97,
           "statisticalDataType": "dsv:RatioDataType"
         },
         "titles": "height"
@@ -197,5 +211,11 @@
   "identifier": "doi:10.0000/example",
   "landingPage": "https://example.org/full",
   "rights": "Free for research",
+  "summaryStatistics": {
+    "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#statistics",
+    "@type": "dsv:SummaryStatistics",
+    "numberOfColumns": 2,
+    "numberOfRows": 299
+  },
   "title": "Full example"
 }

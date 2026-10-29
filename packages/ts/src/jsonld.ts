@@ -73,12 +73,17 @@ function columnNode(dataset: string, column: Column): Node {
       unitText: column.unit,
       hasCodeBook: codeBook(column, variable),
     }),
-    summaryStatistics: column.level && {
-      '@id': fill('statistics', ids),
-      '@type': types.statistics,
-      statisticalDataType: enums.Level[column.level],
-    },
+    summaryStatistics: statistics(fill('statistics', ids), {
+      statisticalDataType: column.level && enums.Level[column.level],
+      columnCompleteness: column.completeness,
+    }),
   });
+}
+
+/** A node of summary statistics, or nothing if there are no statistics. */
+function statistics(id: string, properties: Node): Node | undefined {
+  const node = clean(properties);
+  return Object.keys(node).length ? { '@id': id, '@type': types.statistics, ...node } : undefined;
 }
 
 /** Writes a profile as JSON-LD with the DSV ontology. */
@@ -91,6 +96,10 @@ export function build(profile: Profile): Node {
     '@type': types.dataset,
     ...pick(profile, keys.dataset),
     ...license,
+    summaryStatistics: statistics(fill('dataset_statistics', { dataset }), {
+      numberOfRows: profile.rows,
+      numberOfColumns: profile.rows === undefined ? undefined : profile.columns.length,
+    }),
     datasetSchema: {
       '@id': fill('schema', { dataset }),
       '@type': types.schema,

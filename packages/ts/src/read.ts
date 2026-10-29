@@ -1,5 +1,6 @@
 import { enums, jsonld } from './constants.ts';
 import type { Column, Datatype, Level, Mapping, Profile, Value } from './generated/types.ts';
+import { isNumeric } from './infer.ts';
 import { clean, type Node } from './jsonld.ts';
 import { datasetIri, variableIri } from './iri.ts';
 
@@ -44,6 +45,11 @@ function text(value: unknown): string | undefined {
   const first = items(value)[0];
   const result = isNode(first) ? (first['@value'] ?? first['@id']) : first;
   return result === undefined || result === null ? undefined : String(result);
+}
+
+function numberOf(value: unknown): number | undefined {
+  const found = text(value);
+  return found !== undefined && isNumeric(found) ? Number(found) : undefined;
 }
 
 function datatypeOf(value: unknown): Datatype | undefined {
@@ -101,6 +107,7 @@ function columnOf(nodes: Node[], dataset: string, node: Node): Column {
     datatype: datatypeOf(get(node, 'datatype')),
     description: text(variable[local(nodeKeys.definition)]) ?? text(get(node, 'description')),
     level: levelOf(get(statistics, 'statisticalDataType')),
+    completeness: numberOf(get(statistics, 'columnCompleteness')),
     unit: text(get(property, 'unitText')),
     unit_iri: text(get(property, 'hasUnit')),
     variable: id === variableIri(dataset, { name }) ? undefined : id,
@@ -121,6 +128,7 @@ export function parse(document: unknown): Profile {
   const profile = clean({
     ...Object.fromEntries(Object.entries(keys.dataset).map(([slot, key]) => [slot, text(get(dataset, key))])),
     license: text(get(dataset, 'license')) ?? text(get(dataset, 'rights')),
+    rows: numberOf(get(resolve(nodes, get(dataset, 'summaryStatistics')), 'numberOfRows')),
   }) as unknown as Profile;
   const base = text(dataset['@id']) ?? datasetIri(profile);
   return { ...profile, columns: columns.map((column) => columnOf(nodes, base, column)) };

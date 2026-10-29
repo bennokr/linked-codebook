@@ -30,7 +30,9 @@ def used_terms(jsonld: dict[str, Any], profile: dict[str, Any]) -> set[str]:
         meta["meaning"] for enum in profile["enums"].values() for meta in enum["permissible_values"].values() if meta
     ]
     keys = ("terms", "types", "node_keys", "accepted")
-    return curies([jsonld[key] for key in keys]) | set(meanings)
+    # XML Schema datatypes, as in {"@type": "xsd:integer"}, are not terms of a vocabulary.
+    terms = {term for term in curies([jsonld[key] for key in keys]) if not term.startswith("xsd:")}
+    return terms | set(meanings)
 
 
 def fetch(url: str, kind: str) -> str:

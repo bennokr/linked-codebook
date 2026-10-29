@@ -63,6 +63,12 @@ def code_book(column: Column, variable: str) -> Node | None:
     return {"@id": scheme, "@type": TYPES["scheme"], NODE_KEYS["top"]: top} if top else None
 
 
+def statistics(iri: str, properties: Node) -> Node | None:
+    """A node of summary statistics, or nothing if there are no statistics."""
+    node = clean(properties)
+    return {"@id": iri, "@type": TYPES["statistics"], **node} if node else None
+
+
 def column_node(dataset: str, column: Column) -> Node:
     variable = variable_iri(dataset, column)
     label = column.get("label", column["name"])
@@ -70,11 +76,10 @@ def column_node(dataset: str, column: Column) -> Node:
     nulls = [*column.get("missing_values", []), *(value["code"] for value in values if value.get("missing"))]
     ids = {"dataset": dataset, "name": column["name"]}
     level = column.get("level")
-    statistics = {
-        "@id": fill("statistics", ids),
-        "@type": TYPES["statistics"],
-        "statisticalDataType": ENUMS["Level"].get(level or ""),
-    }
+    stats = statistics(
+        fill("statistics", ids),
+        {"statisticalDataType": ENUMS["Level"].get(level or ""), "columnCompleteness": column.get("completeness")},
+    )
     return clean(
         {
             "@id": fill("column", ids),
@@ -93,7 +98,7 @@ def column_node(dataset: str, column: Column) -> Node:
                     "hasCodeBook": code_book(column, variable),
                 },
             ),
-            "summaryStatistics": statistics if level else None,
+            "summaryStatistics": stats,
         },
     )
 
@@ -110,6 +115,13 @@ def build(profile: Profile) -> Node:
             "@type": TYPES["dataset"],
             **pick(profile, KEYS["dataset"]),
             license_key: license_,
+            "summaryStatistics": statistics(
+                fill("dataset_statistics", {"dataset": dataset}),
+                {
+                    "numberOfRows": profile.get("rows"),
+                    "numberOfColumns": None if profile.get("rows") is None else len(profile["columns"]),
+                },
+            ),
             "datasetSchema": {
                 "@id": fill("schema", {"dataset": dataset}),
                 "@type": TYPES["schema"],

@@ -51,6 +51,10 @@ landing_page?: string
  */
 license?: string
 /**
+ * Number of rows of the table.
+ */
+rows?: number
+/**
  * Name of the dataset.
  */
 title?: string
@@ -59,6 +63,10 @@ title?: string
  * One column of the table, described as a variable.
  */
 export interface Column {
+/**
+ * Share of the rows that have a value, between 0 and 1.
+ */
+completeness?: number
 datatype?: Datatype
 /**
  * Definition of the dataset, column or value.

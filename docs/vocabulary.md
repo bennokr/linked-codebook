@@ -26,7 +26,7 @@ Namespace: `http://purl.org/dc/terms/`. Source: <https://www.dublincore.org/spec
 
 Namespace: `https://w3id.org/dsv-ontology#`. Source: <https://w3id.org/dsv-ontology>.
 
-`dsv:CategoricalDataType`, `dsv:Column`, `dsv:ColumnProperty`, `dsv:Dataset`, `dsv:DatasetSchema`, `dsv:IntervalDataType`, `dsv:NominalDataType`, `dsv:NumericalDataType`, `dsv:OrdinalDataType`, `dsv:RatioDataType`, `dsv:SummaryStatistics`, `dsv:column`, `dsv:columnProperty`, `dsv:datasetSchema`, `dsv:hasCodeBook`, `dsv:hasVariable`, `dsv:statisticalDataType`, `dsv:summaryStatistics`
+`dsv:CategoricalDataType`, `dsv:Column`, `dsv:ColumnProperty`, `dsv:Dataset`, `dsv:DatasetSchema`, `dsv:IntervalDataType`, `dsv:NominalDataType`, `dsv:NumericalDataType`, `dsv:OrdinalDataType`, `dsv:RatioDataType`, `dsv:SummaryStatistics`, `dsv:column`, `dsv:columnCompleteness`, `dsv:columnProperty`, `dsv:datasetSchema`, `dsv:hasCodeBook`, `dsv:hasVariable`, `dsv:numberOfColumns`, `dsv:numberOfRows`, `dsv:statisticalDataType`, `dsv:summaryStatistics`
 
 ## `qudt`
 

@@ -43,6 +43,7 @@ class Value(TypedDict):
 
 
 class Column(TypedDict):
+    completeness: NotRequired[float]
     datatype: NotRequired[Datatype]
     description: NotRequired[str]
     label: NotRequired[str]
@@ -65,6 +66,7 @@ class Profile(TypedDict):
     identifier: NotRequired[str]
     landing_page: NotRequired[str]
     license: NotRequired[str]
+    rows: NotRequired[int]
     title: NotRequired[str]
 
 

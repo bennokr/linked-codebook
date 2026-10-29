@@ -79,6 +79,7 @@
       "name": "height",
       "type": "number",
       "x-linked-codebook": {
+        "completeness": 0.97,
         "level": "ratio",
         "missing_range": {
           "high": -1,
@@ -96,6 +97,7 @@
     "identifier": "doi:10.0000/example",
     "landing_page": "https://example.org/full",
     "license": "Free for research",
+    "rows": 299,
     "title": "Full example"
   }
 }

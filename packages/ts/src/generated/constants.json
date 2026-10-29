@@ -85,6 +85,7 @@
       "variable",
       "values",
       "missing_range",
+      "completeness",
       "mappings"
     ],
     "field": {
@@ -152,6 +153,10 @@
         "@id": "skos:closeMatch",
         "@type": "@id"
       },
+      "columnCompleteness": {
+        "@id": "dsv:columnCompleteness",
+        "@type": "xsd:float"
+      },
       "columnProperty": {
         "@id": "dsv:columnProperty",
         "@type": "@id"
@@ -206,6 +211,14 @@
         "@container": "@set",
         "@id": "csvw:null"
       },
+      "numberOfColumns": {
+        "@id": "dsv:numberOfColumns",
+        "@type": "xsd:integer"
+      },
+      "numberOfRows": {
+        "@id": "dsv:numberOfRows",
+        "@type": "xsd:integer"
+      },
       "qudt": "http://qudt.org/schema/qudt/",
       "relatedMatch": {
         "@container": "@set",
@@ -225,7 +238,8 @@
       },
       "title": "dct:title",
       "titles": "csvw:title",
-      "unitText": "schema:unitText"
+      "unitText": "schema:unitText",
+      "xsd": "http://www.w3.org/2001/XMLSchema#"
     },
     "datatype_aliases": {
       "byte": "integer",
@@ -248,6 +262,7 @@
       "code": "{variable}-codes-{code}",
       "column": "{dataset}#column-{name}",
       "dataset": "urn:linked-codebook:dataset:{id}",
+      "dataset_statistics": "{dataset}#statistics",
       "property": "{dataset}#property-{name}",
       "schema": "{dataset}#schema",
       "scheme": "{variable}-codes",
@@ -283,7 +298,8 @@
       "dsv": "https://w3id.org/dsv-ontology#",
       "qudt": "http://qudt.org/schema/qudt/",
       "schema": "https://schema.org/",
-      "skos": "http://www.w3.org/2004/02/skos/core#"
+      "skos": "http://www.w3.org/2004/02/skos/core#",
+      "xsd": "http://www.w3.org/2001/XMLSchema#"
     },
     "raw": [
       "dataset",
@@ -301,6 +317,10 @@
         "@container": "@set",
         "@id": "skos:closeMatch",
         "@type": "@id"
+      },
+      "columnCompleteness": {
+        "@id": "dsv:columnCompleteness",
+        "@type": "xsd:float"
       },
       "columnProperty": {
         "@id": "dsv:columnProperty",
@@ -351,6 +371,14 @@
       "nullValues": {
         "@container": "@set",
         "@id": "csvw:null"
+      },
+      "numberOfColumns": {
+        "@id": "dsv:numberOfColumns",
+        "@type": "xsd:integer"
+      },
+      "numberOfRows": {
+        "@id": "dsv:numberOfRows",
+        "@type": "xsd:integer"
       },
       "relatedMatch": {
         "@container": "@set",
@@ -389,6 +417,12 @@
         "additionalProperties": false,
         "description": "One column of the table, described as a variable.",
         "properties": {
+          "completeness": {
+            "description": "Share of the rows that have a value, between 0 and 1.",
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
           "datatype": {
             "$ref": "#/$defs/Datatype",
             "description": "How values are stored."
@@ -572,6 +606,11 @@
             "description": "IRI of the license, or a statement of the terms of use.",
             "type": "string"
           },
+          "rows": {
+            "description": "Number of rows of the table.",
+            "minimum": 0,
+            "type": "integer"
+          },
           "title": {
             "description": "Name of the dataset.",
             "type": "string"
@@ -726,10 +765,13 @@
           "RatioDataType": "Class",
           "SummaryStatistics": "Class",
           "column": "Object Property",
+          "columnCompleteness": "Data Property",
           "columnProperty": "Object Property",
           "datasetSchema": "Object Property",
           "hasCodeBook": "Object Property",
           "hasVariable": "Object Property",
+          "numberOfColumns": "Data Property",
+          "numberOfRows": "Data Property",
           "statisticalDataType": "Object Property",
           "summaryStatistics": "Object Property"
         }

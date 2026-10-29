@@ -42,10 +42,13 @@ vocabularies:
       RatioDataType: Class
       SummaryStatistics: Class
       column: Object Property
+      columnCompleteness: Data Property
       columnProperty: Object Property
       datasetSchema: Object Property
       hasCodeBook: Object Property
       hasVariable: Object Property
+      numberOfColumns: Data Property
+      numberOfRows: Data Property
       statisticalDataType: Object Property
       summaryStatistics: Object Property
   qudt:

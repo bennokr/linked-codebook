@@ -1,6 +1,7 @@
 {
   "columns": [
     {
+      "completeness": 1,
       "datatype": "number",
       "description": "Age in whole years",
       "label": "Age at baseline",
@@ -16,6 +17,7 @@
       "unit_iri": "http://qudt.org/vocab/unit/YR"
     },
     {
+      "completeness": 1,
       "datatype": "string",
       "label": "Sex",
       "level": "nominal",
@@ -40,6 +42,7 @@
       ]
     },
     {
+      "completeness": 0.6666666666666666,
       "datatype": "number",
       "label": "eGFR",
       "level": "numerical",
@@ -47,6 +50,7 @@
       "unit": "mL/min/1.73m2"
     },
     {
+      "completeness": 1,
       "datatype": "string",
       "label": "Smoker",
       "level": "ordinal",
@@ -72,5 +76,6 @@
   ],
   "description": "Small demo from Statlet",
   "identifier": "ckd-demo",
+  "rows": 3,
   "title": "CKD demo"
 }

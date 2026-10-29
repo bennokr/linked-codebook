@@ -19,6 +19,10 @@ function kindOf(value: unknown): string {
   return value === null ? 'null' : typeof value;
 }
 
+/** Whether a value has the type, which may be absent. An integer is a number without a fraction. */
+const hasType = (value: unknown, type?: string): boolean =>
+  !type || kindOf(value) === type || (type === 'integer' && Number.isInteger(value));
+
 function checkScalar(value: unknown, rule: Schema, path: string): string[] {
   if (rule.enum && !rule.enum.includes(value as string))
     return [`${path}: ${String(value)} is not one of ${rule.enum.join(', ')}`];
@@ -40,7 +44,7 @@ function checkObject(value: Record<string, unknown>, rule: Schema, path: string)
 function conform(value: unknown, rule: Schema, path: string): string[] {
   const resolved = rule.$ref ? { ...definitions[local(rule.$ref)], ...rule } : rule;
   const kind = kindOf(value);
-  if (resolved.type && kind !== resolved.type) return [`${path}: expected ${resolved.type}`];
+  if (!hasType(value, resolved.type)) return [`${path}: expected ${resolved.type}`];
   if (kind === 'object') return checkObject(value as Record<string, unknown>, resolved, path);
   if (kind === 'array' && resolved.items)
     return (value as unknown[]).flatMap((item, index) => conform(item, resolved.items as Schema, `${path}/${index}`));

@@ -1,6 +1,6 @@
 # Linked Codebook Specification
 
-Draft, version 0.3.1
+Draft, version 0.4.0
 
 ## Abstract
 
@@ -105,10 +105,11 @@ The document is one node, the dataset, with these properties.
 | Node | Type | Properties |
 | --- | --- | --- |
 | Dataset | `dcat:Dataset`, `dsv:Dataset` | `title`, `description`, `identifier`, `citation`, `accessRights` and `landingPage` carry the slots of the same meaning. `license` is written as `license` if it starts with `http:` or `https:`, and as `rights` otherwise. `datasetSchema` is the schema node. |
+| Dataset statistics | `dsv:SummaryStatistics` | `numberOfRows` carries `rows` and `numberOfColumns` the number of columns. The node is written only if the profile has `rows`. |
 | Schema | `dsv:DatasetSchema` | `columns` is the list of column nodes, in table order. |
 | Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `columnProperty` and `summaryStatistics`. |
 | Column property | `dsv:ColumnProperty` | `hasVariable` is the variable concept. `hasUnit` and `unitText` carry `unit_iri` and `unit`. `hasCodeBook` is the concept scheme of the values. |
-| Summary statistics | `dsv:SummaryStatistics` | `statisticalDataType` is the meaning of the `level`. It is written only if the column has a level. |
+| Summary statistics | `dsv:SummaryStatistics` | `statisticalDataType` is the meaning of the `level` and `columnCompleteness` carries `completeness`. The node is written only if one of them is set. |
 | Variable concept | `skos:Concept` | `skos:prefLabel` is the label, or else the name. `skos:definition` is the description. |
 | Code book | `skos:ConceptScheme` | `skos:hasTopConcept` lists a concept for every value. |
 | Code concept | `skos:Concept` | `skos:notation` is the code, `skos:prefLabel` the label, `skos:definition` the description and `skos:inScheme` the code book. |
@@ -134,6 +135,7 @@ A processor MUST read documents that it wrote. It SHOULD read documents from oth
 9. Every `…Match` property of the variable concept or a code concept becomes a mapping. The `reviewer_id` of these mappings is `imported`, because only approved mappings are written.
 10. `missingRange` is an object with `low` and `high`, or a list of two numbers.
 11. If the dataset has no `license`, the `rights` are used.
+12. `rows` is read from `numberOfRows` of the summary statistics of the dataset and `completeness` from `columnCompleteness` of those of the column. The number of columns is not read.
 
 A document without columns is an error.
 
@@ -237,7 +239,7 @@ A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. 
 | `name`, `label`, `description`, `datatype` | the field properties `name`, `title`, `description`, `type` |
 | `missing_values`, and the codes of values with `missing` set | the field property `missingValues` |
 | `values` | the field property `categories`: `{ "value": …, "label": … }`, or only the value if there is no label |
-| `level`, `unit`, `unit_iri`, `variable`, `values`, `missing_range`, `mappings` | the field property `x-linked-codebook` |
+| `level`, `unit`, `unit_iri`, `variable`, `values`, `missing_range`, `completeness`, `mappings` | the field property `x-linked-codebook` |
 | the slots of the dataset | the property `x-linked-codebook` of the schema |
 
 Codes of `integer` and `number` fields are written as numbers if they are numbers, as defined in [section 7](#7-inference), and as text otherwise.

@@ -4,6 +4,7 @@ import re
 from typing import Any, cast
 
 from .constants import ENUMS, JSONLD
+from .infer import is_numeric
 from .iri import dataset_iri, variable_iri
 from .jsonld import Node, clean
 from .types import Column, Datatype, Level, Mapping, Profile, Value
@@ -69,6 +70,11 @@ def text(value: Any) -> str | None:  # noqa: ANN401
     head = next(iter(items(value)), None)
     result = first(head.get("@value"), head.get("@id")) if isinstance(head, dict) else head
     return None if result is None else show(result)
+
+
+def number_of(value: Any) -> float | None:  # noqa: ANN401
+    found = text(value)
+    return float(found) if found is not None and is_numeric(found) else None
 
 
 def datatype_of(value: Any) -> Datatype | None:  # noqa: ANN401
@@ -147,6 +153,7 @@ def column_of(nodes: list[Node], dataset: str, node: Node) -> Column:
                     text(variable.get(local(NODE_KEYS["definition"]))), text(get(node, "description"))
                 ),
                 "level": level_of(get(statistics, "statisticalDataType")),
+                "completeness": number_of(get(statistics, "columnCompleteness")),
                 "unit": text(get(prop, "unitText")),
                 "unit_iri": text(get(prop, "hasUnit")),
                 "variable": None if iri == variable_iri(dataset, {"name": name}) else iri,
@@ -170,6 +177,7 @@ def parse(document: Any) -> Profile:  # noqa: ANN401
         raise ValueError(message)
     fields = {slot: text(get(dataset, key)) for slot, key in JSONLD["keys"]["dataset"].items()}
     license_ = first(text(get(dataset, "license")), text(get(dataset, "rights")))
-    profile = cast("Profile", clean({**fields, "license": license_}))
+    rows = number_of(get(resolve(nodes, get(dataset, "summaryStatistics")), "numberOfRows"))
+    profile = cast("Profile", clean({**fields, "license": license_, "rows": rows}))
     base = first(text(dataset.get("@id")), dataset_iri(profile))
     return {**profile, "columns": [column_of(nodes, base, column) for column in columns]}

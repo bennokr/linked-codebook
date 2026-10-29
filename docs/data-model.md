@@ -15,6 +15,7 @@ A dataset and its columns.
 | `citation` | string | no | Preferred citation. |
 | `access_rights` | string | no | Who may access the dataset. |
 | `landing_page` | string | no | IRI of a web page about the dataset. |
+| `rows` | integer | no | Number of rows of the table. |
 | `columns` | list of Column | yes | Columns, in table order. |
 
 ## Column
@@ -34,6 +35,7 @@ One column of the table, described as a variable.
 | `values` | list of Value | no | Codes of the column with their labels. |
 | `missing_values` | list of string | no | Codes that mean no value and have no label. |
 | `missing_range` | Range | no | Numbers that mean no value. |
+| `completeness` | float | no | Share of the rows that have a value, between 0 and 1. |
 | `mappings` | list of Mapping | no | Links to concepts. |
 
 ## Value

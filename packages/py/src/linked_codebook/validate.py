@@ -21,7 +21,8 @@ def conform(value: Any, rule: dict[str, Any], path: str) -> list[str]:  # noqa: 
     """Errors of a value against the JSON Schema, which is generated from the model."""
     resolved = {**DEFINITIONS[local(rule["$ref"])], **rule} if "$ref" in rule else rule
     kind = KINDS[type(value)]
-    if "type" in resolved and kind != resolved["type"]:
+    whole = resolved.get("type") == "integer" and kind == "number" and float(value).is_integer()
+    if "type" in resolved and kind != resolved["type"] and not whole:
         return [f"{path}: expected {resolved['type']}"]
     if "enum" in resolved and value not in resolved["enum"]:
         return [f"{path}: {show(value)} is not one of {', '.join(resolved['enum'])}"]

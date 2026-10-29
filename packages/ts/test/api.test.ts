@@ -62,3 +62,10 @@ test('a known identifier overrides the name', () => {
   assert.equal(inferColumn(codes, { name: 'id', identifier: false }).level, 'categorical');
   assert.equal(inferColumn(codes, { name: 'group', identifier: true }).level, 'numerical');
 });
+
+test('statistics survive JSON-LD', () => {
+  const counted: Profile = { rows: 3, columns: [{ name: 'a', completeness: 0.5 }] };
+  assert.deepEqual(parse(build(counted)), counted);
+  assert.deepEqual(validate(counted), []);
+  assert.notDeepEqual(validate({ rows: 1.5, columns: [] }), []);
+});

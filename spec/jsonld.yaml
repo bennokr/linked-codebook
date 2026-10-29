@@ -9,6 +9,7 @@ prefixes:
   schema: https://schema.org/
   dct: http://purl.org/dc/terms/
   dcat: http://www.w3.org/ns/dcat#
+  xsd: http://www.w3.org/2001/XMLSchema#
 
 # Term definitions of the JSON-LD context.
 terms:
@@ -31,6 +32,9 @@ terms:
   hasCodeBook: {"@id": dsv:hasCodeBook, "@type": "@id"}
   summaryStatistics: {"@id": dsv:summaryStatistics, "@type": "@id"}
   statisticalDataType: {"@id": dsv:statisticalDataType, "@type": "@id"}
+  numberOfRows: {"@id": dsv:numberOfRows, "@type": xsd:integer}
+  numberOfColumns: {"@id": dsv:numberOfColumns, "@type": xsd:integer}
+  columnCompleteness: {"@id": dsv:columnCompleteness, "@type": xsd:float}
   unitText: schema:unitText
   hasUnit: {"@id": qudt:hasUnit, "@type": "@id"}
   exactMatch: {"@id": skos:exactMatch, "@type": "@id", "@container": "@set"}
@@ -81,6 +85,7 @@ iris:
   schema: "{dataset}#schema"
   column: "{dataset}#column-{name}"
   property: "{dataset}#property-{name}"
+  dataset_statistics: "{dataset}#statistics"
   statistics: "{dataset}#statistics-{name}"
   variable: "{dataset}#variable-{name}"
   scheme: "{variable}-codes"

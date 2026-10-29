@@ -6,6 +6,12 @@
       "additionalProperties": false,
       "description": "One column of the table, described as a variable.",
       "properties": {
+        "completeness": {
+          "description": "Share of the rows that have a value, between 0 and 1.",
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
         "datatype": {
           "$ref": "#/$defs/Datatype",
           "description": "How values are stored."
@@ -188,6 +194,11 @@
         "license": {
           "description": "IRI of the license, or a statement of the terms of use.",
           "type": "string"
+        },
+        "rows": {
+          "description": "Number of rows of the table.",
+          "minimum": 0,
+          "type": "integer"
         },
         "title": {
           "description": "Name of the dataset.",

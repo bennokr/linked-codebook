@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0
+
+- Added the slots `rows` and `completeness`, which are written as DSV summary statistics.
+- Integers are checked in profiles.
+
 ## 0.3.1
 
 - Times may end in ` UTC`.
