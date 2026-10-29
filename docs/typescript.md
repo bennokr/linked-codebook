@@ -1,7 +1,7 @@
 # TypeScript
 
 ```bash
-npm install https://bennokr.github.io/linked-codebook/linked-codebook-0.4.0.tgz
+npm install https://bennokr.github.io/linked-codebook/linked-codebook-0.5.0.tgz
 ```
 
 The package is not on npm yet.
@@ -15,7 +15,7 @@ import { build, parse, merge, toFrictionless, toSssom, fromSssom, unmatchedSssom
 | Function | Result |
 | --- | --- |
 | `build(profile)` | DSV JSON-LD. |
-| `parse(document)` | A `Profile` read from DSV JSON-LD. |
+| `parse(document, options?)` | A `Profile` read from DSV JSON-LD. `options.explicit` keeps the variable IRIs that the library would write itself. |
 | `merge(base, incoming)` | `base` completed with `incoming`. |
 | `toFrictionless(profile)` | A Frictionless Table Schema. |
 | `toSssom(profile)` | SSSOM TSV as text. |

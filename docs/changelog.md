@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0
+
+- Added the option `explicit` of reading, which keeps variable IRIs that the library would write itself.
+
 ## 0.4.0
 
 - Added the slots `rows` and `completeness`, which are written as DSV summary statistics.

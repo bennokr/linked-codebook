@@ -69,3 +69,9 @@ test('statistics survive JSON-LD', () => {
   assert.deepEqual(validate(counted), []);
   assert.notDeepEqual(validate({ rows: 1.5, columns: [] }), []);
 });
+
+test('explicit keeps the variable IRIs that the library would write', () => {
+  const written = build({ identifier: 'urn:x:1', columns: [{ name: 'a' }] });
+  assert.equal(parse(written).columns[0]?.variable, undefined);
+  assert.equal(parse(written, { explicit: true }).columns[0]?.variable, 'urn:x:1#variable-a');
+});

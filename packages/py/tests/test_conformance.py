@@ -78,3 +78,9 @@ def test_statistics_survive_json_ld() -> None:
     assert parse(build(counted)) == counted
     assert validate(counted) == []
     assert validate({"rows": 1.5, "columns": []}) != []
+
+
+def test_explicit_keeps_the_variable_iris_that_the_library_would_write() -> None:
+    written = build({"identifier": "urn:x:1", "columns": [{"name": "a"}]})
+    assert "variable" not in parse(written)["columns"][0]
+    assert parse(written, explicit=True)["columns"][0]["variable"] == "urn:x:1#variable-a"

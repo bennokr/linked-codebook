@@ -92,7 +92,11 @@ function rangeOf(value: unknown): Column['missing_range'] {
   return typeof low === 'number' && typeof high === 'number' ? { low, high } : undefined;
 }
 
-function columnOf(nodes: Node[], dataset: string, node: Node): Column {
+/** The IRI of a variable, unless it is the one the library would write and the caller does not need it. */
+const variableOf = (id: string | undefined, dataset: string, name: string, explicit: boolean): string | undefined =>
+  explicit || id !== variableIri(dataset, { name }) ? id : undefined;
+
+function columnOf(nodes: Node[], dataset: string, node: Node, explicit: boolean): Column {
   const property = resolve(nodes, get(node, 'columnProperty'));
   const variable = resolve(nodes, get(property, 'hasVariable'));
   const statistics = resolve(nodes, get(node, 'summaryStatistics') ?? get(property, 'summaryStatistics'));
@@ -110,7 +114,7 @@ function columnOf(nodes: Node[], dataset: string, node: Node): Column {
     completeness: numberOf(get(statistics, 'columnCompleteness')),
     unit: text(get(property, 'unitText')),
     unit_iri: text(get(property, 'hasUnit')),
-    variable: id === variableIri(dataset, { name }) ? undefined : id,
+    variable: variableOf(id, dataset, name, explicit),
     values,
     missing_values: nulls.filter((code) => !values.some((value) => value.code === code)),
     missing_range: rangeOf(get(node, 'missingRange')),
@@ -118,8 +122,11 @@ function columnOf(nodes: Node[], dataset: string, node: Node): Column {
   }) as unknown as Column;
 }
 
-/** Reads DSV JSON-LD, nested or as a flat graph, into a profile. */
-export function parse(document: unknown): Profile {
+/**
+ * Reads DSV JSON-LD, nested or as a flat graph, into a profile. A variable IRI that is the one this library
+ * would write is left out, unless `explicit` is set.
+ */
+export function parse(document: unknown, options: { explicit?: boolean } = {}): Profile {
   const nodes = collect(document);
   const dataset = nodes.find((node) => get(node, 'datasetSchema') !== undefined) ?? {};
   const schema = resolve(nodes, get(dataset, 'datasetSchema'));
@@ -131,5 +138,5 @@ export function parse(document: unknown): Profile {
     rows: numberOf(get(resolve(nodes, get(dataset, 'summaryStatistics')), 'numberOfRows')),
   }) as unknown as Profile;
   const base = text(dataset['@id']) ?? datasetIri(profile);
-  return { ...profile, columns: columns.map((column) => columnOf(nodes, base, column)) };
+  return { ...profile, columns: columns.map((column) => columnOf(nodes, base, column, options.explicit ?? false)) };
 }

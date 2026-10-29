@@ -133,7 +133,7 @@ def range_of(value: Any) -> dict[str, Any] | None:  # noqa: ANN401
     return {"low": low, "high": high} if numbers else None
 
 
-def column_of(nodes: list[Node], dataset: str, node: Node) -> Column:
+def column_of(nodes: list[Node], dataset: str, node: Node, *, explicit: bool) -> Column:
     prop = resolve(nodes, get(node, "columnProperty"))
     variable = resolve(nodes, get(prop, "hasVariable"))
     statistics = resolve(nodes, first(get(node, "summaryStatistics"), get(prop, "summaryStatistics")))
@@ -156,7 +156,7 @@ def column_of(nodes: list[Node], dataset: str, node: Node) -> Column:
                 "completeness": number_of(get(statistics, "columnCompleteness")),
                 "unit": text(get(prop, "unitText")),
                 "unit_iri": text(get(prop, "hasUnit")),
-                "variable": None if iri == variable_iri(dataset, {"name": name}) else iri,
+                "variable": None if not explicit and iri == variable_iri(dataset, {"name": name}) else iri,
                 "values": values,
                 "missing_values": [code for code in nulls if all(value["code"] != code for value in values)],
                 "missing_range": range_of(get(node, "missingRange")),
@@ -166,8 +166,11 @@ def column_of(nodes: list[Node], dataset: str, node: Node) -> Column:
     )
 
 
-def parse(document: Any) -> Profile:  # noqa: ANN401
-    """Reads DSV JSON-LD, nested or as a flat graph, into a profile."""
+def parse(document: Any, *, explicit: bool = False) -> Profile:  # noqa: ANN401
+    """Reads DSV JSON-LD, nested or as a flat graph, into a profile.
+
+    A variable IRI that is the one this library would write is left out, unless `explicit` is set.
+    """
     nodes = collect(document)
     dataset = next((node for node in nodes if get(node, "datasetSchema") is not None), {})
     schema = resolve(nodes, get(dataset, "datasetSchema"))
@@ -180,4 +183,4 @@ def parse(document: Any) -> Profile:  # noqa: ANN401
     rows = number_of(get(resolve(nodes, get(dataset, "summaryStatistics")), "numberOfRows"))
     profile = cast("Profile", clean({**fields, "license": license_, "rows": rows}))
     base = first(text(dataset.get("@id")), dataset_iri(profile))
-    return {**profile, "columns": [column_of(nodes, base, column) for column in columns]}
+    return {**profile, "columns": [column_of(nodes, base, column, explicit=explicit) for column in columns]}

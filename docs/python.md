@@ -1,7 +1,7 @@
 # Python
 
 ```bash
-pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.4.0-py3-none-any.whl
+pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.5.0-py3-none-any.whl
 ```
 
 The package is not on PyPI yet.
@@ -26,7 +26,7 @@ from linked_codebook import (
 | Function | Result |
 | --- | --- |
 | `build(profile)` | DSV JSON-LD. |
-| `parse(document)` | A `Profile` read from DSV JSON-LD. |
+| `parse(document, *, explicit=False)` | A `Profile` read from DSV JSON-LD. `explicit` keeps the variable IRIs that the library would write itself. |
 | `merge(base, incoming)` | `base` completed with `incoming`. |
 | `to_frictionless(profile)` | A Frictionless Table Schema. |
 | `to_sssom(profile)` | SSSOM TSV as text. |

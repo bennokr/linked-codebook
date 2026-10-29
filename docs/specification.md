@@ -1,6 +1,6 @@
 # Linked Codebook Specification
 
-Draft, version 0.4.0
+Draft, version 0.5.0
 
 ## Abstract
 
@@ -131,7 +131,7 @@ A processor MUST read documents that it wrote. It SHOULD read documents from oth
 5. The `datatype` is a string or an object with a `base`. Its name without prefix is looked up in the datatype aliases. Datatypes that are not in the model are left out.
 6. A code of `nullValues` that is a code of the code book sets `missing` on that value. Other codes become `missing_values`.
 7. The `level` is read from the summary statistics of the column, or of its column property.
-8. The `variable` is the IRI of the variable concept, unless it is the IRI that the processor would write.
+8. The `variable` is the IRI of the variable concept, unless it is the IRI that the processor would write. A processor MAY offer an option to keep that IRI too.
 9. Every `…Match` property of the variable concept or a code concept becomes a mapping. The `reviewer_id` of these mappings is `imported`, because only approved mappings are written.
 10. `missingRange` is an object with `low` and `high`, or a list of two numbers.
 11. If the dataset has no `license`, the `rights` are used.
