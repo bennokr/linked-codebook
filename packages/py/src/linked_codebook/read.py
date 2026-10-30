@@ -182,6 +182,7 @@ def parse(document: Any, *, explicit: bool = False) -> Profile:  # noqa: ANN401
     fields = {slot: text(get(dataset, key)) for slot, key in JSONLD["keys"]["dataset"].items()}
     license_ = first(text(get(dataset, "license")), text(get(dataset, "rights")))
     rows = number_of(get(resolve(nodes, get(dataset, "summaryStatistics")), "numberOfRows"))
+    rows = int(rows) if rows is not None and rows.is_integer() else rows
     profile = cast("Profile", clean({**fields, "license": license_, "rows": rows}))
     base = first(text(dataset.get("@id")), dataset_iri(profile))
     return {**profile, "columns": [column_of(nodes, base, column, explicit=explicit) for column in columns]}

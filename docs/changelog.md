@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1
+
+- Python: `rows` read from JSON-LD is an integer, not a float.
+
 ## 0.6.0
 
 - Added the slot `closed`: the values of a column are all the codes it may hold. Only closed lists become Frictionless `categories`; written to JSON-LD as `codeBookClosed`.

@@ -77,6 +77,7 @@ def test_a_known_identifier_overrides_the_name() -> None:
 def test_statistics_survive_json_ld() -> None:
     counted: Profile = {"rows": 3, "columns": [{"name": "a", "completeness": 0.5}]}
     assert parse(build(counted)) == counted
+    assert isinstance(parse(build(counted))["rows"], int)
     assert validate(counted) == []
     assert validate({"rows": 1.5, "columns": []}) != []
 
