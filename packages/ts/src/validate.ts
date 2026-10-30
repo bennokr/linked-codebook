@@ -51,9 +51,26 @@ function conform(value: unknown, rule: Schema, path: string): string[] {
   return checkScalar(value, resolved, path);
 }
 
-/** Names that must not occur twice in a list. */
+interface Listed {
+  name?: string;
+  closed?: boolean;
+  values?: { code?: string }[];
+  observed?: { code?: string }[];
+  missing_values?: string[];
+}
+
+/** Codes found in the data that a closed list does not allow. */
+function unlisted(column: Listed): string[] {
+  const allowed = [...(column.values ?? []).map((value) => value.code), ...(column.missing_values ?? [])];
+  const found = column.closed ? (column.observed ?? []).map((entry) => entry.code) : [];
+  return found
+    .filter((code) => !allowed.includes(code))
+    .map((code) => `${column.name}: code ${code} occurs in the data but not in the closed list`);
+}
+
+/** Names that must not occur twice in a list, and codes outside a closed list. */
 function repeated(profile: Record<string, unknown>): string[] {
-  const columns = (profile['columns'] ?? []) as { name?: string; values?: { code?: string }[] }[];
+  const columns = (profile['columns'] ?? []) as Listed[];
   const twice = (names: (string | undefined)[]): string[] =>
     names.filter((name, index) => name !== undefined && names.indexOf(name) !== index) as string[];
   return [
@@ -63,6 +80,7 @@ function repeated(profile: Record<string, unknown>): string[] {
         (code) => `${column.name}: code ${code} occurs twice`,
       ),
     ),
+    ...columns.flatMap(unlisted),
   ];
 }
 

@@ -17,7 +17,7 @@ function fieldOf(column: Column): Node {
       ...(column.missing_values ?? []),
       ...values.filter((value) => value.missing).map((value) => value.code),
     ],
-    categories: values.map((value) =>
+    categories: (column.closed ? values : []).map((value) =>
       value.label
         ? { value: typed(value.code, column.datatype), label: value.label }
         : typed(value.code, column.datatype),

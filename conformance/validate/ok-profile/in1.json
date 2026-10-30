@@ -48,6 +48,21 @@
           "missing": true
         }
       ],
+      "closed": true,
+      "observed": [
+        {
+          "code": "0",
+          "count": 40
+        },
+        {
+          "code": "1",
+          "count": 12
+        },
+        {
+          "code": "99",
+          "count": 3
+        }
+      ],
       "missing_values": [
         "99"
       ],

@@ -1,5 +1,5 @@
 import { inference as rules } from './constants.ts';
-import type { Datatype, Level, Profile } from './generated/types.ts';
+import type { Count, Datatype, Level, Profile } from './generated/types.ts';
 
 export type Cell = string | number | boolean | null;
 export interface Inferred {
@@ -123,7 +123,21 @@ export function inferColumn(cells: Cell[], options: Options = {}): Inferred {
   return level ? { datatype: datatypeOf(kind, values), level } : { datatype: datatypeOf(kind, values) };
 }
 
-/** Proposes a datatype and a level for every column of `{ name: [values] }`. */
+/** The codes of a column with how often each occurs, in order of first occurrence. Missing values are left out. */
+export function observe(cells: Cell[]): Count[] {
+  const counts = new Map<string, number>();
+  for (const cell of cells.filter((value) => !isMissing(value))) {
+    const code = typeof cell === 'string' ? cell : JSON.stringify(cell);
+    counts.set(code, (counts.get(code) ?? 0) + 1);
+  }
+  return [...counts].map(([code, count]) => ({ code, count }));
+}
+
+/** Proposes a datatype and a level for every column of `{ name: [values] }`, with the codes of categorical columns. */
 export function infer(data: Record<string, Cell[]>): Profile {
-  return { columns: Object.entries(data).map(([name, cells]) => ({ name, ...inferColumn(cells, { name }) })) };
+  const columnOf = (name: string, cells: Cell[]) => {
+    const inferred = inferColumn(cells, { name });
+    return inferred.level === 'categorical' ? { name, ...inferred, observed: observe(cells) } : { name, ...inferred };
+  };
+  return { columns: Object.entries(data).map(([name, cells]) => columnOf(name, cells)) };
 }

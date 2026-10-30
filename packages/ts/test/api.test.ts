@@ -15,6 +15,7 @@ const profile: Profile = {
         { code: '1', label: 'Male' },
         { code: '9', label: 'Unknown', missing: true },
       ],
+      closed: true,
     },
   ],
 };

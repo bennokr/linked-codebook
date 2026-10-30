@@ -119,4 +119,5 @@ datatype_aliases:
   dateTimeStamp: datetime
 
 # Keys that are not defined by any vocabulary. JSON-LD ignores them.
-extensions: [missingRange]
+# Observed counts are not written: DSV has no term for them, and they describe one copy of the data.
+extensions: [missingRange, codeBookClosed]

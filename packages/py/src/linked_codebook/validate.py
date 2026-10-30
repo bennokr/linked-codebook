@@ -51,8 +51,19 @@ def conform(value: Any, rule: dict[str, Any], path: str) -> list[str]:  # noqa: 
     return [*missing, *own, *listed]
 
 
+def unlisted(column: dict[str, Any]) -> list[str]:
+    """Codes found in the data that a closed list does not allow."""
+    allowed = [*(value.get("code") for value in column.get("values", [])), *column.get("missing_values", [])]
+    found = [entry.get("code") for entry in column.get("observed", [])] if column.get("closed") else []
+    return [
+        f"{column.get('name')}: code {code} occurs in the data but not in the closed list"
+        for code in found
+        if code not in allowed
+    ]
+
+
 def repeated(profile: dict[str, Any]) -> list[str]:
-    """Names that must not occur twice in a list."""
+    """Names that must not occur twice in a list, and codes outside a closed list."""
 
     def twice(names: list[Any]) -> list[Any]:
         return [name for index, name in enumerate(names) if name is not None and names.index(name) != index]
@@ -65,6 +76,7 @@ def repeated(profile: dict[str, Any]) -> list[str]:
             for column in columns
             for code in twice([value.get("code") for value in column.get("values", [])])
         ),
+        *(error for column in columns for error in unlisted(column)),
     ]
 
 

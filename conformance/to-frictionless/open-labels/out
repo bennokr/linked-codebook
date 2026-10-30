@@ -1,0 +1,53 @@
+{
+  "fields": [
+    {
+      "name": "country",
+      "type": "string",
+      "x-linked-codebook": {
+        "observed": [
+          {
+            "code": "NL",
+            "count": 3
+          },
+          {
+            "code": "BE",
+            "count": 1
+          }
+        ],
+        "values": [
+          {
+            "code": "NL",
+            "label": "Netherlands"
+          }
+        ]
+      }
+    },
+    {
+      "categories": [
+        {
+          "label": "No",
+          "value": 0
+        },
+        {
+          "label": "Yes",
+          "value": 1
+        }
+      ],
+      "name": "smoker",
+      "type": "integer",
+      "x-linked-codebook": {
+        "closed": true,
+        "values": [
+          {
+            "code": "0",
+            "label": "No"
+          },
+          {
+            "code": "1",
+            "label": "Yes"
+          }
+        ]
+      }
+    }
+  ]
+}

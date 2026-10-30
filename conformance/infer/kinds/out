@@ -54,12 +54,32 @@
     {
       "datatype": "boolean",
       "level": "categorical",
-      "name": "booleans"
+      "name": "booleans",
+      "observed": [
+        {
+          "code": "true",
+          "count": 2
+        },
+        {
+          "code": "false",
+          "count": 2
+        }
+      ]
     },
     {
       "datatype": "string",
       "level": "categorical",
-      "name": "repeated short labels"
+      "name": "repeated short labels",
+      "observed": [
+        {
+          "code": "A",
+          "count": 4
+        },
+        {
+          "code": "B",
+          "count": 4
+        }
+      ]
     },
     {
       "datatype": "string",
@@ -72,7 +92,21 @@
     {
       "datatype": "integer",
       "level": "categorical",
-      "name": "small integer codes"
+      "name": "small integer codes",
+      "observed": [
+        {
+          "code": "1",
+          "count": 4
+        },
+        {
+          "code": "2",
+          "count": 3
+        },
+        {
+          "code": "3",
+          "count": 1
+        }
+      ]
     },
     {
       "datatype": "integer",
@@ -96,7 +130,57 @@
     {
       "datatype": "string",
       "level": "categorical",
-      "name": "12 text values among 120 rows"
+      "name": "12 text values among 120 rows",
+      "observed": [
+        {
+          "code": "v00",
+          "count": 10
+        },
+        {
+          "code": "v01",
+          "count": 10
+        },
+        {
+          "code": "v02",
+          "count": 10
+        },
+        {
+          "code": "v03",
+          "count": 10
+        },
+        {
+          "code": "v04",
+          "count": 10
+        },
+        {
+          "code": "v05",
+          "count": 10
+        },
+        {
+          "code": "v06",
+          "count": 10
+        },
+        {
+          "code": "v07",
+          "count": 10
+        },
+        {
+          "code": "v08",
+          "count": 10
+        },
+        {
+          "code": "v09",
+          "count": 10
+        },
+        {
+          "code": "v10",
+          "count": 10
+        },
+        {
+          "code": "v11",
+          "count": 10
+        }
+      ]
     },
     {
       "datatype": "datetime",

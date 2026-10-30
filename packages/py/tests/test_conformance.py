@@ -27,6 +27,7 @@ PROFILE: Profile = {
             "datatype": "string",
             "level": "nominal",
             "values": [{"code": "1", "label": "Male"}, {"code": "9", "label": "Unknown", "missing": True}],
+            "closed": True,
         },
     ],
 }

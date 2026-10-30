@@ -18,6 +18,7 @@ from linked_codebook import (
     from_sssom,
     unmatched_sssom,
     infer_column,
+    observe,
     validate,
     run,
 )
@@ -32,7 +33,8 @@ from linked_codebook import (
 | `to_sssom(profile)` | SSSOM TSV as text. |
 | `from_sssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatched_sssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |
-| `infer(data)` | A `Profile` with the datatype and level of every column of `{name: values}`. |
+| `infer(data)` | A `Profile` with the datatype and level of every column of `{name: values}`, and the `observed` codes of categorical columns. |
+| `observe(values)` | The codes of one column with their counts, in order of first occurrence. |
 | `infer_column(values, name="", *, labelled=False, identifier=None, limits=None)` | `{"datatype": ..., "level": ...}` for one column. `name` marks identifiers, `identifier` says whether the column is one, `labelled` counts value labels and `limits` replaces the limits on distinct values. |
 | `validate(document)` | A list of errors. It is empty if the document conforms. |
 | `is_numeric(value)` | True for a number, or for text that is a plain number. |

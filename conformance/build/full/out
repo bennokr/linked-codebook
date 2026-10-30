@@ -114,6 +114,7 @@
       {
         "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#column-smoker",
         "@type": "dsv:Column",
+        "codeBookClosed": true,
         "columnProperty": {
           "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#property-smoker",
           "@type": "dsv:ColumnProperty",

@@ -88,6 +88,7 @@ def column_node(dataset: str, column: Column) -> Node:
             "titles": label,
             "nullValues": nulls,
             "missingRange": column.get("missing_range"),
+            "codeBookClosed": column.get("closed") or None,
             "columnProperty": clean(
                 {
                     "@id": fill("property", ids),

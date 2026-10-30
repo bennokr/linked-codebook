@@ -5,7 +5,7 @@ from typing import Any, cast
 from .types import Profile
 
 # The slot that identifies the entries of each list of objects.
-IDENTIFIERS = {"columns": "name", "values": "code", "mappings": "object_id"}
+IDENTIFIERS = {"columns": "name", "values": "code", "observed": "code", "mappings": "object_id"}
 
 
 def join(base: Any, incoming: Any, slot: str) -> Any:  # noqa: ANN401

@@ -22,10 +22,13 @@ classes:
     slots: [title, description, identifier, license, citation, access_rights, landing_page, rows, columns]
   Column:
     description: One column of the table, described as a variable.
-    slots: [name, label, description, datatype, level, unit, unit_iri, variable, values, missing_values, missing_range, completeness, mappings]
+    slots: [name, label, description, datatype, level, unit, unit_iri, variable, values, closed, observed, missing_values, missing_range, completeness, mappings]
   Value:
-    description: A code that occurs in a column, with its label.
+    description: A code that the column may hold, with its label.
     slots: [code, label, description, missing, mappings]
+  Count:
+    description: A code found in the data and how often it occurs.
+    slots: [code, count]
   Mapping:
     description: A link from a column or value to a concept. It is approved when it has a reviewer_id.
     slots: [match_type, object_id, object_label, confidence, provenance, retrieved_at, reviewer_id, description]
@@ -50,13 +53,16 @@ slots:
   unit: {description: "Unit as text, for example years."}
   unit_iri: {description: "IRI of the unit, for example from QUDT."}
   variable: {description: "IRI of the variable concept the column measures."}
-  values: {description: "Codes of the column with their labels.", range: Value, multivalued: true, inlined_as_list: true}
+  values: {description: "Codes the column may hold, with their labels. Other codes may occur unless closed is true.", range: Value, multivalued: true, inlined_as_list: true}
+  closed: {description: "True if values lists every code the column may hold, apart from missing values. A list taken from data is not closed.", range: boolean}
+  observed: {description: "Codes found in the data, in order of first occurrence, with their counts. They say what occurred, not what is allowed.", range: Count, multivalued: true, inlined_as_list: true}
   missing_values: {description: "Codes that mean no value and have no label.", multivalued: true}
   missing_range: {description: "Numbers that mean no value.", range: Range}
   completeness: {description: "Share of the rows that have a value, between 0 and 1.", range: float, minimum_value: 0, maximum_value: 1}
   mappings: {description: "Links to concepts.", range: Mapping, multivalued: true, inlined_as_list: true}
   code: {description: "The code as stored in the table, as text.", required: true}
   missing: {description: "True if the code means no value.", range: boolean}
+  count: {description: "How many rows hold the code.", range: integer, required: true, minimum_value: 1}
   match_type: {description: "How the concept relates to the column or value.", range: MatchType, required: true}
   object_id: {description: "IRI of the concept.", required: true}
   object_label: {description: "Name of the concept."}

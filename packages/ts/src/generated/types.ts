@@ -64,6 +64,10 @@ title?: string
  */
 export interface Column {
 /**
+ * True if values lists every code the column may hold, apart from missing values. A list taken from data is not closed.
+ */
+closed?: boolean
+/**
  * Share of the rows that have a value, between 0 and 1.
  */
 completeness?: number
@@ -91,6 +95,10 @@ missing_values?: string[]
  */
 name: string
 /**
+ * Codes found in the data, in order of first occurrence, with their counts. They say what occurred, not what is allowed.
+ */
+observed?: Count[]
+/**
  * Unit as text, for example years.
  */
 unit?: string
@@ -99,7 +107,7 @@ unit?: string
  */
 unit_iri?: string
 /**
- * Codes of the column with their labels.
+ * Codes the column may hold, with their labels. Other codes may occur unless closed is true.
  */
 values?: Value[]
 /**
@@ -155,7 +163,20 @@ high: number
 low: number
 }
 /**
- * A code that occurs in a column, with its label.
+ * A code found in the data and how often it occurs.
+ */
+export interface Count {
+/**
+ * The code as stored in the table, as text.
+ */
+code: string
+/**
+ * How many rows hold the code.
+ */
+count: number
+}
+/**
+ * A code that the column may hold, with its label.
  */
 export interface Value {
 /**

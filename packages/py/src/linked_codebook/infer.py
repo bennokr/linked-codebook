@@ -1,12 +1,14 @@
 """Inferring the datatype and level of a column from its values."""
 
+import json
 import math
 import re
+from collections import Counter
 from collections.abc import Mapping, Sequence
-from typing import Literal, cast
+from typing import Any, Literal, cast
 
 from .constants import INFERENCE as RULES
-from .types import Datatype, Level, Profile
+from .types import Count, Datatype, Level, Profile
 
 Cell = str | int | float | bool | None
 Kind = Literal["empty", "boolean", "date", "datetime", "categorical", "number", "text"]
@@ -135,6 +137,25 @@ def infer_column(
     return {"datatype": datatype, "level": level} if level else {"datatype": datatype}
 
 
+def code_of(cell: Cell) -> str:
+    """A cell as the text of a code, written as JavaScript writes it."""
+    if isinstance(cell, str):
+        return cell
+    return json.dumps(int(cell) if isinstance(cell, float) and cell.is_integer() else cell)
+
+
+def observe(cells: Sequence[Cell]) -> list[Count]:
+    """The codes of a column with how often each occurs, in order of first occurrence. Missing values are left out."""
+    counts = Counter(code_of(cell) for cell in cells if not is_missing(cell))
+    return [{"code": code, "count": count} for code, count in counts.items()]
+
+
 def infer(data: Mapping[str, Sequence[Cell]]) -> Profile:
-    """Proposes a datatype and a level for every column of `{name: [values]}`."""
-    return cast("Profile", {"columns": [{"name": name, **infer_column(cells, name)} for name, cells in data.items()]})
+    """Proposes a datatype and a level for every column of `{name: [values]}`, with the codes of categorical columns."""
+
+    def column_of(name: str, cells: Sequence[Cell]) -> dict[str, Any]:
+        inferred = infer_column(cells, name)
+        observed = {"observed": observe(cells)} if inferred.get("level") == "categorical" else {}
+        return {"name": name, **inferred, **observed}
+
+    return cast("Profile", {"columns": [column_of(name, cells) for name, cells in data.items()]})

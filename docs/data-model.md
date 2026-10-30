@@ -32,7 +32,9 @@ One column of the table, described as a variable.
 | `unit` | string | no | Unit as text, for example years. |
 | `unit_iri` | string | no | IRI of the unit, for example from QUDT. |
 | `variable` | string | no | IRI of the variable concept the column measures. |
-| `values` | list of Value | no | Codes of the column with their labels. |
+| `values` | list of Value | no | Codes the column may hold, with their labels. Other codes may occur unless closed is true. |
+| `closed` | boolean | no | True if values lists every code the column may hold, apart from missing values. A list taken from data is not closed. |
+| `observed` | list of Count | no | Codes found in the data, in order of first occurrence, with their counts. They say what occurred, not what is allowed. |
 | `missing_values` | list of string | no | Codes that mean no value and have no label. |
 | `missing_range` | Range | no | Numbers that mean no value. |
 | `completeness` | float | no | Share of the rows that have a value, between 0 and 1. |
@@ -40,7 +42,7 @@ One column of the table, described as a variable.
 
 ## Value
 
-A code that occurs in a column, with its label.
+A code that the column may hold, with its label.
 
 | Slot | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -49,6 +51,15 @@ A code that occurs in a column, with its label.
 | `description` | string | no | Definition of the dataset, column or value. |
 | `missing` | boolean | no | True if the code means no value. |
 | `mappings` | list of Mapping | no | Links to concepts. |
+
+## Count
+
+A code found in the data and how often it occurs.
+
+| Slot | Type | Required | Description |
+| --- | --- | --- | --- |
+| `code` | string | yes | The code as stored in the table, as text. |
+| `count` | integer | yes | How many rows hold the code. |
 
 ## Mapping
 

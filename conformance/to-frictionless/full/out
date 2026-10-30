@@ -24,6 +24,7 @@
       "title": "Smoking status",
       "type": "integer",
       "x-linked-codebook": {
+        "closed": true,
         "level": "categorical",
         "mappings": [
           {
@@ -36,6 +37,20 @@
           {
             "match_type": "related",
             "object_id": "https://example.org/draft"
+          }
+        ],
+        "observed": [
+          {
+            "code": "0",
+            "count": 40
+          },
+          {
+            "code": "1",
+            "count": 12
+          },
+          {
+            "code": "99",
+            "count": 3
           }
         ],
         "unit": "none",

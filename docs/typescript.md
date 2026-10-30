@@ -9,7 +9,7 @@ The package is not on npm yet.
 The package needs Node 22 or a browser. It has no dependencies. The types of the data model are exported.
 
 ```ts
-import { build, parse, merge, toFrictionless, toSssom, fromSssom, unmatchedSssom, inferColumn, validate, run } from 'linked-codebook';
+import { build, parse, merge, toFrictionless, toSssom, fromSssom, unmatchedSssom, inferColumn, observe, validate, run } from 'linked-codebook';
 ```
 
 | Function | Result |
@@ -21,7 +21,8 @@ import { build, parse, merge, toFrictionless, toSssom, fromSssom, unmatchedSssom
 | `toSssom(profile)` | SSSOM TSV as text. |
 | `fromSssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatchedSssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |
-| `infer(data)` | A `Profile` with the datatype and level of every column of `{ name: values }`. |
+| `infer(data)` | A `Profile` with the datatype and level of every column of `{ name: values }`, and the `observed` codes of categorical columns. |
+| `observe(values)` | The codes of one column with their counts, in order of first occurrence. |
 | `inferColumn(values, options?)` | `{ datatype, level? }` for one column. `options.name` marks identifiers, `options.identifier` says whether the column is one, `options.labelled` counts value labels and `options.limits` replaces the limits on distinct values. |
 | `validate(document)` | A list of errors. It is empty if the document conforms. |
 | `isNumeric(value)` | True for a number, or for text that is a plain number. |

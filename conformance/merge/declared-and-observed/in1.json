@@ -1,0 +1,22 @@
+{
+  "columns": [
+    {
+      "name": "smoker",
+      "closed": true,
+      "values": [
+        {
+          "code": "0",
+          "label": "No"
+        },
+        {
+          "code": "1",
+          "label": "Yes"
+        },
+        {
+          "code": "2",
+          "label": "Former"
+        }
+      ]
+    }
+  ]
+}

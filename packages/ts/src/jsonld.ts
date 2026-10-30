@@ -65,6 +65,7 @@ function columnNode(dataset: string, column: Column): Node {
     titles: label,
     nullValues: nulls,
     missingRange: column.missing_range,
+    codeBookClosed: column.closed || undefined,
     columnProperty: clean({
       '@id': fill('property', ids),
       '@type': types.property,

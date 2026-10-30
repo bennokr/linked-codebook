@@ -16,7 +16,7 @@ How claims were checked: *Code* means the repository was read. *Spec* means the 
 | Missing values were handled three ways, and ranges were dropped. | Partly. `missing_values`, `missing` on a value and `missing_range` exist. The range is written as `missingRange`, which no vocabulary defines. |
 | Variable IRIs were minted differently and lossily (`%` replaced by `-`; names slugged). | Resolved. One template, percent-encoded names, and IRIs found in files are kept. |
 | Units were free text, a guessed IRI, or a mandatory IRI. | Resolved. `unit` and `unit_iri` are separate slots. |
-| Value labels were sometimes a closed list and sometimes partial. | Open. The profile has no closed/partial flag. |
+| Value labels were sometimes a closed list and sometimes partial. | Resolved. `closed` marks a complete list. Codes counted in the data are kept apart, in `observed`, so a sample never becomes a domain. |
 | Compact JSON-LD differed in keys (`dct:`/`dcterms:`, `hasUnit`/`unit`, `columns`/`column`). | Partly. One context is published. Readers ignore prefixes and accept the aliases. |
 | Statlet's context defined `csvw:titles`, which CSVW does not have. | Resolved. The vocabulary check found it; the profile uses `csvw:title` and still reads `titles`. |
 | Four meanings of "role" (analysis, graph node, structure, privacy). | Not in the profile. Roles stay in the projects. |

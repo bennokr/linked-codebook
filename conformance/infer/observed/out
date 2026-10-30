@@ -1,0 +1,65 @@
+{
+  "columns": [
+    {
+      "datatype": "string",
+      "level": "categorical",
+      "name": "group",
+      "observed": [
+        {
+          "code": "a",
+          "count": 4
+        },
+        {
+          "code": "b",
+          "count": 2
+        },
+        {
+          "code": "c",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "datatype": "boolean",
+      "level": "categorical",
+      "name": "flag",
+      "observed": [
+        {
+          "code": "true",
+          "count": 3
+        },
+        {
+          "code": "false",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "datatype": "integer",
+      "level": "categorical",
+      "name": "code",
+      "observed": [
+        {
+          "code": "1",
+          "count": 4
+        },
+        {
+          "code": "2",
+          "count": 3
+        },
+        {
+          "code": "3",
+          "count": 2
+        },
+        {
+          "code": "9",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "datatype": "string",
+      "name": "free text"
+    }
+  ]
+}

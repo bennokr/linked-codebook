@@ -159,6 +159,7 @@ def column_of(nodes: list[Node], dataset: str, node: Node, *, explicit: bool) ->
                 "variable": None if not explicit and iri == variable_iri(dataset, {"name": name}) else iri,
                 "values": values,
                 "missing_values": [code for code in nulls if all(value["code"] != code for value in values)],
+                "closed": get(node, "codeBookClosed") is True or None,
                 "missing_range": range_of(get(node, "missingRange")),
                 "mappings": mappings_of(variable),
             },

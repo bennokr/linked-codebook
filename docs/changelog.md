@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0
+
+- Added the slot `closed`: the values of a column are all the codes it may hold. Only closed lists become Frictionless `categories`; written to JSON-LD as `codeBookClosed`.
+- Added the slot `observed`: codes found in the data with their counts, separate from the declared `values`. `infer` fills it for categorical columns, and `observe` computes it for one column.
+- Validation reports observed codes outside a closed list.
+
 ## 0.5.0
 
 - Added the option `explicit` of reading, which keeps variable IRIs that the library would write itself.

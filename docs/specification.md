@@ -82,6 +82,8 @@ Notes:
 - A column is identified by its `name`, a value by its `code` and a mapping by its `object_id`.
 - The `level` is the level of measurement and the `datatype` is the way values are stored. A column of integer codes has the datatype `integer` and the level `categorical`.
 - `missing_values` lists codes that mean no value and have no label. A code that has a label is a `value` with `missing` set to true.
+- `values` are the codes a column may hold, as declared by its author. If `closed` is true, no other codes are allowed, apart from missing values. Otherwise the list labels some codes and others may occur.
+- `observed` are the codes found in one copy of the data, with their counts. They say what occurred, not what is allowed. A processor MUST NOT set `closed` because a list was taken from data.
 
 ## 4. Canonical JSON
 
@@ -107,14 +109,14 @@ The document is one node, the dataset, with these properties.
 | Dataset | `dcat:Dataset`, `dsv:Dataset` | `title`, `description`, `identifier`, `citation`, `accessRights` and `landingPage` carry the slots of the same meaning. `license` is written as `license` if it starts with `http:` or `https:`, and as `rights` otherwise. `datasetSchema` is the schema node. |
 | Dataset statistics | `dsv:SummaryStatistics` | `numberOfRows` carries `rows` and `numberOfColumns` the number of columns. The node is written only if the profile has `rows`. |
 | Schema | `dsv:DatasetSchema` | `columns` is the list of column nodes, in table order. |
-| Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `columnProperty` and `summaryStatistics`. |
+| Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `columnProperty` and `summaryStatistics`. |
 | Column property | `dsv:ColumnProperty` | `hasVariable` is the variable concept. `hasUnit` and `unitText` carry `unit_iri` and `unit`. `hasCodeBook` is the concept scheme of the values. |
 | Summary statistics | `dsv:SummaryStatistics` | `statisticalDataType` is the meaning of the `level` and `columnCompleteness` carries `completeness`. The node is written only if one of them is set. |
 | Variable concept | `skos:Concept` | `skos:prefLabel` is the label, or else the name. `skos:definition` is the description. |
 | Code book | `skos:ConceptScheme` | `skos:hasTopConcept` lists a concept for every value. |
 | Code concept | `skos:Concept` | `skos:notation` is the code, `skos:prefLabel` the label, `skos:definition` the description and `skos:inScheme` the code book. |
 
-Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it.
+Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data.
 
 Only approved mappings are written. A mapping becomes the property `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch` or `relatedMatch`, according to its `match_type`, of the variable concept or of the code concept. The properties list the `object_id` values. Draft mappings, labels, confidence, provenance and reviewers are not written.
 
@@ -201,6 +203,8 @@ A column is *categorical* if its name is not an identifier and one of the follow
 
 A name is an identifier name if its lower-case form matches the pattern `id|row.?number|resp?no|.*_id`. A processor MAY let its caller say whether a column is an identifier, which replaces the decision from the name.
 
+A processor that proposes a profile for a table (`infer`) adds `observed` to every column of level `categorical`: each distinct value that is not ignored, as text, with the number of times it occurs, in order of first occurrence. A value that is not text is written as JSON writes it, with whole numbers written without a fraction, so `1.0` becomes `1` and `true` becomes `true`.
+
 Numeric columns have a lower limit than text columns because a few distinct numbers are less often codes than a few distinct words. A processor MAY let its caller replace the two limits of 50 and 8.
 
 ## 8. Merging
@@ -208,7 +212,7 @@ Numeric columns have a lower limit than text columns because a few distinct numb
 Merging adds the information in a second profile, the *incoming* profile, to a first profile, the *base*. The result has all the information of the base, changed as follows.
 
 1. Slots that the incoming profile has override the slots of the base. Empty text and empty lists count as absent.
-2. Columns, values and mappings are matched by `name`, `code` and `object_id`. Matched entries are merged by the same rules, and the others are kept.
+2. Columns, values, observed codes and mappings are matched by `name`, `code`, `code` and `object_id`. Matched entries are merged by the same rules, and the others are kept.
 3. Entries of the incoming profile that are not in the base are added after the entries of the base.
 
 ## 9. Validation
@@ -218,8 +222,9 @@ Merging adds the information in a second profile, the *incoming* profile, to a f
 A profile has no errors if
 
 - it conforms to the JSON Schema of the model,
-- no two columns have the same `name`, and
-- no two values of a column have the same `code`.
+- no two columns have the same `name`,
+- no two values of a column have the same `code`, and
+- if a column is `closed`, every `observed` code is one of its `values` or `missing_values`.
 
 Errors are text. For errors against the model they start with the path of the value, for example `/columns/0/datatype`.
 
@@ -238,14 +243,15 @@ A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. 
 | `columns` | `fields`, in the same order |
 | `name`, `label`, `description`, `datatype` | the field properties `name`, `title`, `description`, `type` |
 | `missing_values`, and the codes of values with `missing` set | the field property `missingValues` |
-| `values` | the field property `categories`: `{ "value": …, "label": … }`, or only the value if there is no label |
-| `level`, `unit`, `unit_iri`, `variable`, `values`, `missing_range`, `completeness`, `mappings` | the field property `x-linked-codebook` |
+| `values`, if `closed` is true | the field property `categories`: `{ "value": …, "label": … }`, or only the value if there is no label |
+| `level`, `unit`, `unit_iri`, `variable`, `values`, `closed`, `observed`, `missing_range`, `completeness`, `mappings` | the field property `x-linked-codebook` |
 | the slots of the dataset | the property `x-linked-codebook` of the schema |
 
 Codes of `integer` and `number` fields are written as numbers if they are numbers, as defined in [section 7](#7-inference), and as text otherwise.
 
 Notes:
 
+- `categories` is written only for a closed list, because it names the codes a field may hold. A partial list of labels stays in the extension property.
 - Frictionless tools read `categories` but do not enforce them, and they do not know the extension property. They keep it when they read and write the schema, as tested with frictionless-py 5.21.
 - A Table Schema has no title, license or citation. These are kept in the extension property, because a Data Package needs the path of a data file that a profile does not have.
 

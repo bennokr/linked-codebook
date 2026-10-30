@@ -1,0 +1,38 @@
+{
+  "columns": [
+    {
+      "closed": true,
+      "datatype": "integer",
+      "level": "categorical",
+      "name": "smoker",
+      "observed": [
+        {
+          "code": "1",
+          "count": 4
+        },
+        {
+          "code": "0",
+          "count": 7
+        },
+        {
+          "code": "3",
+          "count": 1
+        }
+      ],
+      "values": [
+        {
+          "code": "0",
+          "label": "No"
+        },
+        {
+          "code": "1",
+          "label": "Yes"
+        },
+        {
+          "code": "2",
+          "label": "Former"
+        }
+      ]
+    }
+  ]
+}

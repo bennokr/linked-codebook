@@ -3,7 +3,7 @@
 from .canonical import canonical
 from .cli import Result, run
 from .frictionless import to_frictionless
-from .infer import infer, infer_column, is_numeric
+from .infer import infer, infer_column, is_numeric, observe
 from .jsonld import build
 from .merge import merge
 from .read import parse
@@ -19,6 +19,7 @@ __all__ = [
     "infer_column",
     "is_numeric",
     "merge",
+    "observe",
     "parse",
     "run",
     "to_frictionless",

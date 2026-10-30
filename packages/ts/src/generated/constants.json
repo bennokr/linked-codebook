@@ -84,6 +84,8 @@
       "unit_iri",
       "variable",
       "values",
+      "closed",
+      "observed",
       "missing_range",
       "completeness",
       "mappings"
@@ -255,7 +257,8 @@
       "short": "integer"
     },
     "extensions": [
-      "missingRange"
+      "missingRange",
+      "codeBookClosed"
     ],
     "imported_reviewer": "imported",
     "iris": {
@@ -417,6 +420,10 @@
         "additionalProperties": false,
         "description": "One column of the table, described as a variable.",
         "properties": {
+          "closed": {
+            "description": "True if values lists every code the column may hold, apart from missing values. A list taken from data is not closed.",
+            "type": "boolean"
+          },
           "completeness": {
             "description": "Share of the rows that have a value, between 0 and 1.",
             "maximum": 1,
@@ -461,6 +468,13 @@
             "description": "Header of the column, exactly as in the table.",
             "type": "string"
           },
+          "observed": {
+            "description": "Codes found in the data, in order of first occurrence, with their counts. They say what occurred, not what is allowed.",
+            "items": {
+              "$ref": "#/$defs/Count"
+            },
+            "type": "array"
+          },
           "unit": {
             "description": "Unit as text, for example years.",
             "type": "string"
@@ -470,7 +484,7 @@
             "type": "string"
           },
           "values": {
-            "description": "Codes of the column with their labels.",
+            "description": "Codes the column may hold, with their labels. Other codes may occur unless closed is true.",
             "items": {
               "$ref": "#/$defs/Value"
             },
@@ -485,6 +499,27 @@
           "name"
         ],
         "title": "Column",
+        "type": "object"
+      },
+      "Count": {
+        "additionalProperties": false,
+        "description": "A code found in the data and how often it occurs.",
+        "properties": {
+          "code": {
+            "description": "The code as stored in the table, as text.",
+            "type": "string"
+          },
+          "count": {
+            "description": "How many rows hold the code.",
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "count"
+        ],
+        "title": "Count",
         "type": "object"
       },
       "Datatype": {
@@ -644,7 +679,7 @@
       },
       "Value": {
         "additionalProperties": false,
-        "description": "A code that occurs in a column, with its label.",
+        "description": "A code that the column may hold, with its label.",
         "properties": {
           "code": {
             "description": "The code as stored in the table, as text.",

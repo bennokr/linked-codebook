@@ -25,7 +25,7 @@ def field_of(column: Column) -> Node:
                 {"value": typed(value["code"], datatype), "label": value["label"]}
                 if value.get("label")
                 else typed(value["code"], datatype)
-                for value in values
+                for value in (values if column.get("closed") else [])
             ],
             RULES["extension"]: pick(column, {slot: slot for slot in RULES["extension_slots"]}),
         },

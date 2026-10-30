@@ -7,7 +7,12 @@ interface Dict {
 type Json = null | boolean | number | string | Json[] | Dict;
 
 /** The slot that identifies the entries of each list of objects. */
-const IDENTIFIERS: Record<string, string> = { columns: 'name', values: 'code', mappings: 'object_id' };
+const IDENTIFIERS: Record<string, string> = {
+  columns: 'name',
+  values: 'code',
+  observed: 'code',
+  mappings: 'object_id',
+};
 
 const isDict = (value: Json | undefined): value is Dict =>
   typeof value === 'object' && value !== null && !Array.isArray(value);

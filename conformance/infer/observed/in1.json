@@ -1,0 +1,42 @@
+{
+  "group": [
+    "a",
+    "b",
+    "a",
+    "",
+    "c",
+    "a",
+    "b",
+    "\\N",
+    "c",
+    "a"
+  ],
+  "flag": [
+    true,
+    false,
+    true,
+    true,
+    null,
+    false
+  ],
+  "code": [
+    1,
+    2,
+    1.0,
+    3,
+    2,
+    1,
+    9,
+    1,
+    2,
+    3
+  ],
+  "free text": [
+    "first answer",
+    "second",
+    "third one",
+    "fourth",
+    "fifth",
+    "sixth"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "columns": [
+    {
+      "name": "smoker",
+      "datatype": "integer",
+      "level": "categorical",
+      "observed": [
+        {
+          "code": "1",
+          "count": 4
+        },
+        {
+          "code": "0",
+          "count": 7
+        },
+        {
+          "code": "3",
+          "count": 1
+        }
+      ]
+    }
+  ]
+}

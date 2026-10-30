@@ -1,0 +1,39 @@
+{
+  "columns": [
+    {
+      "name": "country",
+      "datatype": "string",
+      "values": [
+        {
+          "code": "NL",
+          "label": "Netherlands"
+        }
+      ],
+      "observed": [
+        {
+          "code": "NL",
+          "count": 3
+        },
+        {
+          "code": "BE",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "smoker",
+      "datatype": "integer",
+      "closed": true,
+      "values": [
+        {
+          "code": "0",
+          "label": "No"
+        },
+        {
+          "code": "1",
+          "label": "Yes"
+        }
+      ]
+    }
+  ]
+}

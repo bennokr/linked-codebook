@@ -5,6 +5,12 @@ from __future__ import annotations
 
 from typing import Literal, NotRequired, TypeAlias, TypedDict
 
+
+class Count(TypedDict):
+    code: str
+    count: int
+
+
 Datatype: TypeAlias = Literal[
     'string', 'number', 'integer', 'boolean', 'date', 'datetime'
 ]
@@ -43,6 +49,7 @@ class Value(TypedDict):
 
 
 class Column(TypedDict):
+    closed: NotRequired[bool]
     completeness: NotRequired[float]
     datatype: NotRequired[Datatype]
     description: NotRequired[str]
@@ -52,6 +59,7 @@ class Column(TypedDict):
     missing_range: NotRequired[Range]
     missing_values: NotRequired[list[str]]
     name: str
+    observed: NotRequired[list[Count]]
     unit: NotRequired[str]
     unit_iri: NotRequired[str]
     values: NotRequired[list[Value]]

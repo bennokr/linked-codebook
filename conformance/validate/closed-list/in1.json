@@ -1,0 +1,39 @@
+{
+  "columns": [
+    {
+      "name": "smoker",
+      "closed": true,
+      "values": [
+        {
+          "code": "0",
+          "label": "No"
+        },
+        {
+          "code": "1",
+          "label": "Yes"
+        }
+      ],
+      "missing_values": [
+        "9"
+      ],
+      "observed": [
+        {
+          "code": "0",
+          "count": 5
+        },
+        {
+          "code": "1",
+          "count": 2
+        },
+        {
+          "code": "9",
+          "count": 1
+        },
+        {
+          "code": "2",
+          "count": 1
+        }
+      ]
+    }
+  ]
+}
