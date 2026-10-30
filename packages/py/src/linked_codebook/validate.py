@@ -99,10 +99,23 @@ def undefined_terms(value: Any, context: dict[str, Any]) -> list[str]:  # noqa: 
     if not isinstance(value, dict):
         return []
     types = value.get("@type", [])
-    keys = [key for key in value if not key.startswith("@") and key not in JSONLD["extensions"]]
+    # A key whose term is null is dropped by JSON-LD; one mapped to a keyword (such as @nest) is not a property.
+    keys = [
+        key
+        for key in value
+        if not key.startswith("@")
+        and key not in JSONLD["extensions"]
+        and not str(context.get(key, "")).startswith("@")
+        and (key not in context or context[key] is not None)
+    ]
     terms = [*keys, *(show(kind) for kind in (types if isinstance(types, list) else [types]))]
     unknown = [term for term in terms if expand(term, context) not in KNOWN and term not in JSONLD["accepted"]]
-    below = [error for key, child in value.items() if key != "@context" for error in undefined_terms(child, context)]
+    below = [
+        error
+        for key, child in value.items()
+        if key != "@context" and (key not in context or context[key] is not None)
+        for error in undefined_terms(child, context)
+    ]
     return [*(f"{term}: not defined by a pinned vocabulary" for term in unknown), *below]
 
 

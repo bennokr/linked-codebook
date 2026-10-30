@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.2
+
+- Validation of JSON-LD skips keys whose term is null or a keyword such as `@nest`, as JSON-LD does, instead of failing.
+
 ## 0.6.1
 
 - Python: `rows` read from JSON-LD is an integer, not a float.

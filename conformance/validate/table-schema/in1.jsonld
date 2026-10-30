@@ -1,0 +1,80 @@
+{
+  "@context": {
+    "csvw": "http://www.w3.org/ns/csvw#",
+    "dct": "http://purl.org/dc/terms/",
+    "dsv": "https://w3id.org/dsv-ontology#",
+    "qudt": "http://qudt.org/schema/qudt/",
+    "schema": "https://schema.org/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "fields": {"@id": "dsv:column", "@container": "@set"},
+    "name": "csvw:name",
+    "title": "dct:title",
+    "description": "dct:description",
+    "type": {"@id": "csvw:datatype", "@type": "@vocab"},
+    "integer": "xsd:integer",
+    "number": "xsd:decimal",
+    "string": "xsd:string",
+    "missingValues": {"@id": "csvw:null", "@container": "@set"},
+    "constraints": "@nest",
+    "minimum": {"@id": "schema:minValue", "@nest": "constraints"},
+    "maximum": {"@id": "schema:maxValue", "@nest": "constraints"},
+    "categories": null,
+    "categoriesOrdered": null,
+    "primaryKey": null,
+    "columnProperty": {"@id": "dsv:columnProperty"},
+    "hasVariable": {"@id": "dsv:hasVariable"},
+    "hasCodeBook": {"@id": "dsv:hasCodeBook"},
+    "hasTopConcept": {"@id": "skos:hasTopConcept", "@container": "@set"},
+    "notation": "skos:notation",
+    "label": "skos:prefLabel",
+    "exactMatch": {"@id": "skos:exactMatch", "@type": "@id", "@container": "@set"},
+    "unitText": "schema:unitText",
+    "hasUnit": {"@id": "qudt:hasUnit", "@type": "@id"},
+    "summaryStatistics": {"@id": "dsv:summaryStatistics"},
+    "statisticalDataType": {"@id": "dsv:statisticalDataType", "@type": "@id"}
+  },
+  "@id": "https://example.org/heart#schema",
+  "@type": "dsv:DatasetSchema",
+  "title": "Heart Disease (UCI 45)",
+  "fields": [
+    {
+      "@id": "https://example.org/heart#column-age",
+      "@type": "dsv:Column",
+      "name": "age",
+      "title": "Age",
+      "type": "integer",
+      "constraints": {"minimum": 0, "maximum": 120},
+      "columnProperty": {
+        "@type": "dsv:ColumnProperty",
+        "hasVariable": {"@id": "http://loinc.org/30525-0", "@type": "skos:Concept", "label": "Age"},
+        "unitText": "years",
+        "hasUnit": "http://qudt.org/vocab/unit/YR"
+      },
+      "summaryStatistics": {"@type": "dsv:SummaryStatistics", "statisticalDataType": "dsv:NumericalDataType"}
+    },
+    {
+      "@id": "https://example.org/heart#column-sex",
+      "@type": "dsv:Column",
+      "name": "sex",
+      "title": "Administrative sex",
+      "type": "integer",
+      "categories": [{"value": 0, "label": "female"}, {"value": 1, "label": "male"}],
+      "missingValues": ["9"],
+      "columnProperty": {
+        "@type": "dsv:ColumnProperty",
+        "hasVariable": {"@id": "https://example.org/heart#variable-sex", "@type": "skos:Concept", "label": "Administrative sex"},
+        "hasCodeBook": {
+          "@id": "https://example.org/heart#variable-sex-codes",
+          "@type": "skos:ConceptScheme",
+          "hasTopConcept": [
+            {"@id": "https://example.org/heart#variable-sex-codes-0", "@type": "skos:Concept", "notation": "0", "label": "female", "exactMatch": ["http://snomed.info/id/248152002"]},
+            {"@id": "https://example.org/heart#variable-sex-codes-1", "@type": "skos:Concept", "notation": "1", "label": "male", "exactMatch": ["http://snomed.info/id/248153007"]}
+          ]
+        }
+      },
+      "summaryStatistics": {"@type": "dsv:SummaryStatistics", "statisticalDataType": "dsv:NominalDataType"}
+    }
+  ],
+  "missingValues": [""]
+}

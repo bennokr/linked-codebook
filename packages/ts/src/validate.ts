@@ -107,12 +107,19 @@ function undefinedTerms(value: unknown, context: Context): string[] {
   if (typeof value !== 'object' || value === null) return [];
   const node = value as Record<string, unknown>;
   const types = [node['@type'] ?? []].flat().map(String);
-  const keys = Object.keys(node).filter((key) => !key.startsWith('@') && !jsonld.extensions.includes(key));
+  // A key whose term is null is dropped by JSON-LD; one mapped to a keyword (such as @nest) is not a property.
+  const keys = Object.keys(node).filter(
+    (key) =>
+      !key.startsWith('@') &&
+      !jsonld.extensions.includes(key) &&
+      context[key] !== null &&
+      !String(context[key]).startsWith('@'),
+  );
   const unknown = [...keys, ...types].filter(
     (term) => !known.has(expand(term, context)) && !(jsonld.accepted as string[]).includes(term),
   );
   const below = Object.entries(node)
-    .filter(([key]) => key !== '@context')
+    .filter(([key]) => key !== '@context' && context[key] !== null)
     .flatMap(([, child]) => undefinedTerms(child, context));
   return [...unknown.map((term) => `${term}: not defined by a pinned vocabulary`), ...below];
 }
