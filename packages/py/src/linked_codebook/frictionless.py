@@ -27,6 +27,7 @@ def field_of(column: Column) -> Node:
                 else typed(value["code"], datatype)
                 for value in (values if column.get("closed") else [])
             ],
+            "categoriesOrdered": True if column.get("closed") and values and column.get("level") == "ordinal" else None,
             RULES["extension"]: pick(column, {slot: slot for slot in RULES["extension_slots"]}),
         },
     )

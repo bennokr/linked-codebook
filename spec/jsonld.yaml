@@ -65,6 +65,8 @@ node_keys:
   top: skos:hasTopConcept
   in_scheme: skos:inScheme
   notation: skos:notation
+  source: dct:source
+  position: schema:position
 
 # Terms that are accepted when reading and validating, but never written.
 accepted: [schema:Dataset]

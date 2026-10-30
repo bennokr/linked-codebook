@@ -60,6 +60,7 @@ class Column(TypedDict):
     missing_values: NotRequired[list[str]]
     name: str
     observed: NotRequired[list[Count]]
+    source: NotRequired[str]
     unit: NotRequired[str]
     unit_iri: NotRequired[str]
     values: NotRequired[list[Value]]

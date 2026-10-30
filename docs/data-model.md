@@ -32,6 +32,7 @@ One column of the table, described as a variable.
 | `unit` | string | no | Unit as text, for example years. |
 | `unit_iri` | string | no | IRI of the unit, for example from QUDT. |
 | `variable` | string | no | IRI of the variable concept the column measures. |
+| `source` | string | no | IRI of a web page that documents the column or its variable. |
 | `values` | list of Value | no | Codes the column may hold, with their labels. Other codes may occur unless closed is true. |
 | `closed` | boolean | no | True if values lists every code the column may hold, apart from missing values. A list taken from data is not closed. |
 | `observed` | list of Count | no | Codes found in the data, in order of first occurrence, with their counts. They say what occurred, not what is allowed. |

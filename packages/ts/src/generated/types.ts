@@ -99,6 +99,10 @@ name: string
  */
 observed?: Count[]
 /**
+ * IRI of a web page that documents the column or its variable.
+ */
+source?: string
+/**
  * Unit as text, for example years.
  */
 unit?: string

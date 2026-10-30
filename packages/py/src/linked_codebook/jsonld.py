@@ -45,6 +45,7 @@ def concept(iri: str, label: str | None, definition: str | None, mappings: list[
 
 def code_book(column: Column, variable: str) -> Node | None:
     scheme = fill("scheme", {"variable": variable})
+    ordinal = column.get("level") == "ordinal"
     top = [
         clean(
             {
@@ -56,9 +57,10 @@ def code_book(column: Column, variable: str) -> Node | None:
                 ),
                 NODE_KEYS["in_scheme"]: {"@id": scheme},
                 NODE_KEYS["notation"]: value["code"],
+                NODE_KEYS["position"]: position if ordinal else None,
             },
         )
-        for value in column.get("values", [])
+        for position, value in enumerate(column.get("values", []), start=1)
     ]
     return {"@id": scheme, "@type": TYPES["scheme"], NODE_KEYS["top"]: top} if top else None
 
@@ -93,7 +95,12 @@ def column_node(dataset: str, column: Column) -> Node:
                 {
                     "@id": fill("property", ids),
                     "@type": TYPES["property"],
-                    "hasVariable": concept(variable, label, column.get("description"), column.get("mappings", [])),
+                    "hasVariable": clean(
+                        {
+                            **concept(variable, label, column.get("description"), column.get("mappings", [])),
+                            NODE_KEYS["source"]: {"@id": column["source"]} if column.get("source") else None,
+                        },
+                    ),
                     "hasUnit": column.get("unit_iri"),
                     "unitText": column.get("unit"),
                     "hasCodeBook": code_book(column, variable),

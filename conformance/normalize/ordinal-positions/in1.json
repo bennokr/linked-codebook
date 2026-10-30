@@ -1,0 +1,221 @@
+{
+  "@context": {
+    "accessRights": "dct:accessRights",
+    "broadMatch": {
+      "@container": "@set",
+      "@id": "skos:broadMatch",
+      "@type": "@id"
+    },
+    "citation": "dct:bibliographicCitation",
+    "closeMatch": {
+      "@container": "@set",
+      "@id": "skos:closeMatch",
+      "@type": "@id"
+    },
+    "columnCompleteness": {
+      "@id": "dsv:columnCompleteness",
+      "@type": "xsd:float"
+    },
+    "columnProperty": {
+      "@id": "dsv:columnProperty",
+      "@type": "@id"
+    },
+    "columns": {
+      "@container": "@set",
+      "@id": "dsv:column"
+    },
+    "csvw": "http://www.w3.org/ns/csvw#",
+    "datasetSchema": {
+      "@id": "dsv:datasetSchema",
+      "@type": "@id"
+    },
+    "datatype": "csvw:datatype",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dct": "http://purl.org/dc/terms/",
+    "description": "dct:description",
+    "dsv": "https://w3id.org/dsv-ontology#",
+    "exactMatch": {
+      "@container": "@set",
+      "@id": "skos:exactMatch",
+      "@type": "@id"
+    },
+    "hasCodeBook": {
+      "@id": "dsv:hasCodeBook",
+      "@type": "@id"
+    },
+    "hasUnit": {
+      "@id": "qudt:hasUnit",
+      "@type": "@id"
+    },
+    "hasVariable": {
+      "@id": "dsv:hasVariable",
+      "@type": "@id"
+    },
+    "identifier": "dct:identifier",
+    "landingPage": {
+      "@id": "dcat:landingPage",
+      "@type": "@id"
+    },
+    "license": {
+      "@id": "dct:license",
+      "@type": "@id"
+    },
+    "name": "csvw:name",
+    "narrowMatch": {
+      "@container": "@set",
+      "@id": "skos:narrowMatch",
+      "@type": "@id"
+    },
+    "nullValues": {
+      "@container": "@set",
+      "@id": "csvw:null"
+    },
+    "numberOfColumns": {
+      "@id": "dsv:numberOfColumns",
+      "@type": "xsd:integer"
+    },
+    "numberOfRows": {
+      "@id": "dsv:numberOfRows",
+      "@type": "xsd:integer"
+    },
+    "qudt": "http://qudt.org/schema/qudt/",
+    "relatedMatch": {
+      "@container": "@set",
+      "@id": "skos:relatedMatch",
+      "@type": "@id"
+    },
+    "rights": "dct:rights",
+    "schema": "https://schema.org/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "statisticalDataType": {
+      "@id": "dsv:statisticalDataType",
+      "@type": "@id"
+    },
+    "summaryStatistics": {
+      "@id": "dsv:summaryStatistics",
+      "@type": "@id"
+    },
+    "title": "dct:title",
+    "titles": "csvw:title",
+    "unitText": "schema:unitText",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@id": "urn:linked-codebook:dataset:Pain%20survey",
+  "@type": [
+    "dcat:Dataset",
+    "dsv:Dataset"
+  ],
+  "datasetSchema": {
+    "@id": "urn:linked-codebook:dataset:Pain%20survey#schema",
+    "@type": "dsv:DatasetSchema",
+    "columns": [
+      {
+        "@id": "urn:linked-codebook:dataset:Pain%20survey#column-pain",
+        "@type": "dsv:Column",
+        "codeBookClosed": true,
+        "columnProperty": {
+          "@id": "urn:linked-codebook:dataset:Pain%20survey#property-pain",
+          "@type": "dsv:ColumnProperty",
+          "hasCodeBook": {
+            "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-pain-codes",
+            "@type": "skos:ConceptScheme",
+            "skos:hasTopConcept": [
+              {
+                "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-pain-codes-high",
+                "@type": "skos:Concept",
+                "schema:position": 3,
+                "skos:inScheme": {
+                  "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-pain-codes"
+                },
+                "skos:notation": "high",
+                "skos:prefLabel": "High"
+              },
+              {
+                "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-pain-codes-medium",
+                "@type": "skos:Concept",
+                "schema:position": 2,
+                "skos:inScheme": {
+                  "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-pain-codes"
+                },
+                "skos:notation": "medium",
+                "skos:prefLabel": "Medium"
+              },
+              {
+                "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-pain-codes-low",
+                "@type": "skos:Concept",
+                "schema:position": 1,
+                "skos:inScheme": {
+                  "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-pain-codes"
+                },
+                "skos:notation": "low",
+                "skos:prefLabel": "Low"
+              }
+            ]
+          },
+          "hasVariable": {
+            "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-pain",
+            "@type": "skos:Concept",
+            "dct:source": {
+              "@id": "https://example.org/codebook#pain"
+            },
+            "skos:prefLabel": "Pain level"
+          }
+        },
+        "datatype": "string",
+        "name": "pain",
+        "summaryStatistics": {
+          "@id": "urn:linked-codebook:dataset:Pain%20survey#statistics-pain",
+          "@type": "dsv:SummaryStatistics",
+          "statisticalDataType": "dsv:OrdinalDataType"
+        },
+        "titles": "Pain level"
+      },
+      {
+        "@id": "urn:linked-codebook:dataset:Pain%20survey#column-site",
+        "@type": "dsv:Column",
+        "columnProperty": {
+          "@id": "urn:linked-codebook:dataset:Pain%20survey#property-site",
+          "@type": "dsv:ColumnProperty",
+          "hasCodeBook": {
+            "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-site-codes",
+            "@type": "skos:ConceptScheme",
+            "skos:hasTopConcept": [
+              {
+                "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-site-codes-arm",
+                "@type": "skos:Concept",
+                "skos:inScheme": {
+                  "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-site-codes"
+                },
+                "skos:notation": "arm",
+                "skos:prefLabel": "Arm"
+              },
+              {
+                "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-site-codes-leg",
+                "@type": "skos:Concept",
+                "skos:inScheme": {
+                  "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-site-codes"
+                },
+                "skos:notation": "leg",
+                "skos:prefLabel": "Leg"
+              }
+            ]
+          },
+          "hasVariable": {
+            "@id": "urn:linked-codebook:dataset:Pain%20survey#variable-site",
+            "@type": "skos:Concept",
+            "skos:prefLabel": "site"
+          }
+        },
+        "datatype": "string",
+        "name": "site",
+        "summaryStatistics": {
+          "@id": "urn:linked-codebook:dataset:Pain%20survey#statistics-site",
+          "@type": "dsv:SummaryStatistics",
+          "statisticalDataType": "dsv:NominalDataType"
+        },
+        "titles": "site"
+      }
+    ]
+  },
+  "title": "Pain survey"
+}

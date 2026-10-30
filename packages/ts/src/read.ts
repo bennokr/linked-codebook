@@ -72,19 +72,25 @@ function mappingsOf(concept: Node): Mapping[] {
   ) as Mapping[];
 }
 
+/** The codes of a code book, in the order of their positions if every code has one, else as listed. */
 function valuesOf(nodes: Node[], property: Node, nulls: string[]): Value[] {
   const scheme = resolve(nodes, get(property, 'hasCodeBook'));
-  return items(scheme[local(nodeKeys.top)]).map((item) => {
+  const found = items(scheme[local(nodeKeys.top)]).map((item) => {
     const concept = resolve(nodes, item);
     const code = text(concept[local(nodeKeys.notation)]) ?? '';
-    return clean({
+    const value = clean({
       code,
       label: text(concept[local(nodeKeys.label)]),
       description: text(concept[local(nodeKeys.definition)]),
       missing: nulls.includes(code) || undefined,
       mappings: mappingsOf(concept),
     }) as unknown as Value;
+    return { position: numberOf(concept[local(nodeKeys.position)]), value };
   });
+  if (found.length && found.every(({ position }) => position !== undefined)) {
+    found.sort((a, b) => (a.position as number) - (b.position as number));
+  }
+  return found.map(({ value }) => value);
 }
 
 function rangeOf(value: unknown): Column['missing_range'] {
@@ -95,6 +101,10 @@ function rangeOf(value: unknown): Column['missing_range'] {
 /** The IRI of a variable, unless it is the one the library would write and the caller does not need it. */
 const variableOf = (id: string | undefined, dataset: string, name: string, explicit: boolean): string | undefined =>
   explicit || id !== variableIri(dataset, { name }) ? id : undefined;
+
+/** The page that documents a variable: on its concept, or on the column property as older documents have it. */
+const sourceOf = (variable: Node, property: Node): string | undefined =>
+  text(variable[local(nodeKeys.source)]) ?? text(get(property, 'source'));
 
 function columnOf(nodes: Node[], dataset: string, node: Node, explicit: boolean): Column {
   const property = resolve(nodes, get(node, 'columnProperty'));
@@ -115,6 +125,7 @@ function columnOf(nodes: Node[], dataset: string, node: Node, explicit: boolean)
     unit: text(get(property, 'unitText')),
     unit_iri: text(get(property, 'hasUnit')),
     variable: variableOf(id, dataset, name, explicit),
+    source: sourceOf(variable, property),
     values,
     missing_values: nulls.filter((code) => !values.some((value) => value.code === code)),
     closed: get(node, 'codeBookClosed') === true || undefined,

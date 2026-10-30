@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.0
+
+- Added the slot `source`: the IRI of a web page that documents the column. It is written as `dct:source` on the variable concept, and read from there or from the column property.
+- For ordinal columns, the code concepts carry `schema:position`, and readers order the codes by it, because RDF has no order. Closed ordinal lists also set the Frictionless `categoriesOrdered`.
+
 ## 0.6.2
 
 - Validation of JSON-LD skips keys whose term is null or a keyword such as `@nest`, as JSON-LD does, instead of failing.

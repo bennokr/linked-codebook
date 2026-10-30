@@ -61,6 +61,10 @@
           },
           "type": "array"
         },
+        "source": {
+          "description": "IRI of a web page that documents the column or its variable.",
+          "type": "string"
+        },
         "unit": {
           "description": "Unit as text, for example years.",
           "type": "string"

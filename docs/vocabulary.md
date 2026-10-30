@@ -2,7 +2,7 @@
 
 <!-- Generated from spec/vocabulary.yaml by scripts/generate.py. Do not edit. -->
 
-Every term below was found in its published vocabulary on 2026-10-29.
+Every term below was found in its published vocabulary on 2026-10-30.
 
 ## `csvw`
 
@@ -20,7 +20,7 @@ Namespace: `http://www.w3.org/ns/dcat#`. Source: <https://www.w3.org/ns/dcat.ttl
 
 Namespace: `http://purl.org/dc/terms/`. Source: <https://www.dublincore.org/specifications/dublin-core/dcmi-terms/dublin_core_terms.ttl>.
 
-`dct:accessRights`, `dct:bibliographicCitation`, `dct:description`, `dct:identifier`, `dct:license`, `dct:rights`, `dct:title`
+`dct:accessRights`, `dct:bibliographicCitation`, `dct:description`, `dct:identifier`, `dct:license`, `dct:rights`, `dct:source`, `dct:title`
 
 ## `dsv`
 
@@ -38,7 +38,7 @@ Namespace: `http://qudt.org/schema/qudt/`. Source: <http://qudt.org/schema/qudt/
 
 Namespace: `https://schema.org/`. Source: <https://schema.org/version/latest/schemaorg-current-https.ttl>.
 
-`schema:Dataset`, `schema:unitText`
+`schema:Dataset`, `schema:position`, `schema:unitText`
 
 ## `skos`
 

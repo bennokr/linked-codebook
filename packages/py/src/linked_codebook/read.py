@@ -105,26 +105,28 @@ def mappings_of(concept: Node) -> list[Mapping]:
 
 
 def values_of(nodes: list[Node], prop: Node, nulls: list[str]) -> list[Value]:
+    """The codes of a code book, in the order of their positions if every code has one, else as listed."""
     scheme = resolve(nodes, get(prop, "hasCodeBook"))
-    values = []
+    found: list[tuple[float | None, Value]] = []
     for item in items(scheme.get(local(NODE_KEYS["top"]))):
         concept = resolve(nodes, item)
         code = first(text(concept.get(local(NODE_KEYS["notation"]))), "")
-        values.append(
-            cast(
-                "Value",
-                clean(
-                    {
-                        "code": code,
-                        "label": text(concept.get(local(NODE_KEYS["label"]))),
-                        "description": text(concept.get(local(NODE_KEYS["definition"]))),
-                        "missing": True if code in nulls else None,
-                        "mappings": mappings_of(concept),
-                    },
-                ),
+        value = cast(
+            "Value",
+            clean(
+                {
+                    "code": code,
+                    "label": text(concept.get(local(NODE_KEYS["label"]))),
+                    "description": text(concept.get(local(NODE_KEYS["definition"]))),
+                    "missing": True if code in nulls else None,
+                    "mappings": mappings_of(concept),
+                },
             ),
         )
-    return values
+        found.append((number_of(concept.get(local(NODE_KEYS["position"]))), value))
+    if found and all(position is not None for position, _ in found):
+        found.sort(key=lambda pair: cast("float", pair[0]))
+    return [value for _, value in found]
 
 
 def range_of(value: Any) -> dict[str, Any] | None:  # noqa: ANN401
@@ -157,6 +159,7 @@ def column_of(nodes: list[Node], dataset: str, node: Node, *, explicit: bool) ->
                 "unit": text(get(prop, "unitText")),
                 "unit_iri": text(get(prop, "hasUnit")),
                 "variable": None if not explicit and iri == variable_iri(dataset, {"name": name}) else iri,
+                "source": first(text(variable.get(local(NODE_KEYS["source"]))), text(get(prop, "source"))),
                 "values": values,
                 "missing_values": [code for code in nulls if all(value["code"] != code for value in values)],
                 "closed": get(node, "codeBookClosed") is True or None,

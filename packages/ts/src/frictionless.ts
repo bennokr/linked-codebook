@@ -22,6 +22,7 @@ function fieldOf(column: Column): Node {
         ? { value: typed(value.code, column.datatype), label: value.label }
         : typed(value.code, column.datatype),
     ),
+    categoriesOrdered: column.closed && values.length && column.level === 'ordinal' ? true : undefined,
     [rules.extension]: pick(column, identity(rules.extension_slots)),
   });
 }

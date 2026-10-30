@@ -1,0 +1,42 @@
+{
+  "columns": [
+    {
+      "closed": true,
+      "datatype": "string",
+      "label": "Pain level",
+      "level": "ordinal",
+      "name": "pain",
+      "source": "https://example.org/codebook#pain",
+      "values": [
+        {
+          "code": "low",
+          "label": "Low"
+        },
+        {
+          "code": "medium",
+          "label": "Medium"
+        },
+        {
+          "code": "high",
+          "label": "High"
+        }
+      ]
+    },
+    {
+      "datatype": "string",
+      "level": "nominal",
+      "name": "site",
+      "values": [
+        {
+          "code": "arm",
+          "label": "Arm"
+        },
+        {
+          "code": "leg",
+          "label": "Leg"
+        }
+      ]
+    }
+  ],
+  "title": "Pain survey"
+}

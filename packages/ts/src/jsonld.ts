@@ -40,15 +40,24 @@ function concept(id: string, label?: string, definition?: string, mappings?: Map
 
 function codeBook(column: Column, variable: string): Node | undefined {
   const scheme = fill('scheme', { variable });
-  const top = (column.values ?? []).map((value) =>
+  const ordinal = column.level === 'ordinal';
+  const top = (column.values ?? []).map((value, index) =>
     clean({
       ...concept(codeIri(variable, value.code), value.label, value.description, value.mappings),
       [nodeKeys.in_scheme]: { '@id': scheme },
       [nodeKeys.notation]: value.code,
+      [nodeKeys.position]: ordinal ? index + 1 : undefined,
     }),
   );
   return top.length ? { '@id': scheme, '@type': types.scheme, [nodeKeys.top]: top } : undefined;
 }
+
+/** The concept of the variable of a column, with the page that documents it. */
+const variableNode = (column: Column, id: string, label: string): Node =>
+  clean({
+    ...concept(id, label, column.description, column.mappings),
+    [nodeKeys.source]: column.source ? { '@id': column.source } : undefined,
+  });
 
 function columnNode(dataset: string, column: Column): Node {
   const variable = variableIri(dataset, column);
@@ -69,7 +78,7 @@ function columnNode(dataset: string, column: Column): Node {
     columnProperty: clean({
       '@id': fill('property', ids),
       '@type': types.property,
-      hasVariable: concept(variable, label, column.description, column.mappings),
+      hasVariable: variableNode(column, variable, label),
       hasUnit: column.unit_iri,
       unitText: column.unit,
       hasCodeBook: codeBook(column, variable),

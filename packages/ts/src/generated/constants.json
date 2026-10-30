@@ -83,6 +83,7 @@
       "unit",
       "unit_iri",
       "variable",
+      "source",
       "values",
       "closed",
       "observed",
@@ -292,6 +293,8 @@
       "in_scheme": "skos:inScheme",
       "label": "skos:prefLabel",
       "notation": "skos:notation",
+      "position": "schema:position",
+      "source": "dct:source",
       "top": "skos:hasTopConcept"
     },
     "prefixes": {
@@ -474,6 +477,10 @@
               "$ref": "#/$defs/Count"
             },
             "type": "array"
+          },
+          "source": {
+            "description": "IRI of a web page that documents the column or its variable.",
+            "type": "string"
           },
           "unit": {
             "description": "Unit as text, for example years.",
@@ -750,7 +757,7 @@
     "subject_prefix": "ds"
   },
   "vocabulary": {
-    "pinned_on": "2026-10-29",
+    "pinned_on": "2026-10-30",
     "unverified": [],
     "vocabularies": {
       "csvw": {
@@ -781,6 +788,7 @@
           "identifier": "Property",
           "license": "Property",
           "rights": "Property",
+          "source": "Property",
           "title": "Property"
         }
       },
@@ -823,6 +831,7 @@
         "source": "https://schema.org/version/latest/schemaorg-current-https.ttl",
         "terms": {
           "Dataset": "Class",
+          "position": "Property",
           "unitText": "Property"
         }
       },

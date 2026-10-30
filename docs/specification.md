@@ -112,11 +112,11 @@ The document is one node, the dataset, with these properties.
 | Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `columnProperty` and `summaryStatistics`. |
 | Column property | `dsv:ColumnProperty` | `hasVariable` is the variable concept. `hasUnit` and `unitText` carry `unit_iri` and `unit`. `hasCodeBook` is the concept scheme of the values. |
 | Summary statistics | `dsv:SummaryStatistics` | `statisticalDataType` is the meaning of the `level` and `columnCompleteness` carries `completeness`. The node is written only if one of them is set. |
-| Variable concept | `skos:Concept` | `skos:prefLabel` is the label, or else the name. `skos:definition` is the description. |
+| Variable concept | `skos:Concept` | `skos:prefLabel` is the label, or else the name. `skos:definition` is the description. `dct:source` is the IRI `source`, written as a node reference. |
 | Code book | `skos:ConceptScheme` | `skos:hasTopConcept` lists a concept for every value. |
-| Code concept | `skos:Concept` | `skos:notation` is the code, `skos:prefLabel` the label, `skos:definition` the description and `skos:inScheme` the code book. |
+| Code concept | `skos:Concept` | `skos:notation` is the code, `skos:prefLabel` the label, `skos:definition` the description and `skos:inScheme` the code book. For an ordinal column, `schema:position` is the place of the code in `values`, counted from 1. |
 
-Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data.
+Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data. RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and as they occur otherwise.
 
 Only approved mappings are written. A mapping becomes the property `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch` or `relatedMatch`, according to its `match_type`, of the variable concept or of the code concept. The properties list the `object_id` values. Draft mappings, labels, confidence, provenance and reviewers are not written.
 
@@ -244,7 +244,8 @@ A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. 
 | `name`, `label`, `description`, `datatype` | the field properties `name`, `title`, `description`, `type` |
 | `missing_values`, and the codes of values with `missing` set | the field property `missingValues` |
 | `values`, if `closed` is true | the field property `categories`: `{ "value": …, "label": … }`, or only the value if there is no label |
-| `level`, `unit`, `unit_iri`, `variable`, `values`, `closed`, `observed`, `missing_range`, `completeness`, `mappings` | the field property `x-linked-codebook` |
+| `level`, `unit`, `unit_iri`, `variable`, `source`, `values`, `closed`, `observed`, `missing_range`, `completeness`, `mappings` | the field property `x-linked-codebook` |
+| `level` is `ordinal`, and the list is closed | the field property `categoriesOrdered`, set to `true` |
 | the slots of the dataset | the property `x-linked-codebook` of the schema |
 
 Codes of `integer` and `number` fields are written as numbers if they are numbers, as defined in [section 7](#7-inference), and as text otherwise.

@@ -1,4 +1,4 @@
-pinned_on: '2026-10-29'
+pinned_on: '2026-10-30'
 unverified: []
 vocabularies:
   csvw:
@@ -25,6 +25,7 @@ vocabularies:
       identifier: Property
       license: Property
       rights: Property
+      source: Property
       title: Property
   dsv:
     namespace: https://w3id.org/dsv-ontology#
@@ -61,6 +62,7 @@ vocabularies:
     source: https://schema.org/version/latest/schemaorg-current-https.ttl
     terms:
       Dataset: Class
+      position: Property
       unitText: Property
   skos:
     namespace: http://www.w3.org/2004/02/skos/core#

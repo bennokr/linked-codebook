@@ -1,0 +1,63 @@
+{
+  "fields": [
+    {
+      "categories": [
+        {
+          "label": "Low",
+          "value": "low"
+        },
+        {
+          "label": "Medium",
+          "value": "medium"
+        },
+        {
+          "label": "High",
+          "value": "high"
+        }
+      ],
+      "categoriesOrdered": true,
+      "name": "pain",
+      "title": "Pain level",
+      "type": "string",
+      "x-linked-codebook": {
+        "closed": true,
+        "level": "ordinal",
+        "source": "https://example.org/codebook#pain",
+        "values": [
+          {
+            "code": "low",
+            "label": "Low"
+          },
+          {
+            "code": "medium",
+            "label": "Medium"
+          },
+          {
+            "code": "high",
+            "label": "High"
+          }
+        ]
+      }
+    },
+    {
+      "name": "site",
+      "type": "string",
+      "x-linked-codebook": {
+        "level": "nominal",
+        "values": [
+          {
+            "code": "arm",
+            "label": "Arm"
+          },
+          {
+            "code": "leg",
+            "label": "Leg"
+          }
+        ]
+      }
+    }
+  ],
+  "x-linked-codebook": {
+    "title": "Pain survey"
+  }
+}
