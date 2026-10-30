@@ -42,8 +42,8 @@ The pages in `docs/` are Markdown. Pages marked as generated are written by `mak
 
 Other projects install the libraries from the test page, as described in the [README](../README.md). A version is released when its two packages are in `releases/`. The packages of a version that is not released are rebuilt from the current sources with every deploy and can change, so no project should depend on them.
 
-1. Raise the version in `packages/ts/package.json` and `packages/py/pyproject.toml`, and in the install commands of the README and these docs.
+1. Raise the version in `packages/ts/package.json`, `packages/py/pyproject.toml`, the install commands of the README and the line `Draft, version …` of the specification. `make versions` checks that they agree, and `make check` runs it.
 2. Add the version to the [changelog](changelog.md).
-3. Run `make check`, then `make release`, and commit the files in `releases/`.
+3. Run `make generate` and `make check`, then `make release`, and commit the files in `releases/`.
 
 `make release` refuses to overwrite a released version. Never edit or replace a released file: projects keep its checksum.

@@ -12,7 +12,7 @@ How claims were checked: *Code* means the repository was read. *Spec* means the 
 | --- | --- |
 | Variable → concept had three models: one close match without review state (Statlet), mappings outside the metadata in SSSOM (Modlet), and a record with match type, confidence, provenance and approval (LinkedBayes). | Resolved. A mapping is the LinkedBayes record in SSSOM terms. It is approved when it has a `reviewer_id`; `approved` is not an SSSOM slot. Only approved mappings enter the JSON-LD. |
 | Measurement level had four vocabularies, none equal to DSV, and mixed storage with level. | Resolved. `datatype` (a CSVW name) and `level` (DSV) are separate. Statlet's `scale` is `numerical`; `flag` is `nominal`. |
-| Ordinal order is lost in RDF, because code concepts are a set. | Open. The JSON arrays keep the order. RDF readers do not see it. |
+| Ordinal order is lost in RDF, because code concepts are a set. | Resolved in 0.7.0. Code concepts of ordinal columns carry `schema:position`, and readers order by it. Frictionless gets `categoriesOrdered`. |
 | Missing values were handled three ways, and ranges were dropped. | Partly. `missing_values`, `missing` on a value and `missing_range` exist. The range is written as `missingRange`, which no vocabulary defines. |
 | Variable IRIs were minted differently and lossily (`%` replaced by `-`; names slugged). | Resolved. One template, percent-encoded names, and IRIs found in files are kept. |
 | Units were free text, a guessed IRI, or a mandatory IRI. | Resolved. `unit` and `unit_iri` are separate slots. |
@@ -21,11 +21,14 @@ How claims were checked: *Code* means the repository was read. *Spec* means the 
 | Statlet's context defined `csvw:titles`, which CSVW does not have. | Resolved. The vocabulary check found it; the profile uses `csvw:title` and still reads `titles`. |
 | Four meanings of "role" (analysis, graph node, structure, privacy). | Not in the profile. Roles stay in the projects. |
 | Statistics were mixed into curated metadata. | `rows` and `completeness` exist for DSV parity. They describe the data, so importers should not take them from files. |
+| Links to documentation pages were pasted into descriptions. | Resolved in 0.7.0. `source` is written as `dct:source`. |
 | Dataset-level fields differed. | The profile has title, description, identifier, license, citation, access rights and landing page. |
 
 ## semsynth and entailmap
 
 *Code*, checked against semsynth `790c03c` and entailmap `74690e1`.
+
+This describes the state before the migration. semsynth has since replaced SemMap with this profile.
 
 - semsynth's "SemMap" is a different model with the same name. Its files declare the context
   `https://w3id.org/semmap/context`, which returns 404, and use terms that DSV does not define
@@ -52,4 +55,4 @@ How claims were checked: *Code* means the repository was read. *Spec* means the 
 | **SPSS system files** | Label, value labels, up to three missing codes or a range plus one, level, display format | The source of most real codebooks. |
 | **SSSOM** (*Spec*) | `subject_id`, `predicate_id`, `object_id`, `mapping_justification`, `confidence`, `mapping_date`, `reviewer_id`, `mapping_provider`, `comment` | The exchange format for mappings. |
 
-Two gaps stand out across all of them: nobody models ordinal order in RDF, and nobody except DDI models missing ranges.
+Two gaps stand out across all of them: none of them models ordinal order in RDF (the profile uses `schema:position`), and nobody except DDI models missing ranges.

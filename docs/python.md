@@ -1,26 +1,25 @@
 # Python
 
-```bash
-pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.5.0-py3-none-any.whl
-```
-
-The package is not on PyPI yet.
+The package is not on PyPI yet. Install a released version as described in the [README](../README.md).
 
 The package needs Python 3.11 and has no dependencies. It also runs in [Pyodide](https://pyodide.org). The types of the data model are `TypedDict`s in `linked_codebook.types`.
 
 ```python
 from linked_codebook import (
     build,
-    parse,
+    canonical,
+    from_sssom,
+    infer,
+    infer_column,
+    is_numeric,
     merge,
+    observe,
+    parse,
+    run,
     to_frictionless,
     to_sssom,
-    from_sssom,
     unmatched_sssom,
-    infer_column,
-    observe,
     validate,
-    run,
 )
 ```
 

@@ -22,6 +22,7 @@ jobs:
       - run: make lint
       - run: make test
       - run: make budget
+      - run: make versions
 
   browser:
     runs-on: ubuntu-latest

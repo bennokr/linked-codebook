@@ -1,4 +1,4 @@
-.PHONY: setup generate pin golden lint test budget site smoke check release
+.PHONY: setup generate pin golden lint test budget versions site smoke check release
 
 setup:
 	uv sync --group dev
@@ -39,7 +39,10 @@ site:
 smoke: site
 	node --test site/smoke.test.ts
 
-check: lint test budget
+versions:
+	uv run python scripts/check_versions.py
+
+check: lint test budget versions
 
 # Add the packages of the current version to releases/. Commit them: they are published with the test page.
 release:

@@ -1,6 +1,6 @@
 # Linked Codebook Specification
 
-Draft, version 0.5.0
+Draft, version 0.7.0
 
 ## Abstract
 
@@ -83,6 +83,7 @@ Notes:
 - The `level` is the level of measurement and the `datatype` is the way values are stored. A column of integer codes has the datatype `integer` and the level `categorical`.
 - `missing_values` lists codes that mean no value and have no label. A code that has a label is a `value` with `missing` set to true.
 - `values` are the codes a column may hold, as declared by its author. If `closed` is true, no other codes are allowed, apart from missing values. Otherwise the list labels some codes and others may occur.
+- `source` is the IRI of a web page that documents the column or its variable.
 - `observed` are the codes found in one copy of the data, with their counts. They say what occurred, not what is allowed. A processor MUST NOT set `closed` because a list was taken from data.
 
 ## 4. Canonical JSON
@@ -137,7 +138,9 @@ A processor MUST read documents that it wrote. It SHOULD read documents from oth
 9. Every `…Match` property of the variable concept or a code concept becomes a mapping. The `reviewer_id` of these mappings is `imported`, because only approved mappings are written.
 10. `missingRange` is an object with `low` and `high`, or a list of two numbers.
 11. If the dataset has no `license`, the `rights` are used.
-12. `rows` is read from `numberOfRows` of the summary statistics of the dataset and `completeness` from `columnCompleteness` of those of the column. The number of columns is not read.
+12. `closed` is true if `codeBookClosed` is true. The `source` is the `dct:source` of the variable concept, or else of the column property.
+13. `rows` is read from `numberOfRows` of the summary statistics of the dataset and `completeness` from `columnCompleteness` of those of the column. The number of columns is not read.
+14. The codes of a code book are listed by their `schema:position` if every code has one, and as they occur otherwise.
 
 A document without columns is an error.
 
@@ -231,6 +234,8 @@ Errors are text. For errors against the model they start with the path of the va
 ### 9.2 JSON-LD documents
 
 A JSON-LD document has no errors if every key and every `@type` expands, through the `@context` of the document, to an IRI that is listed in [Vocabulary](vocabulary.md). Keys that start with `@`, the extension terms in `spec/jsonld.yaml` and the accepted types in the same file are excepted. If the `@context` is not an object, the context of this specification is used.
+
+JSON-LD drops a key that the context maps to `null`, together with its value. A key that the context maps to a keyword such as `@nest` is not a property. The check skips both.
 
 A document is checked for the terms it uses, not for the shape of its graph.
 

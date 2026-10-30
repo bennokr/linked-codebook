@@ -1,15 +1,26 @@
 # TypeScript
 
-```bash
-npm install https://bennokr.github.io/linked-codebook/linked-codebook-0.5.0.tgz
-```
+The package is not on npm yet. Install a released version as described in the [README](../README.md).
 
-The package is not on npm yet.
-
-The package needs Node 22 or a browser. It has no dependencies. The types of the data model are exported.
+The package needs Node 22.18 or later, or a browser. It has no dependencies. The types of the data model are exported.
 
 ```ts
-import { build, parse, merge, toFrictionless, toSssom, fromSssom, unmatchedSssom, inferColumn, observe, validate, run } from 'linked-codebook';
+import {
+  build,
+  canonical,
+  fromSssom,
+  infer,
+  inferColumn,
+  isNumeric,
+  merge,
+  observe,
+  parse,
+  run,
+  toFrictionless,
+  toSssom,
+  unmatchedSssom,
+  validate,
+} from 'linked-codebook';
 ```
 
 | Function | Result |
