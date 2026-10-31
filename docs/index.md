@@ -12,6 +12,7 @@ Linked Codebook is a data model for the variables of a table, and the tools to r
 | [TypeScript](typescript.md) | The TypeScript library. |
 | [Python](python.md) | The Python library. |
 | [Contributing](contributing.md) | How to change the specification and the code. |
+| [Quality baseline](quality-baseline.md) | The checks and configuration shared by the projects that use this model. |
 | [Changelog](changelog.md) | Changes per version. |
 
 The model is written in [LinkML](https://linkml.io) in [`spec/profile.yaml`](../spec/profile.yaml).
