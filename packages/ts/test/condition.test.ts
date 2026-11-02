@@ -39,16 +39,18 @@ const profile = {
   ],
 } as Profile;
 const data = { smoker: ['1', '0', '9', ''], cigs: ['', '', '', ''] };
-type Report = { columns: Record<string, unknown> };
+interface Report {
+  columns: Record<string, unknown>;
+}
 
 test('a blank controlling answer is not applicable, as REDCap decides', () => {
-  const report = missingness(profile, data) as Report;
+  const report = missingness(profile, data) as unknown as Report;
   assert.deepEqual(report.columns['cigs'], { blank: 4, blank_applicable: 1, blank_not_applicable: 3, present: 0 });
   assert.deepEqual(report.columns['smoker'], { blank: 1, declared: { '9': 1 }, present: 2 });
 });
 
 test('a missing code of the controlling question makes the rule unknown when a blank is unknown', () => {
-  const report = missingness(profile, data, { blank: 'unknown' }) as Report;
+  const report = missingness(profile, data, { blank: 'unknown' }) as unknown as Report;
   assert.deepEqual(report.columns['cigs'], {
     blank: 4,
     blank_applicable: 1,
