@@ -1,5 +1,6 @@
 import { redcap } from './constants.ts';
 import type { Column, Profile, Value } from './generated/types.ts';
+import { isNumeric } from './infer.ts';
 import { clean } from './jsonld.ts';
 
 type Row = Record<string, string>;
@@ -100,18 +101,30 @@ function valuesOf(row: Row): Value[] {
   return redcap.choice_types.includes(type) ? choicesOf(row['choices'] ?? '') : [];
 }
 
+/** Limits of a numeric field; limits that are not numbers, such as dates, are left out. */
+function limitsOf(row: Row): Pick<Column, 'minimum' | 'maximum'> {
+  const limit = (slot: string): number | undefined => (isNumeric(row[slot] ?? '') ? Number(row[slot]) : undefined);
+  return clean({ minimum: limit('minimum'), maximum: limit('maximum') }) as Pick<Column, 'minimum' | 'maximum'>;
+}
+
+/** The properties that every column of a field has, whatever its type. */
+const commonOf = (row: Row): Partial<Column> => ({
+  label: optional(row['label']),
+  description: optional(row['note']),
+  applies_when: optional(row['branching']),
+  group: optional(row['form']),
+  identifying: row['identifier']?.toLowerCase() === redcap.identifier_mark || undefined,
+});
+
 function columnsOf(row: Row): Column[] {
   const { name = '', type = '' } = row;
   if (!name || redcap.skipped.includes(type)) return [];
-  const common = {
-    label: optional(row['label']),
-    description: optional(row['note']),
-    applies_when: optional(row['branching']),
-  };
+  const common = commonOf(row);
   if (type === redcap.checkbox) return checkboxColumns(row, common);
   const values = valuesOf(row);
   if (values.length) return [categorical(name, values, common)];
-  return [clean({ name, ...common, ...kindOf(type, row['validation'] ?? '') }) as unknown as Column];
+  const limits = limitsOf(row);
+  return [clean({ name, ...common, ...kindOf(type, row['validation'] ?? ''), ...limits }) as unknown as Column];
 }
 
 /** Reads a REDCap data dictionary (CSV) into a profile. */

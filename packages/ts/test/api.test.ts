@@ -1,7 +1,19 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { vocabulary } from '../src/constants.ts';
-import { build, inferColumn, merge, parse, unmatchedSssom, validate, type Profile } from '../src/index.ts';
+import { readFileSync } from 'node:fs';
+import {
+  build,
+  fromTables,
+  inferColumn,
+  merge,
+  parse,
+  tableWarnings,
+  toTables,
+  unmatchedSssom,
+  validate,
+  type Profile,
+} from '../src/index.ts';
 
 const profile: Profile = {
   title: 'Example',
@@ -75,4 +87,34 @@ test('explicit keeps the variable IRIs that the library would write', () => {
   const written = build({ identifier: 'urn:x:1', columns: [{ name: 'a' }] });
   assert.equal(parse(written).columns[0]?.variable, undefined);
   assert.equal(parse(written, { explicit: true }).columns[0]?.variable, 'urn:x:1#variable-a');
+});
+
+const tabled = JSON.parse(
+  readFileSync(new URL('../../../conformance/to-tables/basic/in1.json', import.meta.url), 'utf8'),
+) as Profile;
+
+test('a profile survives being written as tables and read back', () => {
+  assert.deepEqual(fromTables(toTables(tabled)), tabled);
+  assert.deepEqual(tableWarnings(toTables(tabled)), []);
+});
+
+test('a table cell that does not fit is reported with its sheet, row and header', () => {
+  const tables = {
+    Columns: [
+      ['name', 'minimum'],
+      ['a', 'low'],
+    ],
+  };
+  assert.throws(() => fromTables(tables), /Columns row 2, minimum: 'low' is not a number/);
+  assert.throws(
+    () =>
+      fromTables({
+        Columns: [['name'], ['a']],
+        Values: [
+          ['column', 'code'],
+          ['b', '1'],
+        ],
+      }),
+    /Values row 2/,
+  );
 });

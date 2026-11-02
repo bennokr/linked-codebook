@@ -162,12 +162,25 @@ def column_of(nodes: list[Node], dataset: str, node: Node, *, explicit: bool) ->
                 "source": first(text(variable.get(local(NODE_KEYS["source"]))), text(get(prop, "source"))),
                 "values": values,
                 "missing_values": [code for code in nulls if all(value["code"] != code for value in values)],
-                "closed": get(node, "codeBookClosed") is True or None,
-                "missing_range": range_of(get(node, "missingRange")),
-                "applies_when": text(get(node, "appliesWhen")),
+                **extensions_of(node),
                 "mappings": mappings_of(variable),
             },
         ),
+    )
+
+
+def extensions_of(node: Node) -> Node:
+    """The properties of a column that no vocabulary defines."""
+    return clean(
+        {
+            "closed": get(node, "codeBookClosed") is True or None,
+            "missing_range": range_of(get(node, "missingRange")),
+            "applies_when": text(get(node, "appliesWhen")),
+            "minimum": number_of(get(node, "minimumValue")),
+            "maximum": number_of(get(node, "maximumValue")),
+            "group": text(get(node, "columnGroup")),
+            "identifying": get(node, "identifying") is True or None,
+        },
     )
 
 

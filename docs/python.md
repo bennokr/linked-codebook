@@ -10,6 +10,7 @@ from linked_codebook import (
     canonical,
     from_redcap,
     from_sssom,
+    from_tables,
     infer,
     infer_column,
     is_numeric,
@@ -17,8 +18,10 @@ from linked_codebook import (
     observe,
     parse,
     run,
+    table_warnings,
     to_frictionless,
     to_sssom,
+    to_tables,
     unmatched_sssom,
     validate,
 )
@@ -32,6 +35,9 @@ from linked_codebook import (
 | `to_frictionless(profile)` | A Frictionless Table Schema. |
 | `to_sssom(profile)` | SSSOM TSV as text. |
 | `from_redcap(text)` | A `Profile` read from a REDCap data dictionary (CSV text). |
+| `from_tables(tables)` | A `Profile` read from tables: sheet name to rows, the first row holding the headers. Cells may be text, numbers, booleans or `None`. |
+| `to_tables(profile)` | Tables for a profile. |
+| `table_warnings(tables)` | The sheets and headers of tables that `from_tables` does not use. |
 | `from_sssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatched_sssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |
 | `infer(data)` | A `Profile` with the datatype and level of every column of `{name: values}`, and the `observed` codes of categorical columns. |

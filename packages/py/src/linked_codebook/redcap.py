@@ -6,6 +6,7 @@ import re
 from typing import Any, cast
 
 from .constants import REDCAP
+from .infer import is_numeric
 from .jsonld import clean
 from .types import Column, Profile, Value
 
@@ -63,7 +64,13 @@ def columns_of(row: Row) -> list[Column]:
     name, kind = row["name"], row["type"]
     if not name or kind in REDCAP["skipped"]:
         return []
-    common = {"label": row["label"], "description": row["note"], "applies_when": row["branching"]}
+    common = {
+        "label": row["label"],
+        "description": row["note"],
+        "applies_when": row["branching"],
+        "group": row["form"],
+        "identifying": row["identifier"].lower() == REDCAP["identifier_mark"] or None,
+    }
     if kind == REDCAP["checkbox"]:
         return [
             categorical(
@@ -77,7 +84,8 @@ def columns_of(row: Row) -> list[Column]:
     values = listed(builtin) if builtin else choices_of(row["choices"]) if kind in REDCAP["choice_types"] else []
     if values:
         return [categorical(name, values, common)]
-    return [cast("Column", clean({"name": name, **common, **kind_of(kind, row["validation"])}))]
+    limits = {slot: float(row[slot]) for slot in ("minimum", "maximum") if is_numeric(row[slot])}
+    return [cast("Column", clean({"name": name, **common, **kind_of(kind, row["validation"]), **limits}))]
 
 
 def from_redcap(text: str) -> Profile:

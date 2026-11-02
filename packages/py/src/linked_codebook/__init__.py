@@ -9,6 +9,7 @@ from .merge import merge
 from .read import parse
 from .redcap import from_redcap
 from .sssom import from_sssom, to_sssom, unmatched_sssom
+from .table import from_tables, table_warnings, to_tables
 from .validate import validate
 
 __all__ = [
@@ -17,6 +18,7 @@ __all__ = [
     "canonical",
     "from_redcap",
     "from_sssom",
+    "from_tables",
     "infer",
     "infer_column",
     "is_numeric",
@@ -24,8 +26,10 @@ __all__ = [
     "observe",
     "parse",
     "run",
+    "table_warnings",
     "to_frictionless",
     "to_sssom",
+    "to_tables",
     "unmatched_sssom",
     "validate",
 ]

@@ -22,7 +22,7 @@ classes:
     slots: [title, description, identifier, license, citation, access_rights, landing_page, rows, columns]
   Column:
     description: One column of the table, described as a variable.
-    slots: [name, label, description, datatype, level, unit, unit_iri, variable, source, values, closed, observed, missing_values, missing_range, completeness, applies_when, mappings]
+    slots: [name, label, description, datatype, level, unit, unit_iri, variable, source, values, closed, observed, missing_values, missing_range, completeness, applies_when, minimum, maximum, group, identifying, mappings]
   Value:
     description: A code that the column may hold, with its label.
     slots: [code, label, description, missing, mappings]
@@ -60,6 +60,10 @@ slots:
   missing_values: {description: "Codes that mean no value and have no label.", multivalued: true}
   missing_range: {description: "Numbers that mean no value.", range: Range}
   applies_when: {description: "Condition under which the column has a value, as the source writes it, for example REDCap branching logic. Rows that do not meet it are missing by design."}
+  minimum: {description: "Smallest number the column may hold, apart from missing values. A limit of the source, not the smallest number found.", range: float}
+  maximum: {description: "Largest number the column may hold, apart from missing values.", range: float}
+  group: {description: "Name of the group of columns that the column belongs to, for example the form of a REDCap field."}
+  identifying: {description: "True if the values identify a person or a record: names, record numbers, contact details. Such a column needs care when the data are shared or synthesized.", range: boolean}
   completeness: {description: "Share of the rows that have a value, between 0 and 1.", range: float, minimum_value: 0, maximum_value: 1}
   mappings: {description: "Links to concepts.", range: Mapping, multivalued: true, inlined_as_list: true}
   code: {description: "The code as stored in the table, as text.", required: true}

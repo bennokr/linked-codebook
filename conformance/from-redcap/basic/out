@@ -2,17 +2,21 @@
   "columns": [
     {
       "datatype": "string",
+      "group": "demographics",
       "label": "Record ID",
       "name": "record_id"
     },
     {
       "datatype": "date",
+      "group": "demographics",
+      "identifying": true,
       "label": "Date of birth",
       "name": "dob"
     },
     {
       "closed": true,
       "datatype": "integer",
+      "group": "demographics",
       "label": "Sex at birth",
       "level": "categorical",
       "name": "sex",
@@ -34,6 +38,7 @@
     {
       "closed": true,
       "datatype": "integer",
+      "group": "history",
       "label": "Currently smokes",
       "level": "categorical",
       "name": "smoker",
@@ -52,13 +57,17 @@
       "applies_when": "[smoker] = '1'",
       "datatype": "integer",
       "description": "Average over the last month",
+      "group": "history",
       "label": "Cigarettes per day",
       "level": "numerical",
+      "maximum": 80,
+      "minimum": 0,
       "name": "cigs_per_day"
     },
     {
       "closed": true,
       "datatype": "integer",
+      "group": "history",
       "label": "Symptoms (Cough)",
       "level": "categorical",
       "name": "symptoms___1",
@@ -76,6 +85,7 @@
     {
       "closed": true,
       "datatype": "integer",
+      "group": "history",
       "label": "Symptoms (Fever)",
       "level": "categorical",
       "name": "symptoms___2",
@@ -93,6 +103,7 @@
     {
       "closed": true,
       "datatype": "integer",
+      "group": "history",
       "label": "Symptoms (Other)",
       "level": "categorical",
       "name": "symptoms___other_3",
@@ -110,12 +121,16 @@
     {
       "datatype": "number",
       "description": "kg",
+      "group": "exam",
       "label": "Weight",
       "level": "numerical",
+      "maximum": 300,
+      "minimum": 20,
       "name": "weight_kg"
     },
     {
       "datatype": "number",
+      "group": "exam",
       "label": "BMI",
       "level": "numerical",
       "name": "bmi"

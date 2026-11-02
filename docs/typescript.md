@@ -10,6 +10,7 @@ import {
   canonical,
   fromRedcap,
   fromSssom,
+  fromTables,
   infer,
   inferColumn,
   isNumeric,
@@ -17,8 +18,10 @@ import {
   observe,
   parse,
   run,
+  tableWarnings,
   toFrictionless,
   toSssom,
+  toTables,
   unmatchedSssom,
   validate,
 } from 'linked-codebook';
@@ -31,6 +34,9 @@ import {
 | `merge(base, incoming)` | `base` completed with `incoming`. |
 | `toFrictionless(profile)` | A Frictionless Table Schema. |
 | `toSssom(profile)` | SSSOM TSV as text. |
+| `fromTables(tables)` | A `Profile` read from tables: sheet name to rows, the first row holding the headers. Cells may be text, numbers, booleans or `null`. |
+| `toTables(profile)` | Tables for a profile. |
+| `tableWarnings(tables)` | The sheets and headers of tables that `fromTables` does not use. |
 | `fromRedcap(text)` | A `Profile` read from a REDCap data dictionary (CSV text). |
 | `fromSssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatchedSssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |

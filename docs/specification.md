@@ -1,6 +1,6 @@
 # Linked Codebook Specification
 
-Draft, version 0.8.0
+Draft, version 0.9.0
 
 ## Abstract
 
@@ -23,8 +23,9 @@ This is a draft. It may change without notice. Changes are listed in the [change
 9. [Validation](#9-validation)
 10. [Frictionless](#10-frictionless)
 11. [REDCap](#11-redcap)
-12. [Command line](#12-command-line)
-13. [References](#13-references)
+12. [Tables](#12-tables)
+13. [Command line](#13-command-line)
+14. [References](#14-references)
 
 ## 1. Introduction
 
@@ -112,14 +113,14 @@ The document is one node, the dataset, with these properties.
 | Dataset | `dcat:Dataset`, `dsv:Dataset` | `title`, `description`, `identifier`, `citation`, `accessRights` and `landingPage` carry the slots of the same meaning. `license` is written as `license` if it starts with `http:` or `https:`, and as `rights` otherwise. `datasetSchema` is the schema node. |
 | Dataset statistics | `dsv:SummaryStatistics` | `numberOfRows` carries `rows` and `numberOfColumns` the number of columns. The node is written only if the profile has `rows`. |
 | Schema | `dsv:DatasetSchema` | `columns` is the list of column nodes, in table order. |
-| Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `appliesWhen`, `columnProperty` and `summaryStatistics`. |
+| Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `appliesWhen`, `minimumValue`, `maximumValue`, `columnGroup`, `identifying`, `columnProperty` and `summaryStatistics`. |
 | Column property | `dsv:ColumnProperty` | `hasVariable` is the variable concept. `hasUnit` and `unitText` carry `unit_iri` and `unit`. `hasCodeBook` is the concept scheme of the values. |
 | Summary statistics | `dsv:SummaryStatistics` | `statisticalDataType` is the meaning of the `level` and `columnCompleteness` carries `completeness`. The node is written only if one of them is set. |
 | Variable concept | `skos:Concept` | `skos:prefLabel` is the label, or else the name. `skos:definition` is the description. `dct:source` is the IRI `source`, written as a node reference. |
 | Code book | `skos:ConceptScheme` | `skos:hasTopConcept` lists a concept for every value. |
 | Code concept | `skos:Concept` | `skos:notation` is the code, `skos:prefLabel` the label, `skos:definition` the description and `skos:inScheme` the code book. For an ordinal column, `schema:position` is the place of the code in `values`, counted from 1. |
 
-Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `appliesWhen` carries `applies_when` and is not defined by any vocabulary. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data. RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and as they occur otherwise.
+Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `appliesWhen` carries `applies_when`; `minimumValue`, `maximumValue`, `columnGroup` and `identifying` carry `minimum`, `maximum`, `group` and `identifying` (only if true). None of these is defined by any vocabulary. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data. RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and as they occur otherwise.
 
 Only approved mappings are written. A mapping becomes the property `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch` or `relatedMatch`, according to its `match_type`, of the variable concept or of the code concept. The properties list the `object_id` values. Draft mappings, labels, confidence, provenance and reviewers are not written.
 
@@ -250,8 +251,9 @@ A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. 
 | `columns` | `fields`, in the same order |
 | `name`, `label`, `description`, `datatype` | the field properties `name`, `title`, `description`, `type` |
 | `missing_values`, and the codes of values with `missing` set | the field property `missingValues` |
+| `minimum`, `maximum` | the field constraints `minimum` and `maximum` |
 | `values`, if `closed` is true | the field property `categories`: `{ "value": …, "label": … }`, or only the value if there is no label |
-| `level`, `unit`, `unit_iri`, `variable`, `source`, `values`, `closed`, `observed`, `missing_range`, `completeness`, `applies_when`, `mappings` | the field property `x-linked-codebook` |
+| `level`, `unit`, `unit_iri`, `variable`, `source`, `values`, `closed`, `observed`, `missing_range`, `completeness`, `applies_when`, `group`, `identifying`, `mappings` | the field property `x-linked-codebook` |
 | `level` is `ordinal`, and the list is closed | the field property `categoriesOrdered`, set to `true` |
 | the slots of the dataset | the property `x-linked-codebook` of the schema |
 
@@ -275,6 +277,9 @@ Header names are compared in lower case without punctuation, so `Variable / Fiel
 | Field Label | `label` |
 | Field Note | `description` |
 | Branching Logic | `applies_when`, as written. It is not parsed. |
+| Form Name | `group` |
+| Identifier? | `identifying`, true if the cell is `y` |
+| Text Validation Min, Max | `minimum`, `maximum`, if they are numbers. Limits of dates are not read. |
 | Field Type `dropdown`, `radio` | `values` from the choices, `closed` is true, `level` is `categorical`. |
 | Field Type `yesno`, `truefalse` | The built-in values `1` Yes and `0` No, or `1` True and `0` False, `closed`, `categorical`. |
 | Field Type `checkbox` | One column `name___code` for each choice, with the values `0` Unchecked and `1` Checked. The code is in lower case and other characters become `_`. The label is the field label with the choice label in brackets. |
@@ -282,15 +287,32 @@ Header names are compared in lower case without punctuation, so `Variable / Fiel
 | Field Type `calc`, `slider` | `number` or `integer`, `numerical`. The calculation is not kept. |
 | Field Type `descriptive`, `file` | No column. |
 
-Choices are written `code, label | code, label`. The code ends at the first comma. The datatype is `integer` if every code is a whole number, and `string` otherwise. The form name, section header, minimum and maximum, identifier flag, required flag and the other columns have no slot in the model and are not read.
+Choices are written `code, label | code, label`. The code ends at the first comma. The datatype is `integer` if every code is a whole number, and `string` otherwise. The section header, required flag and the other columns have no slot in the model and are not read.
 
 [redcap]: https://projectredcap.org/
 
-## 12. Command line
+## 12. Tables
+
+A processor MAY read and write a profile as tables: a set of sheets, each a list of rows of cells, the first row holding the headers. This is what a spreadsheet workbook or a folder of CSV files holds. The library does not read workbook files: the application opens them and hands over the cells, so that it can report cells whose type is not what the format expects (a number where a code is wanted loses leading zeros). The rules are in [`spec/table.yaml`](../spec/table.yaml).
+
+Sheet and header names are compared in lower case without punctuation. Sheets and headers that are not listed are ignored by `from-tables` and reported by `check-tables`. A blank cell means that the slot is not specified. Booleans are `true` or `false`; a reader also accepts `yes`, `no`, `1` and `0`. Cells may be text, numbers, booleans or empty.
+
+| Sheet | One row for | Headers |
+| --- | --- | --- |
+| `Columns` | a column, in table order | `name` (required), `label`, `description`, `datatype`, `level`, `unit`, `unit_iri`, `variable`, `source`, `closed`, `missing_low`, `missing_high`, `completeness`, `applies_when`, `minimum`, `maximum`, `group`, `identifying` |
+| `Values` | a code of a column, in the order of the column | `column` and `code` (required), `label`, `description`, `missing` |
+| `Mappings` | a link to a concept | `column`, `match_type` and `object_id` (required), `code` (empty for a link of the column), `object_label`, `confidence`, `provenance`, `retrieved_at`, `reviewer_id`, `description` |
+| `Dataset` | a slot of the dataset | `key` and `value`: `title`, `description`, `identifier`, `license`, `citation`, `access_rights`, `landing_page`, `rows` |
+
+Each fact has one place. Whether a list of values is complete (`closed`) is a fact of the column, so it is on the `Columns` sheet and not repeated on every value. A code that means no value is a row of `Values` with `missing` set; a row with no label and no description is read as an unlabelled missing code (`missing_values`). A numeric range of missing values is `missing_low` and `missing_high`, both or neither. There is no sheet of missing codes that apply to every column: a code that is missing in every column is a row for every column. The order of the codes is the order of the rows. Observed counts are not written: they describe one copy of the data.
+
+A reader MUST fail, naming the sheet and the row (counted as in a spreadsheet, the header being row 1), for a cell that does not fit its header, a row without a required header, a `Values` or `Mappings` row that names a column or code that does not exist, a column listed twice and a `Columns` sheet without columns. The headers `closed`, `is_missing` and `order` of the `Values` sheet and the headers `role`, `measurement`, `type` and `title` of the `Columns` sheet belong to an earlier workbook. They have no meaning here, and `check-tables` reports them.
+
+## 13. Command line
 
 The command line is defined in [Command line](cli.md). A processor MUST provide the commands listed there, MUST print the same text as every other processor and MUST use the same exit codes.
 
-## 13. References
+## 14. References
 
 - [DSV][dsv]: Dataset-Variable Ontology.
 - [Table Schema][frictionless]: Frictionless Data specification.

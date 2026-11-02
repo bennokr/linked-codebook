@@ -92,6 +92,10 @@ def column_node(dataset: str, column: Column) -> Node:
             "missingRange": column.get("missing_range"),
             "codeBookClosed": column.get("closed") or None,
             "appliesWhen": column.get("applies_when"),
+            "minimumValue": column.get("minimum"),
+            "maximumValue": column.get("maximum"),
+            "columnGroup": column.get("group"),
+            "identifying": column.get("identifying") or None,
             "columnProperty": clean(
                 {
                     "@id": fill("property", ids),

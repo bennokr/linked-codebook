@@ -106,6 +106,18 @@ const variableOf = (id: string | undefined, dataset: string, name: string, expli
 const sourceOf = (variable: Node, property: Node): string | undefined =>
   text(variable[local(nodeKeys.source)]) ?? text(get(property, 'source'));
 
+/** The properties of a column that no vocabulary defines. */
+const extensionsOf = (node: Node): Partial<Column> =>
+  clean({
+    closed: get(node, 'codeBookClosed') === true || undefined,
+    missing_range: rangeOf(get(node, 'missingRange')),
+    applies_when: text(get(node, 'appliesWhen')),
+    minimum: numberOf(get(node, 'minimumValue')),
+    maximum: numberOf(get(node, 'maximumValue')),
+    group: text(get(node, 'columnGroup')),
+    identifying: get(node, 'identifying') === true || undefined,
+  }) as Partial<Column>;
+
 function columnOf(nodes: Node[], dataset: string, node: Node, explicit: boolean): Column {
   const property = resolve(nodes, get(node, 'columnProperty'));
   const variable = resolve(nodes, get(property, 'hasVariable'));
@@ -128,9 +140,7 @@ function columnOf(nodes: Node[], dataset: string, node: Node, explicit: boolean)
     source: sourceOf(variable, property),
     values,
     missing_values: nulls.filter((code) => !values.some((value) => value.code === code)),
-    closed: get(node, 'codeBookClosed') === true || undefined,
-    missing_range: rangeOf(get(node, 'missingRange')),
-    applies_when: text(get(node, 'appliesWhen')),
+    ...extensionsOf(node),
     mappings: mappingsOf(variable),
   }) as unknown as Column;
 }

@@ -8,6 +8,7 @@ import { parse } from './read.ts';
 import { fromRedcap } from './redcap.ts';
 import { toFrictionless } from './frictionless.ts';
 import { fromSssom, toSssom } from './sssom.ts';
+import { fromTables, tableWarnings, toTables } from './table.ts';
 import { validate } from './validate.ts';
 
 export interface Result {
@@ -29,6 +30,12 @@ const commands: Record<string, (...texts: string[]) => Result> = {
   normalize: (profile) => done(canonical(load(profile))),
   build: (profile) => done(canonical(build(load(profile)))),
   'from-redcap': (dictionary) => done(canonical(fromRedcap(dictionary))),
+  'from-tables': (tables) => done(canonical(fromTables(JSON.parse(tables)))),
+  'to-tables': (profile) => done(canonical(toTables(load(profile)))),
+  'check-tables': (tables) => {
+    const warnings = tableWarnings(JSON.parse(tables));
+    return done(warnings.length ? `${warnings.join('\n')}\n` : 'ok\n');
+  },
   'to-frictionless': (profile) => done(canonical(toFrictionless(load(profile)))),
   'to-sssom': (profile) => done(toSssom(load(profile))),
   'from-sssom': (sssom, profile) => done(canonical(fromSssom(sssom, load(profile)))),

@@ -9,6 +9,12 @@ headers:
   note: [fieldnote]
   validation: [textvalidationtypeorshowslidernumber]
   branching: [branchinglogicshowfieldonlyif, branchinglogic]
+  form: [formname]
+  minimum: [textvalidationmin]
+  maximum: [textvalidationmax]
+  identifier: [identifier]
+# The Identifier? column marks a field with identifying data when it holds this (compared in lower case).
+identifier_mark: "y"
 # Field types that hold no data.
 skipped: [descriptive, file]
 # Field types with a built-in list of choices: code, label.

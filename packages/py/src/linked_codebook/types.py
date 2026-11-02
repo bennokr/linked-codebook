@@ -54,9 +54,13 @@ class Column(TypedDict):
     completeness: NotRequired[float]
     datatype: NotRequired[Datatype]
     description: NotRequired[str]
+    group: NotRequired[str]
+    identifying: NotRequired[bool]
     label: NotRequired[str]
     level: NotRequired[Level]
     mappings: NotRequired[list[Mapping]]
+    maximum: NotRequired[float]
+    minimum: NotRequired[float]
     missing_range: NotRequired[Range]
     missing_values: NotRequired[list[str]]
     name: str

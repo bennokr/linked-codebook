@@ -13,6 +13,7 @@ from .merge import merge
 from .read import parse
 from .redcap import from_redcap
 from .sssom import from_sssom, to_sssom
+from .table import from_tables, table_warnings, to_tables
 from .types import Profile
 from .validate import validate
 
@@ -42,6 +43,9 @@ COMMANDS: dict[str, Callable[..., Result]] = {
     "normalize": lambda profile: done(canonical(load(profile))),
     "build": lambda profile: done(canonical(build(load(profile)))),
     "from-redcap": lambda dictionary: done(canonical(from_redcap(dictionary))),
+    "from-tables": lambda tables: done(canonical(from_tables(json.loads(tables)))),
+    "to-tables": lambda profile: done(canonical(to_tables(load(profile)))),
+    "check-tables": lambda tables: done("".join(f"{w}\n" for w in table_warnings(json.loads(tables))) or "ok\n"),
     "to-frictionless": lambda profile: done(canonical(to_frictionless(load(profile)))),
     "to-sssom": lambda profile: done(to_sssom(load(profile))),
     "from-sssom": lambda sssom, profile: done(canonical(from_sssom(sssom, load(profile)))),

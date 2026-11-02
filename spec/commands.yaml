@@ -26,3 +26,12 @@ from-redcap:
 to-frictionless:
   files: [profile]
   summary: Print the profile as a Frictionless Table Schema, with the other slots in the property x-linked-codebook.
+from-tables:
+  files: [tables]
+  summary: Print a profile read from tables, a JSON object of sheet names and rows (the first row holds the headers).
+to-tables:
+  files: [profile]
+  summary: Print the profile as tables, a JSON object of sheet names and rows.
+check-tables:
+  files: [tables]
+  summary: List the sheets and headers of tables that a reader does not use. Prints ok if there are none.

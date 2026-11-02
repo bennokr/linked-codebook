@@ -6,6 +6,12 @@
       ],
       "summary": "Print a profile as DSV JSON-LD."
     },
+    "check-tables": {
+      "files": [
+        "tables"
+      ],
+      "summary": "List the sheets and headers of tables that a reader does not use. Prints ok if there are none."
+    },
     "from-redcap": {
       "files": [
         "dictionary"
@@ -18,6 +24,12 @@
         "profile"
       ],
       "summary": "Print the mappings in an SSSOM TSV file for the columns and codes of a profile."
+    },
+    "from-tables": {
+      "files": [
+        "tables"
+      ],
+      "summary": "Print a profile read from tables, a JSON object of sheet names and rows (the first row holds the headers)."
     },
     "infer": {
       "files": [
@@ -49,6 +61,12 @@
         "profile"
       ],
       "summary": "Print the mappings of a profile as SSSOM TSV."
+    },
+    "to-tables": {
+      "files": [
+        "profile"
+      ],
+      "summary": "Print the profile as tables, a JSON object of sheet names and rows."
     },
     "validate": {
       "files": [
@@ -96,6 +114,8 @@
       "missing_range",
       "completeness",
       "applies_when",
+      "group",
+      "identifying",
       "mappings"
     ],
     "field": {
@@ -267,7 +287,11 @@
     "extensions": [
       "missingRange",
       "codeBookClosed",
-      "appliesWhen"
+      "appliesWhen",
+      "minimumValue",
+      "maximumValue",
+      "columnGroup",
+      "identifying"
     ],
     "imported_reviewer": "imported",
     "iris": {
@@ -472,8 +496,20 @@
         "choicescalculationsorsliderlabels",
         "selectchoicesorcalculations"
       ],
+      "form": [
+        "formname"
+      ],
+      "identifier": [
+        "identifier"
+      ],
       "label": [
         "fieldlabel"
+      ],
+      "maximum": [
+        "textvalidationmax"
+      ],
+      "minimum": [
+        "textvalidationmin"
       ],
       "name": [
         "variablefieldname",
@@ -489,6 +525,7 @@
         "textvalidationtypeorshowslidernumber"
       ]
     },
+    "identifier_mark": "y",
     "integer_code": "[-+]?[0-9]+",
     "skipped": [
       "descriptive",
@@ -553,6 +590,14 @@
             "description": "Definition of the dataset, column or value.",
             "type": "string"
           },
+          "group": {
+            "description": "Name of the group of columns that the column belongs to, for example the form of a REDCap field.",
+            "type": "string"
+          },
+          "identifying": {
+            "description": "True if the values identify a person or a record: names, record numbers, contact details. Such a column needs care when the data are shared or synthesized.",
+            "type": "boolean"
+          },
           "label": {
             "description": "Human-readable name of the column or value.",
             "type": "string"
@@ -567,6 +612,14 @@
               "$ref": "#/$defs/Mapping"
             },
             "type": "array"
+          },
+          "maximum": {
+            "description": "Largest number the column may hold, apart from missing values.",
+            "type": "number"
+          },
+          "minimum": {
+            "description": "Smallest number the column may hold, apart from missing values. A limit of the source, not the smallest number found.",
+            "type": "number"
           },
           "missing_range": {
             "$ref": "#/$defs/Range",
@@ -867,6 +920,145 @@
       "skos": "http://www.w3.org/2004/02/skos/core#"
     },
     "subject_prefix": "ds"
+  },
+  "table": {
+    "retired": {
+      "columns": [
+        "role",
+        "measurement",
+        "type",
+        "title"
+      ],
+      "values": [
+        "closed",
+        "is_missing",
+        "order"
+      ]
+    },
+    "sheets": {
+      "columns": {
+        "headers": [
+          "name",
+          "label",
+          "description",
+          "datatype",
+          "level",
+          "unit",
+          "unit_iri",
+          "variable",
+          "source",
+          "closed",
+          "missing_low",
+          "missing_high",
+          "completeness",
+          "applies_when",
+          "minimum",
+          "maximum",
+          "group",
+          "identifying"
+        ],
+        "kinds": {
+          "applies_when": "text",
+          "closed": "boolean",
+          "completeness": "number",
+          "datatype": "Datatype",
+          "description": "text",
+          "group": "text",
+          "identifying": "boolean",
+          "label": "text",
+          "level": "Level",
+          "maximum": "number",
+          "minimum": "number",
+          "missing_high": "number",
+          "missing_low": "number",
+          "name": "text",
+          "source": "text",
+          "unit": "text",
+          "unit_iri": "text",
+          "variable": "text"
+        },
+        "required": [
+          "name"
+        ],
+        "title": "Columns"
+      },
+      "dataset": {
+        "headers": [
+          "title",
+          "description",
+          "identifier",
+          "license",
+          "citation",
+          "access_rights",
+          "landing_page",
+          "rows"
+        ],
+        "kinds": {
+          "access_rights": "text",
+          "citation": "text",
+          "description": "text",
+          "identifier": "text",
+          "landing_page": "text",
+          "license": "text",
+          "rows": "integer",
+          "title": "text"
+        },
+        "title": "Dataset"
+      },
+      "mappings": {
+        "headers": [
+          "column",
+          "code",
+          "match_type",
+          "object_id",
+          "object_label",
+          "confidence",
+          "provenance",
+          "retrieved_at",
+          "reviewer_id",
+          "description"
+        ],
+        "kinds": {
+          "code": "text",
+          "column": "text",
+          "confidence": "number",
+          "description": "text",
+          "match_type": "MatchType",
+          "object_id": "text",
+          "object_label": "text",
+          "provenance": "text",
+          "retrieved_at": "text",
+          "reviewer_id": "text"
+        },
+        "required": [
+          "column",
+          "match_type",
+          "object_id"
+        ],
+        "title": "Mappings"
+      },
+      "values": {
+        "headers": [
+          "column",
+          "code",
+          "label",
+          "description",
+          "missing"
+        ],
+        "kinds": {
+          "code": "text",
+          "column": "text",
+          "description": "text",
+          "label": "text",
+          "missing": "boolean"
+        },
+        "required": [
+          "column",
+          "code"
+        ],
+        "title": "Values"
+      }
+    }
   },
   "vocabulary": {
     "pinned_on": "2026-10-30",

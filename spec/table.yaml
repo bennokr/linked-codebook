@@ -1,0 +1,30 @@
+# How a profile is written as tables, for spreadsheets and CSV files. A table set maps a sheet name to its rows;
+# the first row holds the headers. Sheet and header names are compared in lower case without punctuation, so
+# "Applies when", "applies_when" and "AppliesWhen" are the same. Unknown sheets and headers are ignored.
+# `headers` lists the headers in the order they are written; `kinds` gives the kind of the cells under each: text, number,
+# integer, boolean, or the name of an enum of the model.
+# Blank cells mean "not specified". Booleans are true or false (also yes, no, 1, 0 when reading).
+sheets:
+  columns:
+    title: Columns
+    required: [name]
+    headers: [name, label, description, datatype, level, unit, unit_iri, variable, source, closed, missing_low, missing_high, completeness, applies_when, minimum, maximum, group, identifying]
+    kinds: {name: text, label: text, description: text, datatype: Datatype, level: Level, unit: text, unit_iri: text, variable: text, source: text, closed: boolean, missing_low: number, missing_high: number, completeness: number, applies_when: text, minimum: number, maximum: number, group: text, identifying: boolean}
+  values:
+    title: Values
+    required: [column, code]
+    headers: [column, code, label, description, missing]
+    kinds: {column: text, code: text, label: text, description: text, missing: boolean}
+  mappings:
+    title: Mappings
+    required: [column, match_type, object_id]
+    headers: [column, code, match_type, object_id, object_label, confidence, provenance, retrieved_at, reviewer_id, description]
+    kinds: {column: text, code: text, match_type: MatchType, object_id: text, object_label: text, confidence: number, provenance: text, retrieved_at: text, reviewer_id: text, description: text}
+  dataset:
+    title: Dataset
+    headers: [title, description, identifier, license, citation, access_rights, landing_page, rows]
+    kinds: {title: text, description: text, identifier: text, license: text, citation: text, access_rights: text, landing_page: text, rows: integer}
+# Headers of earlier workbooks, which this format does not read. Reading reports them.
+retired:
+  columns: [role, measurement, type, title]
+  values: [closed, is_missing, order]
