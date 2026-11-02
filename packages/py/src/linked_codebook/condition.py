@@ -223,8 +223,10 @@ def order(left: Any, right: Any) -> int:  # noqa: ANN401
     return (a > b) - (a < b)
 
 
-def compared(operator: str, left: Any, right: Any) -> bool | None:  # noqa: ANN401
+def compared(operator: str, left: Any, right: Any, *, blank_is_value: bool) -> bool | None:  # noqa: ANN401
     if left is None or right is None:
+        if blank_is_value and operator in ("==", "!="):
+            return (left is None and right is None) == (operator == "==")
         return None
     if operator in ("==", "!="):
         return same(left, right) == (operator == "==")
@@ -244,18 +246,38 @@ def any_of(results: list[bool | None]) -> bool | None:
     return None if None in results else False
 
 
-def evaluate(node: Condition, row: Row) -> bool | None:
-    """True, False, or None (unknown) when the answer depends on a value that is missing."""
-    ((operator, args),) = node.items()
-    if operator in COMPARISONS:
-        return compared(operator, value_of(args[0], row), value_of(args[1], row))
-    if operator == "in":
-        left = value_of(args[0], row)
-        return None if left is None else any(same(left, option) for option in args[1])
+def evaluate(node: Condition, row: Row, *, blank: str = "value") -> bool | None:
+    """True, False, or None (unknown).
+
+    `blank` says what a blank value is. With "value" (the default, as in REDCap) a blank is the empty value: it equals
+    another blank and differs from anything else, so `[a] <> 1` is true when `a` is blank; only ordering a blank is
+    unknown. With "unknown" (as in SQL) every comparison with a blank is unknown.
+    """
+    if blank not in ("value", "unknown"):
+        message = f"blank must be 'value' or 'unknown', not {blank!r}"
+        raise ValueError(message)
+    return evaluate_node(node, row, blank == "value")
+
+
+def evaluate_test(operator: str, args: list[Any], row: Row, blank_is_value: bool) -> bool | None:  # noqa: FBT001
+    """The operators with one operand: IN, IS NULL and NOT."""
     if operator == "null":
         return value_of(args[0], row) is None
-    if operator == "!":
-        inner = evaluate(args[0], row)
-        return None if inner is None else not inner
-    results = [evaluate(arg, row) for arg in args]
+    if operator == "in":
+        left = value_of(args[0], row)
+        if left is None:
+            return False if blank_is_value else None
+        return any(same(left, option) for option in args[1])
+    inner = evaluate_node(args[0], row, blank_is_value)
+    return None if inner is None else not inner
+
+
+def evaluate_node(node: Condition, row: Row, blank_is_value: bool) -> bool | None:  # noqa: FBT001
+    ((operator, args),) = node.items()
+    if operator in COMPARISONS:
+        left, right = value_of(args[0], row), value_of(args[1], row)
+        return compared(operator, left, right, blank_is_value=blank_is_value)
+    if operator in ("in", "null", "!"):
+        return evaluate_test(operator, args, row, blank_is_value)
+    results = [evaluate_node(arg, row, blank_is_value) for arg in args]
     return all_of(results) if operator == "and" else any_of(results)

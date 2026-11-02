@@ -222,8 +222,14 @@ function order(left: unknown, right: unknown): number {
   return a > b ? 1 : -1;
 }
 
-function compared(operator: string, left: unknown, right: unknown): boolean | null {
-  if (left === null || right === null) return null;
+/** A comparison where a side is blank. With a blank that is a value, two blanks are equal and a blank differs from any value. */
+function compareBlank(operator: string, left: unknown, right: unknown, blankIsValue: boolean): boolean | null {
+  if (!blankIsValue || (operator !== '==' && operator !== '!=')) return null;
+  return (left === null && right === null) === (operator === '==');
+}
+
+function compared(operator: string, left: unknown, right: unknown, blankIsValue: boolean): boolean | null {
+  if (left === null || right === null) return compareBlank(operator, left, right, blankIsValue);
   if (operator === '==' || operator === '!=') return same(left, right) === (operator === '==');
   const sign = order(left, right);
   return { '<': sign < 0, '<=': sign <= 0, '>': sign > 0, '>=': sign >= 0 }[operator] as boolean;
@@ -235,24 +241,39 @@ function combine(results: (boolean | null)[], decisive: boolean): boolean | null
   return results.includes(null) ? null : !decisive;
 }
 
-function membership(args: unknown[], row: Row): boolean | null {
+function membership(args: unknown[], row: Row, blankIsValue: boolean): boolean | null {
   const left = valueOf(args[0], row);
-  return left === null ? null : (args[1] as unknown[]).some((option) => same(left, option));
+  if (left === null) return blankIsValue ? false : null;
+  return (args[1] as unknown[]).some((option) => same(left, option));
 }
 
-function negation(args: unknown[], row: Row): boolean | null {
-  const inner = evaluateCondition(args[0] as Condition, row);
-  return inner === null ? null : !inner;
+export interface EvaluateOptions {
+  /**
+   * What a blank is. With "value" (the default, as in REDCap) a blank equals another blank and differs from anything
+   * else, so `[a] <> 1` is true when `a` is blank; only ordering a blank is unknown. With "unknown" (as in SQL) every
+   * comparison with a blank is unknown.
+   */
+  blank?: 'value' | 'unknown';
 }
 
-/** True, false, or null (unknown) when the answer depends on a value that is missing. */
-export function evaluateCondition(node: Condition, row: Row): boolean | null {
-  const entry = Object.entries(node as Record<string, unknown[]>)[0] ?? ['', []];
-  const [operator, args] = entry;
-  if (COMPARISONS.includes(operator)) return compared(operator, valueOf(args[0], row), valueOf(args[1], row));
-  if (operator === 'in') return membership(args, row);
+function evaluateNode(node: Condition, row: Row, blankIsValue: boolean): boolean | null {
+  const [operator, args] = Object.entries(node as Record<string, unknown[]>)[0] ?? ['', []];
+  if (COMPARISONS.includes(operator)) {
+    return compared(operator, valueOf(args[0], row), valueOf(args[1], row), blankIsValue);
+  }
+  if (operator === 'in') return membership(args, row, blankIsValue);
   if (operator === 'null') return valueOf(args[0], row) === null;
-  if (operator === '!') return negation(args, row);
-  const results = args.map((arg: unknown) => evaluateCondition(arg as Condition, row));
+  if (operator === '!') {
+    const inner = evaluateNode(args[0] as Condition, row, blankIsValue);
+    return inner === null ? null : !inner;
+  }
+  const results = args.map((arg: unknown) => evaluateNode(arg as Condition, row, blankIsValue));
   return combine(results, operator === 'or');
+}
+
+/** True, false, or null (unknown). */
+export function evaluateCondition(node: Condition, row: Row, options: EvaluateOptions = {}): boolean | null {
+  const blank = options.blank ?? 'value';
+  if (blank !== 'value' && blank !== 'unknown') throw new Error(`blank must be 'value' or 'unknown', not '${blank}'`);
+  return evaluateNode(node, row, blank === 'value');
 }

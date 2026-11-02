@@ -37,7 +37,9 @@ def answers_of(profile: Profile, rows: list[dict[str, Any]]) -> list[dict[str, A
     ]
 
 
-def applicability(column: Column, rows: list[dict[str, Any]]) -> tuple[list[bool | None] | None, str | None]:
+def applicability(
+    column: Column, rows: list[dict[str, Any]], blank: str
+) -> tuple[list[bool | None] | None, str | None]:
     """For each row whether the column applies, or None for the column if it has no rule; the error if it fails."""
     rule = column.get("applies_when")
     if not rule:
@@ -46,7 +48,7 @@ def applicability(column: Column, rows: list[dict[str, Any]]) -> tuple[list[bool
         tree = parse_condition(rule)
     except ValueError as error:
         return None, str(error)
-    return [evaluate(tree, row) for row in rows], None
+    return [evaluate(tree, row, blank=blank) for row in rows], None
 
 
 BLANK_KINDS = {True: "blank_applicable", False: "blank_not_applicable", None: "blank_unknown"}
@@ -61,9 +63,11 @@ def kind_of(cell: Any, state: bool | None, ruled: bool, declared: tuple[set[str]
     return "answered_not_applicable" if state is False else "present"
 
 
-def column_report(column: Column, rows: list[dict[str, Any]], answers: list[dict[str, Any]]) -> dict[str, Any]:
+def column_report(
+    column: Column, rows: list[dict[str, Any]], answers: list[dict[str, Any]], blank: str
+) -> dict[str, Any]:
     name, codes = column["name"], declared_codes(column)
-    applies, error = applicability(column, answers)
+    applies, error = applicability(column, answers, blank)
     counts: Counter[str] = Counter()
     declared: Counter[str] = Counter()
     for index, row in enumerate(rows):
@@ -81,18 +85,20 @@ def column_report(column: Column, rows: list[dict[str, Any]], answers: list[dict
     return clean({**counts, **totals, "declared": dict(declared), "rule_error": error})
 
 
-def missingness(profile: Profile, data: Data) -> dict[str, Any]:
+def missingness(profile: Profile, data: Data, *, blank: str = "value") -> dict[str, Any]:
     """Counts, for each column of the profile that the data has, how its values divide.
 
     `present` is a value; `declared` counts the codes that mean no value; `blank` is an empty cell, divided by the
     rule `applies_when` into `blank_not_applicable` (skipped by design), `blank_applicable` (missing although the
-    question applied) and `blank_unknown` (the rule depends on a value that is missing; a declared missing code
-    counts as missing there). `answered_not_applicable` counts values in rows where the rule says the question does
-    not apply.
+    question applied) and `blank_unknown` (the rule cannot be decided). `answered_not_applicable` counts values in
+    rows where the rule says the question does not apply.
+
+    `blank` is how rules treat a blank, as in :func:`evaluate`. With "value" (the default, as in REDCap) a declared
+    missing code is an ordinary value in a rule; with "unknown" it is a blank and makes the rule unknown.
     """
     rows = rows_of(data)
-    answers = answers_of(profile, rows)
-    columns = {c["name"]: column_report(c, rows, answers) for c in profile["columns"] if c["name"] in data}
+    answers = rows if blank == "value" else answers_of(profile, rows)
+    columns = {c["name"]: column_report(c, rows, answers, blank) for c in profile["columns"] if c["name"] in data}
     return {"rows": len(rows), "columns": columns}
 
 

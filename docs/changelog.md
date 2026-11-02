@@ -6,10 +6,11 @@
 - `from-redcap` reads Form Name (`group`), Identifier? (`identifying`) and numeric Text Validation Min and Max.
 - Added tables: `from-tables`, `to-tables` and `check-tables`, with `fromTables`, `toTables`, `tableWarnings` and the Python equivalents. A set of sheets (Columns, Values, Mappings, Dataset) is read and written with the headers of the model. `closed` is only on `Columns`; missing codes only on `Values`. Workbook files are opened by the application; see section 12 of the specification.
 - `from-redcap` reads CSV as Python's `csv` module does (a quote inside an unquoted field is text; text after a closing quote continues the field). The TypeScript reader used to reject a PhenX dictionary that Python read; with the change, both libraries print identical output for all 985 PhenX REDCap dictionaries (35,541 columns).
+- Conditions are evaluated as REDCap does by default (`blank: value`): a blank is the empty value, so `[a] <> 1` is true when `a` is blank. `blank: unknown` gives the SQL reading (every comparison with a blank is unknown). The REDCap behaviour comes from university guides and a community knowledge base, not from REDCap's own documentation.
 - Added conditions: `parse-condition` and `conditions` (`parse_condition`, `parseCondition`, `evaluate_condition`, `evaluateCondition`). One syntax reads REDCap branching logic and a subset of SQL `WHERE` into a JsonLogic-shaped tree and evaluates it in three values (true, false, unknown). 2,649 of the 2,650 different rules of the PhenX REDCap dictionaries parse, identically in both libraries.
 - Added `missingness`: for a profile and data, how values divide into present values, declared missing codes and blanks, and the blanks into skipped by design, missing although applicable, and unknown.
 - Added `from-readstat`: the variables of an SPSS, Stata or SAS file (as ReadStat-based readers deliver them) become columns, with variable and value labels, measure, format, and user-defined and extended missing values.
-- The statement budgets rise by the size of the tables module (Python 563 to 1048, TypeScript 499 to 940; conditions, missingness and statistical files are about 300 statements in each library).
+- The statement budgets rise by the size of the tables module (Python 563 to 1060, TypeScript 499 to 948; conditions, missingness and statistical files are about 300 statements in each library).
 
 ## 0.8.0
 

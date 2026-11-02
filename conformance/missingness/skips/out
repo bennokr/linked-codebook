@@ -1,13 +1,14 @@
 {
   "columns": {
     "brand": {
+      "answered_not_applicable": 1,
       "blank": 4,
       "blank_applicable": 1,
-      "blank_not_applicable": 1,
-      "blank_unknown": 2,
+      "blank_not_applicable": 3,
       "present": 2
     },
     "cigs": {
+      "answered_not_applicable": 1,
       "blank": 2,
       "blank_applicable": 1,
       "blank_not_applicable": 1,

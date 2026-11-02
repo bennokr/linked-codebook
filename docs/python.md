@@ -41,9 +41,9 @@ from linked_codebook import (
 | `TABLE_SPEC` | The sheets, headers and kinds of cells of the table format, as in `spec/table.yaml`. An application can use it to check the cells of a workbook before it hands them over. |
 | `table_warnings(tables)` | The sheets and headers of tables that `from_tables` does not use. |
 | `parse_condition(text)` | The tree of a condition of skip logic (REDCap branching logic or a SQL `WHERE` subset). Raises `ValueError` for text that is not one. |
-| `evaluate_condition(tree, row)` | `True`, `False`, or `None` (unknown) for a row `{name: cell}`. |
+| `evaluate_condition(tree, row, *, blank="value")` | `True`, `False`, or `None` (unknown) for a row `{name: cell}`. `blank="unknown"` makes every comparison with a blank unknown, as in SQL; the default is REDCap's (a blank is a value). |
 | `conditions(profile)` | The parsed `applies_when` of every column that has one, or why it could not be parsed. |
-| `missingness(profile, data)` | How the cells of each column divide into values, declared missing codes and blanks, and the blanks into skipped, missing and unknown. `data` is `{name: [cells]}`. |
+| `missingness(profile, data, *, blank="value")` | How the cells of each column divide into values, declared missing codes and blanks, and the blanks into skipped, missing and unknown. `data` is `{name: [cells]}`. |
 | `from_readstat(variables)` | A `Profile` read from the variables of a statistical file, as a list of dicts with the keys of ReadStat (see section 15 of the specification). |
 | `from_sssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatched_sssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |
@@ -56,3 +56,33 @@ from linked_codebook import (
 | `run(args, texts)` | The [command line](cli.md) as a function. It returns `(stdout, code)`. |
 
 Functions take and return plain dictionaries and lists. They do not change their arguments.
+
+## Statistical files
+
+`from_readstat` takes the variables of an SPSS, Stata or SAS file as ReadStat delivers them. With `pyreadstat`
+(tested with `read_sav`; `user_missing=True` is needed to get the declared missing values):
+
+```python
+import pyreadstat
+from linked_codebook import from_readstat
+
+_, meta = pyreadstat.read_sav("survey.sav", metadataonly=True, user_missing=True)  # or read_dta, read_sas7bdat
+MEASURE = {"nominal": 1, "ordinal": 2, "scale": 3}
+TYPES = {"string": 0, "int8": 1, "int16": 2, "int32": 3, "float": 4, "double": 5}
+
+variables = [
+    {
+        "name": name,
+        "label": meta.column_names_to_labels[name],
+        "type": TYPES[meta.readstat_variable_types[name]],
+        "format": meta.original_variable_types[name],
+        "measure": MEASURE.get(meta.variable_measure[name], 0),
+        "valueLabels": [{"value": v, "label": t} for v, t in meta.variable_value_labels.get(name, {}).items()],
+        "missingRanges": meta.missing_ranges.get(name, []),
+    }
+    for name in meta.column_names
+]
+profile = from_readstat(variables)
+```
+
+The Stata extended missing values (`.a` to `.z`) are not tested with `pyreadstat`; the specification says how to pass them.

@@ -326,7 +326,12 @@ A reader MUST fail, naming the sheet and the row (counted as in a spreadsheet, t
 
 Functions, references to events (`[event][field]`) and anything else are errors. The condition is a JSON tree in the shape of [JsonLogic](https://jsonlogic.com): `{"var": "smoker"}`, `{"==": [a, b]}` (also `!=`, `<`, `<=`, `>`, `>=`), `{"in": [a, [x, y]]}`, `{"and": [...]}`, `{"or": [...]}`, `{"!": [a]}`, and `{"null": [a]}` for a blank value, which JsonLogic does not have. A chain `a and b and c` is one `and` with three operands.
 
-A condition has three values: true, false and unknown. A comparison with a blank is unknown, as in SQL. A blank is an empty cell or one of white space, or a column that the row does not have. Two values are equal if both are numbers (or text that is a number as defined in [section 7](#7-inference), so `1` and `"1"` are alike) and equal as numbers, or else if they are equal as text. They are ordered the same way, so ISO dates order correctly as text. `and` is false if any operand is false, otherwise unknown if any is unknown; `or` is true if any operand is true, otherwise unknown if any is unknown; `not` of unknown is unknown. `null` is never unknown.
+A condition has three values: true, false and unknown. A blank is an empty cell or one of white space, or a column that the row does not have. What a comparison with a blank gives depends on the setting `blank`:
+
+- `value` (the default) is how REDCap behaves, as far as published guides say: a blank is the empty value. It equals another blank and differs from everything else, so `[a] <> 1` and `[a] <> 0` are both true when `a` is blank, and `[a] = '1'` is false. Only ordering a blank (`<`, `>`, `<=`, `>=`) is unknown. `a IN (...)` is false for a blank. REDCap stores a missing data code (such as `NASK`) as an ordinary value, so a declared missing code is compared as text.
+- `unknown` is how SQL behaves: every comparison with a blank is unknown, and `IN` too. A declared missing code counts as a blank.
+
+The REDCap behaviour is taken from the guides of several university REDCap teams and a community knowledge base, not from REDCap's own documentation or source: they state that `[nr_pregnancies]<>0` is true for an empty field, that two blank fields count as a match, and that `!=` behaves like `<>`. None says what ordering a blank gives; unknown is the choice here. Check a rule against your REDCap version before relying on it. Two values are equal if both are numbers (or text that is a number as defined in [section 7](#7-inference), so `1` and `"1"` are alike) and equal as numbers, or else if they are equal as text. They are ordered the same way, so ISO dates order correctly as text. `and` is false if any operand is false, otherwise unknown if any is unknown; `or` is true if any operand is true, otherwise unknown if any is unknown; `not` of unknown is unknown. `null` is never unknown. With `blank` set to `value`, a rule is unknown only when it orders a blank.
 
 Of the 2,650 different rules of the 985 PhenX REDCap dictionaries, all but one parse (the exception is the text `always|NA`), to the same tree in both libraries.
 
@@ -341,11 +346,11 @@ A processor MAY report why values are missing (`missingness`), for a profile and
 | `blank` | empty cells |
 | `blank_not_applicable` | blank, and the rule `applies_when` of the column is false: skipped by design |
 | `blank_applicable` | blank, and the rule is true: missing although the question applied |
-| `blank_unknown` | blank, and the rule is unknown because it depends on a value that is missing |
+| `blank_unknown` | blank, and the rule cannot be decided (with `blank` set to `value` only when it orders a blank) |
 | `answered_not_applicable` | a value (also counted in `present`) where the rule is false |
 | `rule_error` | the reason that `applies_when` could not be parsed |
 
-The last four are left out for a column without a rule, and zero counts are left out except `present` and `blank`. When a rule is evaluated, a declared missing code of another column is a blank: the answer `9 = Refused` does not say that the respondent smokes. A column that the rule names but the data does not have is blank.
+The last four are left out for a column without a rule, and zero counts are left out except `present` and `blank`. A column that a rule names but the data does not have is blank. The setting `blank` of [section 13](#13-conditions) applies: with `unknown`, a declared missing code of another column is also a blank when the rule is evaluated (the answer `9 = Refused` does not say that the respondent smokes); with `value`, the default, it is an ordinary value, as REDCap stores missing data codes.
 
 ## 15. Statistical files
 

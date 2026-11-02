@@ -1,4 +1,11 @@
-import { evaluateCondition, isBlank, parseCondition, type Condition, type Row } from './condition.ts';
+import {
+  evaluateCondition,
+  isBlank,
+  parseCondition,
+  type Condition,
+  type EvaluateOptions,
+  type Row,
+} from './condition.ts';
 import type { Column, Profile } from './generated/types.ts';
 import { isNumeric } from './infer.ts';
 import { clean } from './jsonld.ts';
@@ -48,11 +55,15 @@ function answersOf(profile: Profile, rows: Row[]): Row[] {
 }
 
 /** For each row whether the column applies, or undefined if it has no rule; the error if the rule fails. */
-function applicability(column: Column, rows: Row[]): { applies?: (boolean | null)[]; error?: string } {
+function applicability(
+  column: Column,
+  rows: Row[],
+  options: EvaluateOptions,
+): { applies?: (boolean | null)[]; error?: string } {
   if (!column.applies_when) return {};
   try {
     const tree = parseCondition(column.applies_when);
-    return { applies: rows.map((row) => evaluateCondition(tree, row)) };
+    return { applies: rows.map((row) => evaluateCondition(tree, row, options)) };
   } catch (error) {
     return { error: (error as Error).message };
   }
@@ -79,9 +90,9 @@ function tally(counts: Record<string, number>, codes: Record<string, number>, ce
   if (kind === 'answered_not_applicable') add('present');
 }
 
-function columnReport(column: Column, rows: Row[], answers: Row[]): Record<string, unknown> {
+function columnReport(column: Column, rows: Row[], answers: Row[], options: EvaluateOptions): Record<string, unknown> {
   const declared: Declared = [declaredCodes(column), column];
-  const { applies, error } = applicability(column, answers);
+  const { applies, error } = applicability(column, answers, options);
   const counts: Record<string, number> = { present: 0, blank: 0 };
   const codes: Record<string, number> = {};
   rows.forEach((row, index) => {
@@ -95,16 +106,17 @@ function columnReport(column: Column, rows: Row[], answers: Row[]): Record<strin
  * Counts, for each column of the profile that the data has, how its values divide. `present` is a value;
  * `declared` counts the codes that mean no value; `blank` is an empty cell, divided by the rule `applies_when` into
  * `blank_not_applicable` (skipped by design), `blank_applicable` (missing although the question applied) and
- * `blank_unknown` (the rule depends on a value that is missing; a declared missing code counts as missing there).
- * `answered_not_applicable` counts values in rows where the rule says the question does not apply.
+ * `blank_unknown` (the rule cannot be decided). `answered_not_applicable` counts values in rows where the rule says the
+ * question does not apply. `options.blank` is how rules treat a blank, as in `evaluateCondition`: with "value" (the
+ * default, as in REDCap) a declared missing code is an ordinary value in a rule; with "unknown" it is a blank.
  */
-export function missingness(profile: Profile, data: Data): Record<string, unknown> {
+export function missingness(profile: Profile, data: Data, options: EvaluateOptions = {}): Record<string, unknown> {
   const rows = rowsOf(data);
-  const answers = answersOf(profile, rows);
+  const answers = (options.blank ?? 'value') === 'value' ? rows : answersOf(profile, rows);
   const columns = profile.columns.filter((column) => column.name in data);
   return {
     rows: rows.length,
-    columns: Object.fromEntries(columns.map((c) => [c.name, columnReport(c, rows, answers)])),
+    columns: Object.fromEntries(columns.map((c) => [c.name, columnReport(c, rows, answers, options)])),
   };
 }
 
