@@ -49,6 +49,7 @@ class Value(TypedDict):
 
 
 class Column(TypedDict):
+    applies_when: NotRequired[str]
     closed: NotRequired[bool]
     completeness: NotRequired[float]
     datatype: NotRequired[Datatype]

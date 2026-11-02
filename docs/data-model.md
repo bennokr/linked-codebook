@@ -39,6 +39,7 @@ One column of the table, described as a variable.
 | `missing_values` | list of string | no | Codes that mean no value and have no label. |
 | `missing_range` | Range | no | Numbers that mean no value. |
 | `completeness` | float | no | Share of the rows that have a value, between 0 and 1. |
+| `applies_when` | string | no | Condition under which the column has a value, as the source writes it, for example REDCap branching logic. Rows that do not meet it are missing by design. |
 | `mappings` | list of Mapping | no | Links to concepts. |
 
 ## Value

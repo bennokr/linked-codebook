@@ -59,6 +59,13 @@ const variableNode = (column: Column, id: string, label: string): Node =>
     [nodeKeys.source]: column.source ? { '@id': column.source } : undefined,
   });
 
+/** Properties that no vocabulary defines, so they are written as plain keys. */
+const extensions = (column: Column): Node => ({
+  missingRange: column.missing_range,
+  codeBookClosed: column.closed || undefined,
+  appliesWhen: column.applies_when,
+});
+
 function columnNode(dataset: string, column: Column): Node {
   const variable = variableIri(dataset, column);
   const label = column.label ?? column.name;
@@ -73,8 +80,7 @@ function columnNode(dataset: string, column: Column): Node {
     ...pick(column, keys.column),
     titles: label,
     nullValues: nulls,
-    missingRange: column.missing_range,
-    codeBookClosed: column.closed || undefined,
+    ...extensions(column),
     columnProperty: clean({
       '@id': fill('property', ids),
       '@type': types.property,

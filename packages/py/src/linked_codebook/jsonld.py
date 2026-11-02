@@ -91,6 +91,7 @@ def column_node(dataset: str, column: Column) -> Node:
             "nullValues": nulls,
             "missingRange": column.get("missing_range"),
             "codeBookClosed": column.get("closed") or None,
+            "appliesWhen": column.get("applies_when"),
             "columnProperty": clean(
                 {
                     "@id": fill("property", ids),

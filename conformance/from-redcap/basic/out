@@ -1,0 +1,124 @@
+{
+  "columns": [
+    {
+      "datatype": "string",
+      "label": "Record ID",
+      "name": "record_id"
+    },
+    {
+      "datatype": "date",
+      "label": "Date of birth",
+      "name": "dob"
+    },
+    {
+      "closed": true,
+      "datatype": "integer",
+      "label": "Sex at birth",
+      "level": "categorical",
+      "name": "sex",
+      "values": [
+        {
+          "code": "1",
+          "label": "Male"
+        },
+        {
+          "code": "2",
+          "label": "Female"
+        },
+        {
+          "code": "9",
+          "label": "Unknown"
+        }
+      ]
+    },
+    {
+      "closed": true,
+      "datatype": "integer",
+      "label": "Currently smokes",
+      "level": "categorical",
+      "name": "smoker",
+      "values": [
+        {
+          "code": "1",
+          "label": "Yes"
+        },
+        {
+          "code": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "applies_when": "[smoker] = '1'",
+      "datatype": "integer",
+      "description": "Average over the last month",
+      "label": "Cigarettes per day",
+      "level": "numerical",
+      "name": "cigs_per_day"
+    },
+    {
+      "closed": true,
+      "datatype": "integer",
+      "label": "Symptoms (Cough)",
+      "level": "categorical",
+      "name": "symptoms___1",
+      "values": [
+        {
+          "code": "0",
+          "label": "Unchecked"
+        },
+        {
+          "code": "1",
+          "label": "Checked"
+        }
+      ]
+    },
+    {
+      "closed": true,
+      "datatype": "integer",
+      "label": "Symptoms (Fever)",
+      "level": "categorical",
+      "name": "symptoms___2",
+      "values": [
+        {
+          "code": "0",
+          "label": "Unchecked"
+        },
+        {
+          "code": "1",
+          "label": "Checked"
+        }
+      ]
+    },
+    {
+      "closed": true,
+      "datatype": "integer",
+      "label": "Symptoms (Other)",
+      "level": "categorical",
+      "name": "symptoms___other_3",
+      "values": [
+        {
+          "code": "0",
+          "label": "Unchecked"
+        },
+        {
+          "code": "1",
+          "label": "Checked"
+        }
+      ]
+    },
+    {
+      "datatype": "number",
+      "description": "kg",
+      "label": "Weight",
+      "level": "numerical",
+      "name": "weight_kg"
+    },
+    {
+      "datatype": "number",
+      "label": "BMI",
+      "level": "numerical",
+      "name": "bmi"
+    }
+  ]
+}

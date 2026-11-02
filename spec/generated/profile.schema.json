@@ -6,6 +6,10 @@
       "additionalProperties": false,
       "description": "One column of the table, described as a variable.",
       "properties": {
+        "applies_when": {
+          "description": "Condition under which the column has a value, as the source writes it, for example REDCap branching logic. Rows that do not meet it are missing by design.",
+          "type": "string"
+        },
         "closed": {
           "description": "True if values lists every code the column may hold, apart from missing values. A list taken from data is not closed.",
           "type": "boolean"

@@ -16,6 +16,7 @@ The TypeScript package and the Python package install the same command. Both rea
 | `merge` | base, incoming | Print the first profile completed with the second. |
 | `infer` | data | Print a profile with the datatype and level of every column of a JSON object of value lists. |
 | `validate` | document | Check a profile against the model, or DSV JSON-LD against the vocabularies. Exit code 1 if it does not conform. |
+| `from-redcap` | dictionary | Print a profile read from a REDCap data dictionary CSV. |
 | `to-frictionless` | profile | Print the profile as a Frictionless Table Schema, with the other slots in the property x-linked-codebook. |
 <!-- /commands -->
 

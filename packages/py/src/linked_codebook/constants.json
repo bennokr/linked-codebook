@@ -6,6 +6,12 @@
       ],
       "summary": "Print a profile as DSV JSON-LD."
     },
+    "from-redcap": {
+      "files": [
+        "dictionary"
+      ],
+      "summary": "Print a profile read from a REDCap data dictionary CSV."
+    },
     "from-sssom": {
       "files": [
         "sssom",
@@ -89,6 +95,7 @@
       "observed",
       "missing_range",
       "completeness",
+      "applies_when",
       "mappings"
     ],
     "field": {
@@ -259,7 +266,8 @@
     },
     "extensions": [
       "missingRange",
-      "codeBookClosed"
+      "codeBookClosed",
+      "appliesWhen"
     ],
     "imported_reviewer": "imported",
     "iris": {
@@ -417,12 +425,116 @@
       "statistics": "dsv:SummaryStatistics"
     }
   },
+  "redcap": {
+    "builtin": {
+      "truefalse": [
+        [
+          "1",
+          "True"
+        ],
+        [
+          "0",
+          "False"
+        ]
+      ],
+      "yesno": [
+        [
+          "1",
+          "Yes"
+        ],
+        [
+          "0",
+          "No"
+        ]
+      ]
+    },
+    "checkbox": "checkbox",
+    "checkbox_values": [
+      [
+        "0",
+        "Unchecked"
+      ],
+      [
+        "1",
+        "Checked"
+      ]
+    ],
+    "choice_types": [
+      "dropdown",
+      "radio"
+    ],
+    "headers": {
+      "branching": [
+        "branchinglogicshowfieldonlyif",
+        "branchinglogic"
+      ],
+      "choices": [
+        "choicescalculationsorsliderlabels",
+        "selectchoicesorcalculations"
+      ],
+      "label": [
+        "fieldlabel"
+      ],
+      "name": [
+        "variablefieldname",
+        "fieldname"
+      ],
+      "note": [
+        "fieldnote"
+      ],
+      "type": [
+        "fieldtype"
+      ],
+      "validation": [
+        "textvalidationtypeorshowslidernumber"
+      ]
+    },
+    "integer_code": "[-+]?[0-9]+",
+    "skipped": [
+      "descriptive",
+      "file"
+    ],
+    "types": {
+      "calc": {
+        "datatype": "number",
+        "level": "numerical"
+      },
+      "slider": {
+        "datatype": "integer",
+        "level": "numerical"
+      }
+    },
+    "validation": [
+      {
+        "datatype": "integer",
+        "level": "numerical",
+        "pattern": "integer"
+      },
+      {
+        "datatype": "number",
+        "level": "numerical",
+        "pattern": "number.*"
+      },
+      {
+        "datatype": "datetime",
+        "pattern": "datetime.*"
+      },
+      {
+        "datatype": "date",
+        "pattern": "date_.*"
+      }
+    ]
+  },
   "schema": {
     "$defs": {
       "Column": {
         "additionalProperties": false,
         "description": "One column of the table, described as a variable.",
         "properties": {
+          "applies_when": {
+            "description": "Condition under which the column has a value, as the source writes it, for example REDCap branching logic. Rows that do not meet it are missing by design.",
+            "type": "string"
+          },
           "closed": {
             "description": "True if values lists every code the column may hold, apart from missing values. A list taken from data is not closed.",
             "type": "boolean"

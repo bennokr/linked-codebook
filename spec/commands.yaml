@@ -20,6 +20,9 @@ infer:
 validate:
   files: [document]
   summary: Check a profile against the model, or DSV JSON-LD against the vocabularies. Exit code 1 if it does not conform.
+from-redcap:
+  files: [dictionary]
+  summary: Print a profile read from a REDCap data dictionary CSV.
 to-frictionless:
   files: [profile]
   summary: Print the profile as a Frictionless Table Schema, with the other slots in the property x-linked-codebook.

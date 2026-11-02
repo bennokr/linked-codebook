@@ -39,6 +39,7 @@ def constants() -> dict[str, Any]:
         "vocabulary": load("vocabulary"),
         "commands": load("commands"),
         "frictionless": load("frictionless"),
+        "redcap": load("redcap"),
         "schema": schema,
     }
 

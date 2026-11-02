@@ -130,6 +130,7 @@ function columnOf(nodes: Node[], dataset: string, node: Node, explicit: boolean)
     missing_values: nulls.filter((code) => !values.some((value) => value.code === code)),
     closed: get(node, 'codeBookClosed') === true || undefined,
     missing_range: rangeOf(get(node, 'missingRange')),
+    applies_when: text(get(node, 'appliesWhen')),
     mappings: mappingsOf(variable),
   }) as unknown as Column;
 }

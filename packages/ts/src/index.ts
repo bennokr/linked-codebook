@@ -6,5 +6,6 @@ export { infer, inferColumn, isNumeric, observe, type Cell, type Inferred, type 
 export { build } from './jsonld.ts';
 export { merge } from './merge.ts';
 export { parse } from './read.ts';
+export { fromRedcap } from './redcap.ts';
 export { fromSssom, toSssom, unmatchedSssom } from './sssom.ts';
 export { validate } from './validate.ts';

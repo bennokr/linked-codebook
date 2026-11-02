@@ -1,0 +1,10 @@
+"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max","Identifier?","Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+record_id,demographics,,text,Record ID,,,,,,,,,,,,,
+dob,demographics,,text,Date of birth,,,date_ymd,,,y,,,,,,,
+sex,demographics,,radio,Sex at birth,"1, Male | 2, Female | 9, Unknown",,,,,,,,,,,,
+smoker,history,,yesno,Currently smokes,,,,,,,,,,,,,
+cigs_per_day,history,,text,Cigarettes per day,,Average over the last month,integer,0,80,,[smoker] = '1',,,,,,
+symptoms,history,,checkbox,Symptoms,"1, Cough | 2, Fever | other-3, Other",,,,,,,,,,,,
+weight_kg,exam,,text,Weight,,kg,number_1dp,20,300,,,,,,,,
+bmi,exam,,calc,BMI,"[weight_kg]/([height_m]*[height_m])",,,,,,,,,,,,
+intro,exam,,descriptive,Please measure standing,,,,,,,,,,,,,

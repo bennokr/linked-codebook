@@ -11,6 +11,7 @@ from .infer import infer
 from .jsonld import build
 from .merge import merge
 from .read import parse
+from .redcap import from_redcap
 from .sssom import from_sssom, to_sssom
 from .types import Profile
 from .validate import validate
@@ -40,6 +41,7 @@ def check(text: str) -> Result:
 COMMANDS: dict[str, Callable[..., Result]] = {
     "normalize": lambda profile: done(canonical(load(profile))),
     "build": lambda profile: done(canonical(build(load(profile)))),
+    "from-redcap": lambda dictionary: done(canonical(from_redcap(dictionary))),
     "to-frictionless": lambda profile: done(canonical(to_frictionless(load(profile)))),
     "to-sssom": lambda profile: done(to_sssom(load(profile))),
     "from-sssom": lambda sssom, profile: done(canonical(from_sssom(sssom, load(profile)))),

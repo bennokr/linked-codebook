@@ -1,6 +1,6 @@
 # Linked Codebook Specification
 
-Draft, version 0.7.0
+Draft, version 0.8.0
 
 ## Abstract
 
@@ -22,8 +22,9 @@ This is a draft. It may change without notice. Changes are listed in the [change
 8. [Merging](#8-merging)
 9. [Validation](#9-validation)
 10. [Frictionless](#10-frictionless)
-11. [Command line](#11-command-line)
-12. [References](#12-references)
+11. [REDCap](#11-redcap)
+12. [Command line](#12-command-line)
+13. [References](#13-references)
 
 ## 1. Introduction
 
@@ -69,7 +70,7 @@ This specification has three conformance classes.
 
 **JSON-LD document.** A JSON-LD document conforms if it follows [section 5](#5-json-ld) and the check of [section 9.2](#92-json-ld-documents) finds no errors.
 
-**Processor.** A processor is a program that reads or writes profiles. It conforms if it follows sections 4 to 11 and prints, for every case of the [conformance suite](https://github.com/bennokr/linked-codebook/tree/main/conformance), exactly the expected output.
+**Processor.** A processor is a program that reads or writes profiles. It conforms if it follows sections 4 to 12 and prints, for every case of the [conformance suite](https://github.com/bennokr/linked-codebook/tree/main/conformance), exactly the expected output.
 
 ## 3. Data model
 
@@ -84,6 +85,7 @@ Notes:
 - `missing_values` lists codes that mean no value and have no label. A code that has a label is a `value` with `missing` set to true.
 - `values` are the codes a column may hold, as declared by its author. If `closed` is true, no other codes are allowed, apart from missing values. Otherwise the list labels some codes and others may occur.
 - `source` is the IRI of a web page that documents the column or its variable.
+- `applies_when` is a condition in the words of the source, for example REDCap branching logic. Where the condition is not met the value is missing by design. A processor MUST NOT interpret it.
 - `observed` are the codes found in one copy of the data, with their counts. They say what occurred, not what is allowed. A processor MUST NOT set `closed` because a list was taken from data.
 
 ## 4. Canonical JSON
@@ -110,14 +112,14 @@ The document is one node, the dataset, with these properties.
 | Dataset | `dcat:Dataset`, `dsv:Dataset` | `title`, `description`, `identifier`, `citation`, `accessRights` and `landingPage` carry the slots of the same meaning. `license` is written as `license` if it starts with `http:` or `https:`, and as `rights` otherwise. `datasetSchema` is the schema node. |
 | Dataset statistics | `dsv:SummaryStatistics` | `numberOfRows` carries `rows` and `numberOfColumns` the number of columns. The node is written only if the profile has `rows`. |
 | Schema | `dsv:DatasetSchema` | `columns` is the list of column nodes, in table order. |
-| Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `columnProperty` and `summaryStatistics`. |
+| Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `appliesWhen`, `columnProperty` and `summaryStatistics`. |
 | Column property | `dsv:ColumnProperty` | `hasVariable` is the variable concept. `hasUnit` and `unitText` carry `unit_iri` and `unit`. `hasCodeBook` is the concept scheme of the values. |
 | Summary statistics | `dsv:SummaryStatistics` | `statisticalDataType` is the meaning of the `level` and `columnCompleteness` carries `completeness`. The node is written only if one of them is set. |
 | Variable concept | `skos:Concept` | `skos:prefLabel` is the label, or else the name. `skos:definition` is the description. `dct:source` is the IRI `source`, written as a node reference. |
 | Code book | `skos:ConceptScheme` | `skos:hasTopConcept` lists a concept for every value. |
 | Code concept | `skos:Concept` | `skos:notation` is the code, `skos:prefLabel` the label, `skos:definition` the description and `skos:inScheme` the code book. For an ordinal column, `schema:position` is the place of the code in `values`, counted from 1. |
 
-Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data. RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and as they occur otherwise.
+Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `appliesWhen` carries `applies_when` and is not defined by any vocabulary. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data. RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and as they occur otherwise.
 
 Only approved mappings are written. A mapping becomes the property `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch` or `relatedMatch`, according to its `match_type`, of the variable concept or of the code concept. The properties list the `object_id` values. Draft mappings, labels, confidence, provenance and reviewers are not written.
 
@@ -249,7 +251,7 @@ A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. 
 | `name`, `label`, `description`, `datatype` | the field properties `name`, `title`, `description`, `type` |
 | `missing_values`, and the codes of values with `missing` set | the field property `missingValues` |
 | `values`, if `closed` is true | the field property `categories`: `{ "value": …, "label": … }`, or only the value if there is no label |
-| `level`, `unit`, `unit_iri`, `variable`, `source`, `values`, `closed`, `observed`, `missing_range`, `completeness`, `mappings` | the field property `x-linked-codebook` |
+| `level`, `unit`, `unit_iri`, `variable`, `source`, `values`, `closed`, `observed`, `missing_range`, `completeness`, `applies_when`, `mappings` | the field property `x-linked-codebook` |
 | `level` is `ordinal`, and the list is closed | the field property `categoriesOrdered`, set to `true` |
 | the slots of the dataset | the property `x-linked-codebook` of the schema |
 
@@ -261,11 +263,34 @@ Notes:
 - Frictionless tools read `categories` but do not enforce them, and they do not know the extension property. They keep it when they read and write the schema, as tested with frictionless-py 5.21.
 - A Table Schema has no title, license or citation. These are kept in the extension property, because a Data Package needs the path of a data file that a profile does not have.
 
-## 11. Command line
+## 11. REDCap
+
+A processor MAY read a [REDCap][redcap] data dictionary, the CSV file that describes the fields of a REDCap project, into a profile (`from-redcap`). The rules are in [`spec/redcap.yaml`](../spec/redcap.yaml). They were written from the REDCap documentation and sample dictionaries, so check them against a dictionary exported by your REDCap version.
+
+Header names are compared in lower case without punctuation, so `Variable / Field Name` and the API name `field_name` are alike. Fields in quotes may hold commas, doubled quotes and line breaks. Rows that are empty are ignored. A dictionary without fields is an error.
+
+| Dictionary | Profile |
+| --- | --- |
+| Variable / Field Name | `name` |
+| Field Label | `label` |
+| Field Note | `description` |
+| Branching Logic | `applies_when`, as written. It is not parsed. |
+| Field Type `dropdown`, `radio` | `values` from the choices, `closed` is true, `level` is `categorical`. |
+| Field Type `yesno`, `truefalse` | The built-in values `1` Yes and `0` No, or `1` True and `0` False, `closed`, `categorical`. |
+| Field Type `checkbox` | One column `name___code` for each choice, with the values `0` Unchecked and `1` Checked. The code is in lower case and other characters become `_`. The label is the field label with the choice label in brackets. |
+| Field Type `text`, `notes` | `datatype` and `level` from the text validation type, `string` if there is none. |
+| Field Type `calc`, `slider` | `number` or `integer`, `numerical`. The calculation is not kept. |
+| Field Type `descriptive`, `file` | No column. |
+
+Choices are written `code, label | code, label`. The code ends at the first comma. The datatype is `integer` if every code is a whole number, and `string` otherwise. The form name, section header, minimum and maximum, identifier flag, required flag and the other columns have no slot in the model and are not read.
+
+[redcap]: https://projectredcap.org/
+
+## 12. Command line
 
 The command line is defined in [Command line](cli.md). A processor MUST provide the commands listed there, MUST print the same text as every other processor and MUST use the same exit codes.
 
-## 12. References
+## 13. References
 
 - [DSV][dsv]: Dataset-Variable Ontology.
 - [Table Schema][frictionless]: Frictionless Data specification.

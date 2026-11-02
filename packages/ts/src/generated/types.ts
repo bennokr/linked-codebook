@@ -64,6 +64,10 @@ title?: string
  */
 export interface Column {
 /**
+ * Condition under which the column has a value, as the source writes it, for example REDCap branching logic. Rows that do not meet it are missing by design.
+ */
+applies_when?: string
+/**
  * True if values lists every code the column may hold, apart from missing values. A list taken from data is not closed.
  */
 closed?: boolean

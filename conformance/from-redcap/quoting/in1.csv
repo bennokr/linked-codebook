@@ -1,0 +1,4 @@
+﻿Variable / Field Name,Form Name,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Branching Logic (Show field only if...)
+pain,exam,dropdown,"Pain, ""worst"" in the last week","0, None | 1, Mild | 2, Moderate | 3, Severe","Line one
+line two",,
+comment,exam,notes,Comments,,,,"[pain] > 0"

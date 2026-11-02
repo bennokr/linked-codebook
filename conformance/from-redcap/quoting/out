@@ -1,0 +1,36 @@
+{
+  "columns": [
+    {
+      "closed": true,
+      "datatype": "integer",
+      "description": "Line one\nline two",
+      "label": "Pain, \"worst\" in the last week",
+      "level": "categorical",
+      "name": "pain",
+      "values": [
+        {
+          "code": "0",
+          "label": "None"
+        },
+        {
+          "code": "1",
+          "label": "Mild"
+        },
+        {
+          "code": "2",
+          "label": "Moderate"
+        },
+        {
+          "code": "3",
+          "label": "Severe"
+        }
+      ]
+    },
+    {
+      "applies_when": "[pain] > 0",
+      "datatype": "string",
+      "label": "Comments",
+      "name": "comment"
+    }
+  ]
+}

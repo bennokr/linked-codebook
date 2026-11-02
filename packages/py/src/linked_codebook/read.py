@@ -164,6 +164,7 @@ def column_of(nodes: list[Node], dataset: str, node: Node, *, explicit: bool) ->
                 "missing_values": [code for code in nulls if all(value["code"] != code for value in values)],
                 "closed": get(node, "codeBookClosed") is True or None,
                 "missing_range": range_of(get(node, "missingRange")),
+                "applies_when": text(get(node, "appliesWhen")),
                 "mappings": mappings_of(variable),
             },
         ),

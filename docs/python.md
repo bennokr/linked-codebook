@@ -8,6 +8,7 @@ The package needs Python 3.11 and has no dependencies. It also runs in [Pyodide]
 from linked_codebook import (
     build,
     canonical,
+    from_redcap,
     from_sssom,
     infer,
     infer_column,
@@ -30,6 +31,7 @@ from linked_codebook import (
 | `merge(base, incoming)` | `base` completed with `incoming`. |
 | `to_frictionless(profile)` | A Frictionless Table Schema. |
 | `to_sssom(profile)` | SSSOM TSV as text. |
+| `from_redcap(text)` | A `Profile` read from a REDCap data dictionary (CSV text). |
 | `from_sssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatched_sssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |
 | `infer(data)` | A `Profile` with the datatype and level of every column of `{name: values}`, and the `observed` codes of categorical columns. |

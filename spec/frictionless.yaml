@@ -5,4 +5,4 @@ extension: x-linked-codebook
 # Field slot -> Table Schema property, for slots that are copied as they are.
 field: {name: name, label: title, description: description, datatype: type}
 # Slots of a column that are kept in the extension property of the field.
-extension_slots: [level, unit, unit_iri, variable, source, values, closed, observed, missing_range, completeness, mappings]
+extension_slots: [level, unit, unit_iri, variable, source, values, closed, observed, missing_range, completeness, applies_when, mappings]

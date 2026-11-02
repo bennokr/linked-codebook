@@ -22,7 +22,7 @@ classes:
     slots: [title, description, identifier, license, citation, access_rights, landing_page, rows, columns]
   Column:
     description: One column of the table, described as a variable.
-    slots: [name, label, description, datatype, level, unit, unit_iri, variable, source, values, closed, observed, missing_values, missing_range, completeness, mappings]
+    slots: [name, label, description, datatype, level, unit, unit_iri, variable, source, values, closed, observed, missing_values, missing_range, completeness, applies_when, mappings]
   Value:
     description: A code that the column may hold, with its label.
     slots: [code, label, description, missing, mappings]
@@ -59,6 +59,7 @@ slots:
   observed: {description: "Codes found in the data, in order of first occurrence, with their counts. They say what occurred, not what is allowed.", range: Count, multivalued: true, inlined_as_list: true}
   missing_values: {description: "Codes that mean no value and have no label.", multivalued: true}
   missing_range: {description: "Numbers that mean no value.", range: Range}
+  applies_when: {description: "Condition under which the column has a value, as the source writes it, for example REDCap branching logic. Rows that do not meet it are missing by design."}
   completeness: {description: "Share of the rows that have a value, between 0 and 1.", range: float, minimum_value: 0, maximum_value: 1}
   mappings: {description: "Links to concepts.", range: Mapping, multivalued: true, inlined_as_list: true}
   code: {description: "The code as stored in the table, as text.", required: true}

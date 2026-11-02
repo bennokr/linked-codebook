@@ -7,6 +7,7 @@ from .infer import infer, infer_column, is_numeric, observe
 from .jsonld import build
 from .merge import merge
 from .read import parse
+from .redcap import from_redcap
 from .sssom import from_sssom, to_sssom, unmatched_sssom
 from .validate import validate
 
@@ -14,6 +15,7 @@ __all__ = [
     "Result",
     "build",
     "canonical",
+    "from_redcap",
     "from_sssom",
     "infer",
     "infer_column",

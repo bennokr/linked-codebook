@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.0
+
+- Added the command `from-redcap`, `fromRedcap` and `from_redcap`: a REDCap data dictionary (CSV) becomes a profile. Dropdown, radio, yes/no, true/false and checkbox fields get closed value lists; text validation types give datatypes; the rules are in `spec/redcap.yaml`.
+- Added the slot `applies_when`: the condition under which a column has a value, as the source writes it (REDCap branching logic). Written to JSON-LD as `appliesWhen`.
+
 ## 0.7.0
 
 - Added the slot `source`: the IRI of a web page that documents the column. It is written as `dct:source` on the variable concept, and read from there or from the column property.

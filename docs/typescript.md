@@ -8,6 +8,7 @@ The package needs Node 22.18 or later, or a browser. It has no dependencies. The
 import {
   build,
   canonical,
+  fromRedcap,
   fromSssom,
   infer,
   inferColumn,
@@ -30,6 +31,7 @@ import {
 | `merge(base, incoming)` | `base` completed with `incoming`. |
 | `toFrictionless(profile)` | A Frictionless Table Schema. |
 | `toSssom(profile)` | SSSOM TSV as text. |
+| `fromRedcap(text)` | A `Profile` read from a REDCap data dictionary (CSV text). |
 | `fromSssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatchedSssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |
 | `infer(data)` | A `Profile` with the datatype and level of every column of `{ name: values }`, and the `observed` codes of categorical columns. |

@@ -1,0 +1,34 @@
+# How a REDCap data dictionary (CSV) is read into a profile. Written from the REDCap documentation and sample
+# dictionaries; check it against a dictionary exported from your REDCap version before relying on it.
+# Header names are compared in lower case without punctuation. The first of the names found is used.
+headers:
+  name: [variablefieldname, fieldname]
+  type: [fieldtype]
+  label: [fieldlabel]
+  choices: [choicescalculationsorsliderlabels, selectchoicesorcalculations]
+  note: [fieldnote]
+  validation: [textvalidationtypeorshowslidernumber]
+  branching: [branchinglogicshowfieldonlyif, branchinglogic]
+# Field types that hold no data.
+skipped: [descriptive, file]
+# Field types with a built-in list of choices: code, label.
+builtin:
+  yesno: [["1", "Yes"], ["0", "No"]]
+  truefalse: [["1", "True"], ["0", "False"]]
+# Field types whose choices are written in the dictionary, as "code, label | code, label".
+choice_types: [dropdown, radio]
+# Field type of a checkbox group: one column per choice, named name___code, holding 0 or 1.
+checkbox: checkbox
+checkbox_values: [["0", "Unchecked"], ["1", "Checked"]]
+# Datatype and level of the other field types.
+types:
+  calc: {datatype: number, level: numerical}
+  slider: {datatype: integer, level: numerical}
+# Text validation types, by pattern that matches the whole text. The first that matches is used.
+validation:
+  - {pattern: "integer", datatype: integer, level: numerical}
+  - {pattern: "number.*", datatype: number, level: numerical}
+  - {pattern: "datetime.*", datatype: datetime}
+  - {pattern: "date_.*", datatype: date}
+# Codes that are whole numbers make an integer column.
+integer_code: "[-+]?[0-9]+"
