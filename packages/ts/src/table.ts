@@ -79,7 +79,7 @@ function records(tables: Tables, sheet: Sheet): [number, Record_][] {
   });
 }
 
-function require(record: Record_, sheet: Sheet, number: number): void {
+function requireHeaders(record: Record_, sheet: Sheet, number: number): void {
   for (const header of sheets[sheet].required) {
     if (record[header] === undefined) throw new Error(`${sheets[sheet].title} row ${number}: ${header} is required`);
   }
@@ -88,7 +88,7 @@ function require(record: Record_, sheet: Sheet, number: number): void {
 function readColumns(tables: Tables): Map<string, Column> {
   const columns = new Map<string, Column>();
   for (const [number, { missing_low: low, missing_high: high, ...record }] of records(tables, 'columns')) {
-    require(record, 'columns', number);
+    requireHeaders(record, 'columns', number);
     if ((low === undefined) !== (high === undefined)) {
       throw new Error(`Columns row ${number}: missing_low and missing_high go together`);
     }
@@ -110,7 +110,7 @@ function columnOf(columns: Map<string, Column>, record: Record_, sheet: Sheet, n
 
 function readValues(tables: Tables, columns: Map<string, Column>): void {
   for (const [number, record] of records(tables, 'values')) {
-    require(record, 'values', number);
+    requireHeaders(record, 'values', number);
     const column = columnOf(columns, record, 'values', number);
     const value = clean({ code: record['code'], label: record['label'], description: record['description'] });
     if (record['missing'] && Object.keys(value).length === 1) {
@@ -124,7 +124,7 @@ function readValues(tables: Tables, columns: Map<string, Column>): void {
 function readMappings(tables: Tables, columns: Map<string, Column>): void {
   for (const [number, { column: _column, code, ...mapping }] of records(tables, 'mappings')) {
     const record = { column: _column, code, ...mapping };
-    require(record, 'mappings', number);
+    requireHeaders(record, 'mappings', number);
     const column = columnOf(columns, record, 'mappings', number);
     const owner: { mappings?: unknown[] } | undefined =
       code === undefined ? column : column.values?.find((value) => value.code === code);

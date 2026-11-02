@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { vocabulary } from '../src/constants.ts';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import {
   build,
   fromTables,
@@ -117,4 +117,16 @@ test('a table cell that does not fit is reported with its sheet, row and header'
       }),
     /Values row 2/,
   );
+});
+
+test('no module declares a name that CommonJS needs (a function called require breaks a package compiled to CJS)', () => {
+  const dir = new URL('../src/', import.meta.url);
+  for (const file of readdirSync(dir).filter((name) => name.endsWith('.ts'))) {
+    const source = readFileSync(new URL(file, dir), 'utf8');
+    assert.doesNotMatch(
+      source,
+      /^(?:export )?(?:async )?(?:function|const|let|var|class)\s+(?:require|module|exports|__dirname|__filename)\b/m,
+      file,
+    );
+  }
 });
