@@ -81,6 +81,10 @@ datatype?: Datatype
  */
 description?: string
 /**
+ * How dates, times or numbers are written in the table, for example %d/%m/%Y, in the notation of the source.
+ */
+format?: string
+/**
  * Name of the group of columns that the column belongs to, for example the form of a REDCap field.
  */
 group?: string

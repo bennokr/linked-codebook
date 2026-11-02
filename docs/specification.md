@@ -113,14 +113,14 @@ The document is one node, the dataset, with these properties.
 | Dataset | `dcat:Dataset`, `dsv:Dataset` | `title`, `description`, `identifier`, `citation`, `accessRights` and `landingPage` carry the slots of the same meaning. `license` is written as `license` if it starts with `http:` or `https:`, and as `rights` otherwise. `datasetSchema` is the schema node. |
 | Dataset statistics | `dsv:SummaryStatistics` | `numberOfRows` carries `rows` and `numberOfColumns` the number of columns. The node is written only if the profile has `rows`. |
 | Schema | `dsv:DatasetSchema` | `columns` is the list of column nodes, in table order. |
-| Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `appliesWhen`, `minimumValue`, `maximumValue`, `columnGroup`, `identifying`, `columnProperty` and `summaryStatistics`. |
+| Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `appliesWhen`, `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat`, `identifying`, `columnProperty` and `summaryStatistics`. |
 | Column property | `dsv:ColumnProperty` | `hasVariable` is the variable concept. `hasUnit` and `unitText` carry `unit_iri` and `unit`. `hasCodeBook` is the concept scheme of the values. |
 | Summary statistics | `dsv:SummaryStatistics` | `statisticalDataType` is the meaning of the `level` and `columnCompleteness` carries `completeness`. The node is written only if one of them is set. |
 | Variable concept | `skos:Concept` | `skos:prefLabel` is the label, or else the name. `skos:definition` is the description. `dct:source` is the IRI `source`, written as a node reference. |
 | Code book | `skos:ConceptScheme` | `skos:hasTopConcept` lists a concept for every value. |
 | Code concept | `skos:Concept` | `skos:notation` is the code, `skos:prefLabel` the label, `skos:definition` the description and `skos:inScheme` the code book. For an ordinal column, `schema:position` is the place of the code in `values`, counted from 1. |
 
-Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `appliesWhen` carries `applies_when`; `minimumValue`, `maximumValue`, `columnGroup` and `identifying` carry `minimum`, `maximum`, `group` and `identifying` (only if true). None of these is defined by any vocabulary. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data. RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and as they occur otherwise.
+Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `appliesWhen` carries `applies_when`; `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat` and `identifying` carry `minimum`, `maximum`, `group`, `format` and `identifying` (only if true). None of these is defined by any vocabulary. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data. RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and as they occur otherwise.
 
 Only approved mappings are written. A mapping becomes the property `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch` or `relatedMatch`, according to its `match_type`, of the variable concept or of the code concept. The properties list the `object_id` values. Draft mappings, labels, confidence, provenance and reviewers are not written.
 
@@ -249,7 +249,7 @@ A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. 
 | Profile | Table Schema |
 | --- | --- |
 | `columns` | `fields`, in the same order |
-| `name`, `label`, `description`, `datatype` | the field properties `name`, `title`, `description`, `type` |
+| `name`, `label`, `description`, `datatype`, `format` | the field properties `name`, `title`, `description`, `type`, `format` |
 | `missing_values`, and the codes of values with `missing` set | the field property `missingValues` |
 | `minimum`, `maximum` | the field constraints `minimum` and `maximum` |
 | `values`, if `closed` is true | the field property `categories`: `{ "value": …, "label": … }`, or only the value if there is no label |
@@ -299,7 +299,7 @@ Sheet and header names are compared in lower case without punctuation. Sheets an
 
 | Sheet | One row for | Headers |
 | --- | --- | --- |
-| `Columns` | a column, in table order | `name` (required), `label`, `description`, `datatype`, `level`, `unit`, `unit_iri`, `variable`, `source`, `closed`, `missing_low`, `missing_high`, `completeness`, `applies_when`, `minimum`, `maximum`, `group`, `identifying` |
+| `Columns` | a column, in table order | `name` (required), `label`, `description`, `datatype`, `format`, `level`, `unit`, `unit_iri`, `variable`, `source`, `closed`, `missing_low`, `missing_high`, `completeness`, `applies_when`, `minimum`, `maximum`, `group`, `identifying` |
 | `Values` | a code of a column, in the order of the column | `column` and `code` (required), `label`, `description`, `missing` |
 | `Mappings` | a link to a concept | `column`, `match_type` and `object_id` (required), `code` (empty for a link of the column), `object_label`, `confidence`, `provenance`, `retrieved_at`, `reviewer_id`, `description` |
 | `Dataset` | a slot of the dataset | `key` and `value`: `title`, `description`, `identifier`, `license`, `citation`, `access_rights`, `landing_page`, `rows` |

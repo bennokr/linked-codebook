@@ -67,6 +67,7 @@ const extensions = (column: Column): Node => ({
   minimumValue: column.minimum,
   maximumValue: column.maximum,
   columnGroup: column.group,
+  columnFormat: column.format,
   identifying: column.identifying || undefined,
 });
 

@@ -36,6 +36,7 @@ import {
 | `toSssom(profile)` | SSSOM TSV as text. |
 | `fromTables(tables)` | A `Profile` read from tables: sheet name to rows, the first row holding the headers. Cells may be text, numbers, booleans or `null`. |
 | `toTables(profile)` | Tables for a profile. |
+| `tableSpec` | The sheets, headers and kinds of cells of the table format, as in `spec/table.yaml`. An application can use it to check the cells of a workbook before it hands them over. |
 | `tableWarnings(tables)` | The sheets and headers of tables that `fromTables` does not use. |
 | `fromRedcap(text)` | A `Profile` read from a REDCap data dictionary (CSV text). |
 | `fromSssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |

@@ -8,8 +8,8 @@ sheets:
   columns:
     title: Columns
     required: [name]
-    headers: [name, label, description, datatype, level, unit, unit_iri, variable, source, closed, missing_low, missing_high, completeness, applies_when, minimum, maximum, group, identifying]
-    kinds: {name: text, label: text, description: text, datatype: Datatype, level: Level, unit: text, unit_iri: text, variable: text, source: text, closed: boolean, missing_low: number, missing_high: number, completeness: number, applies_when: text, minimum: number, maximum: number, group: text, identifying: boolean}
+    headers: [name, label, description, datatype, format, level, unit, unit_iri, variable, source, closed, missing_low, missing_high, completeness, applies_when, minimum, maximum, group, identifying]
+    kinds: {name: text, label: text, description: text, datatype: Datatype, format: text, level: Level, unit: text, unit_iri: text, variable: text, source: text, closed: boolean, missing_low: number, missing_high: number, completeness: number, applies_when: text, minimum: number, maximum: number, group: text, identifying: boolean}
   values:
     title: Values
     required: [column, code]

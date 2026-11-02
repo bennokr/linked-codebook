@@ -8,5 +8,6 @@ export { merge } from './merge.ts';
 export { parse } from './read.ts';
 export { fromRedcap } from './redcap.ts';
 export { fromSssom, toSssom, unmatchedSssom } from './sssom.ts';
+export { table as tableSpec } from './constants.ts';
 export { fromTables, tableWarnings, toTables, type Tables } from './table.ts';
 export { validate } from './validate.ts';

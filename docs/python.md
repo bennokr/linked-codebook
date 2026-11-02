@@ -37,6 +37,7 @@ from linked_codebook import (
 | `from_redcap(text)` | A `Profile` read from a REDCap data dictionary (CSV text). |
 | `from_tables(tables)` | A `Profile` read from tables: sheet name to rows, the first row holding the headers. Cells may be text, numbers, booleans or `None`. |
 | `to_tables(profile)` | Tables for a profile. |
+| `TABLE_SPEC` | The sheets, headers and kinds of cells of the table format, as in `spec/table.yaml`. An application can use it to check the cells of a workbook before it hands them over. |
 | `table_warnings(tables)` | The sheets and headers of tables that `from_tables` does not use. |
 | `from_sssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatched_sssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |

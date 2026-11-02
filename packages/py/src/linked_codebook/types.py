@@ -54,6 +54,7 @@ class Column(TypedDict):
     completeness: NotRequired[float]
     datatype: NotRequired[Datatype]
     description: NotRequired[str]
+    format: NotRequired[str]
     group: NotRequired[str]
     identifying: NotRequired[bool]
     label: NotRequired[str]

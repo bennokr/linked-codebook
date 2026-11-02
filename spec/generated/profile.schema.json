@@ -28,6 +28,10 @@
           "description": "Definition of the dataset, column or value.",
           "type": "string"
         },
+        "format": {
+          "description": "How dates, times or numbers are written in the table, for example %d/%m/%Y, in the notation of the source.",
+          "type": "string"
+        },
         "group": {
           "description": "Name of the group of columns that the column belongs to, for example the form of a REDCap field.",
           "type": "string"

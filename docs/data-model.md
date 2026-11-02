@@ -28,6 +28,7 @@ One column of the table, described as a variable.
 | `label` | string | no | Human-readable name of the column or value. |
 | `description` | string | no | Definition of the dataset, column or value. |
 | `datatype` | Datatype | no | How values are stored. |
+| `format` | string | no | How dates, times or numbers are written in the table, for example %d/%m/%Y, in the notation of the source. |
 | `level` | Level | no | Level of measurement. |
 | `unit` | string | no | Unit as text, for example years. |
 | `unit_iri` | string | no | IRI of the unit, for example from QUDT. |

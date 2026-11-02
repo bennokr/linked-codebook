@@ -179,6 +179,7 @@ def extensions_of(node: Node) -> Node:
             "minimum": number_of(get(node, "minimumValue")),
             "maximum": number_of(get(node, "maximumValue")),
             "group": text(get(node, "columnGroup")),
+            "format": text(get(node, "columnFormat")),
             "identifying": get(node, "identifying") is True or None,
         },
     )

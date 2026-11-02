@@ -2,6 +2,7 @@
 
 from .canonical import canonical
 from .cli import Result, run
+from .constants import TABLE as TABLE_SPEC
 from .frictionless import to_frictionless
 from .infer import infer, infer_column, is_numeric, observe
 from .jsonld import build
@@ -13,6 +14,7 @@ from .table import from_tables, table_warnings, to_tables
 from .validate import validate
 
 __all__ = [
+    "TABLE_SPEC",
     "Result",
     "build",
     "canonical",

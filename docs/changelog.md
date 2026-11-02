@@ -2,10 +2,10 @@
 
 ## 0.9.0
 
-- Added the slots `minimum` and `maximum` (limits of a numeric column), `group` (the form of a REDCap field, or any named group of columns) and `identifying` (true if the values identify a person or a record). JSON-LD keys `minimumValue`, `maximumValue`, `columnGroup`, `identifying`; Frictionless `constraints.minimum` and `maximum`; `group` and `identifying` in `x-linked-codebook`.
+- Added the slots `format` (how dates or numbers are written, in the notation of the source; Frictionless `format`), `minimum` and `maximum` (limits of a numeric column), `group` (the form of a REDCap field, or any named group of columns) and `identifying` (true if the values identify a person or a record). JSON-LD keys `minimumValue`, `maximumValue`, `columnGroup`, `identifying`; Frictionless `constraints.minimum` and `maximum`; `group` and `identifying` in `x-linked-codebook`.
 - `from-redcap` reads Form Name (`group`), Identifier? (`identifying`) and numeric Text Validation Min and Max.
 - Added tables: `from-tables`, `to-tables` and `check-tables`, with `fromTables`, `toTables`, `tableWarnings` and the Python equivalents. A set of sheets (Columns, Values, Mappings, Dataset) is read and written with the headers of the model. `closed` is only on `Columns`; missing codes only on `Values`. Workbook files are opened by the application; see section 12 of the specification.
-- The statement budgets rise by the size of the tables module (Python 563 to 728, TypeScript 499 to 643).
+- The statement budgets rise by the size of the tables module (Python 563 to 729, TypeScript 499 to 644).
 
 ## 0.8.0
 

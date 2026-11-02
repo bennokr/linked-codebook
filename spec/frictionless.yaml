@@ -3,7 +3,7 @@
 extension: x-linked-codebook
 # Values become categories only when the list is closed: categories are the codes a field may hold.
 # Field slot -> Table Schema property, for slots that are copied as they are.
-field: {name: name, label: title, description: description, datatype: type}
+field: {name: name, label: title, description: description, datatype: type, format: format}
 # Slots of a column that are kept in the extension property of the field.
 extension_slots: [level, unit, unit_iri, variable, source, values, closed, observed, missing_range, completeness, applies_when, group, identifying, mappings]
 # minimum and maximum are written as the constraints of the field.

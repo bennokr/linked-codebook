@@ -121,6 +121,7 @@
     "field": {
       "datatype": "type",
       "description": "description",
+      "format": "format",
       "label": "title",
       "name": "name"
     }
@@ -291,7 +292,8 @@
       "minimumValue",
       "maximumValue",
       "columnGroup",
-      "identifying"
+      "identifying",
+      "columnFormat"
     ],
     "imported_reviewer": "imported",
     "iris": {
@@ -588,6 +590,10 @@
           },
           "description": {
             "description": "Definition of the dataset, column or value.",
+            "type": "string"
+          },
+          "format": {
+            "description": "How dates, times or numbers are written in the table, for example %d/%m/%Y, in the notation of the source.",
             "type": "string"
           },
           "group": {
@@ -942,6 +948,7 @@
           "label",
           "description",
           "datatype",
+          "format",
           "level",
           "unit",
           "unit_iri",
@@ -963,6 +970,7 @@
           "completeness": "number",
           "datatype": "Datatype",
           "description": "text",
+          "format": "text",
           "group": "text",
           "identifying": "boolean",
           "label": "text",
