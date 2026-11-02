@@ -269,7 +269,7 @@ Notes:
 
 A processor MAY read a [REDCap][redcap] data dictionary, the CSV file that describes the fields of a REDCap project, into a profile (`from-redcap`). The rules are in [`spec/redcap.yaml`](../spec/redcap.yaml). They were written from the REDCap documentation and sample dictionaries, so check them against a dictionary exported by your REDCap version.
 
-Header names are compared in lower case without punctuation, so `Variable / Field Name` and the API name `field_name` are alike. Fields in quotes may hold commas, doubled quotes and line breaks. Rows that are empty are ignored. A dictionary without fields is an error.
+The reader takes text: the application decodes the file. Dictionaries are usually UTF-8, but some are Windows-1252 (about 3% of the 985 PhenX dictionaries), so try UTF-8 first and then Windows-1252. Header names are compared in lower case without punctuation, so `Variable / Field Name` and the API name `field_name` are alike. Fields in quotes may hold commas, doubled quotes and line breaks. Files do not always follow RFC 4180, so a processor MUST read CSV as Python's `csv` module does: a quote inside a field that does not start with one is text, and after the closing quote of a quoted field any character other than a separator continues the field as text. Rows that are empty are ignored. A dictionary without fields is an error.
 
 | Dictionary | Profile |
 | --- | --- |

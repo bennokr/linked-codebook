@@ -5,33 +5,86 @@ import { clean } from './jsonld.ts';
 
 type Row = Record<string, string>;
 
-const FIELD = /("(?:[^"]|"")*"|[^,"\r\n]*)(,|\r\n|\n|\r|$)/y;
 const BOM = String.fromCharCode(0xfeff);
 const WHOLE_NUMBER = new RegExp(`^(?:${redcap.integer_code})$`);
 
 const normalize = (header: string): string => header.toLowerCase().replace(/[^a-z0-9]/g, '');
-const unquote = (field: string): string => (field.startsWith('"') ? field.slice(1, -1).replaceAll('""', '"') : field);
+type State = 'start' | 'plain' | 'quoted' | 'quote';
 
-/** The fields of CSV text with the separator that ends each. */
-function tokens(source: string): [string, string][] {
-  const found: [string, string][] = [];
-  FIELD.lastIndex = 0;
-  while (FIELD.lastIndex < source.length) {
-    const match = FIELD.exec(source);
-    if (!match) throw new Error('malformed CSV');
-    found.push([unquote(match[1] ?? ''), match[2] ?? '']);
+/**
+ * A reader of CSV text that accepts what Python's `csv` module accepts, so that both libraries read the same fields
+ * from files that do not follow RFC 4180. A quote inside a field that does not start with one is text. After the
+ * closing quote of a quoted field, any other character other than a separator continues the field as plain text.
+ */
+class Reader {
+  rows: string[][] = [[]];
+  private field = '';
+  private state: State = 'start';
+  private skipLineFeed = false;
+
+  private endField(): void {
+    this.rows.at(-1)?.push(this.field);
+    this.field = '';
+    this.state = 'start';
   }
-  return found;
+
+  private endRow(): void {
+    this.endField();
+    this.rows.push([]);
+  }
+
+  private inQuotes(char: string): void {
+    if (char === '"') this.state = 'quote';
+    else this.field += char;
+  }
+
+  private afterQuote(char: string): void {
+    if (char === '"') {
+      this.field += char;
+      this.state = 'quoted';
+    } else if (!this.separator(char)) {
+      this.field += char;
+      this.state = 'plain';
+    }
+  }
+
+  /** Ends the field or the row if the character is a separator. Returns whether it was one. */
+  private separator(char: string): boolean {
+    if (char === ',') this.endField();
+    else if (char === '\n' || char === '\r') {
+      this.endRow();
+      this.skipLineFeed = char === '\r';
+    }
+    return char === ',' || char === '\n' || char === '\r';
+  }
+
+  feed(char: string): void {
+    const skip = this.skipLineFeed;
+    this.skipLineFeed = false;
+    if (skip && char === '\n') return;
+    if (this.state === 'quoted') this.inQuotes(char);
+    else if (this.state === 'quote') this.afterQuote(char);
+    else if (!this.separator(char)) {
+      if (char === '"' && this.state === 'start') this.state = 'quoted';
+      else {
+        this.field += char;
+        this.state = 'plain';
+      }
+    }
+  }
+
+  finish(): string[][] {
+    if (this.field || this.state !== 'start') this.endField();
+    return this.rows;
+  }
 }
 
 /** The rows of CSV text: fields may be quoted and then hold commas, doubled quotes and line breaks. */
 export function parseCsv(text: string): string[][] {
-  const rows: string[][] = [[]];
-  for (const [field, end] of tokens(text.startsWith(BOM) ? text.slice(1) : text)) {
-    rows.at(-1)?.push(field);
-    if (end && end !== ',') rows.push([]);
-  }
-  return rows.filter((row) => row.some((cell) => cell.trim()));
+  const reader = new Reader();
+  const source = text.startsWith(BOM) ? text.slice(1) : text;
+  for (const char of source) reader.feed(char);
+  return reader.finish().filter((row) => row.some((cell) => cell.trim()));
 }
 
 /** The dictionary rows, with the columns that are used under the names of the specification. */

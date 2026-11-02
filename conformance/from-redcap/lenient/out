@@ -1,0 +1,37 @@
+{
+  "columns": [
+    {
+      "closed": true,
+      "datatype": "integer",
+      "description": "PX870701",
+      "group": "responses_stress",
+      "label": "WHEN DEALING WITH THE STRESS: I say to myself, \\\"This isn't real.\\\"\"\"\"",
+      "level": "categorical",
+      "name": "stress_real",
+      "values": [
+        {
+          "code": "1",
+          "label": "Not at all"
+        },
+        {
+          "code": "2",
+          "label": "A lot"
+        }
+      ]
+    },
+    {
+      "datatype": "string",
+      "description": "line one\nline two",
+      "group": "intake",
+      "identifying": true,
+      "label": "He said \"hi\", twice",
+      "name": "name"
+    },
+    {
+      "datatype": "string",
+      "group": "intake",
+      "label": "Plain label with a \"quote\" inside",
+      "name": "note"
+    }
+  ]
+}
