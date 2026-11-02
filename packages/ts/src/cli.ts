@@ -1,12 +1,15 @@
 import { canonical } from './canonical.ts';
 import { commands as spec } from './constants.ts';
 import type { Profile } from './generated/types.ts';
+import { parseCondition } from './condition.ts';
 import { infer } from './infer.ts';
 import { build } from './jsonld.ts';
 import { merge } from './merge.ts';
+import { conditions, missingness } from './missingness.ts';
 import { parse } from './read.ts';
 import { fromRedcap } from './redcap.ts';
 import { toFrictionless } from './frictionless.ts';
+import { fromReadstat } from './readstat.ts';
 import { fromSssom, toSssom } from './sssom.ts';
 import { fromTables, tableWarnings, toTables } from './table.ts';
 import { validate } from './validate.ts';
@@ -29,6 +32,10 @@ function load(text: string): Profile {
 const commands: Record<string, (...texts: string[]) => Result> = {
   normalize: (profile) => done(canonical(load(profile))),
   build: (profile) => done(canonical(build(load(profile)))),
+  'parse-condition': (text) => done(canonical(parseCondition(text))),
+  conditions: (profile) => done(canonical(conditions(load(profile)))),
+  missingness: (profile, data) => done(canonical(missingness(load(profile), JSON.parse(data)))),
+  'from-readstat': (variables) => done(canonical(fromReadstat(JSON.parse(variables)))),
   'from-redcap': (dictionary) => done(canonical(fromRedcap(dictionary))),
   'from-tables': (tables) => done(canonical(fromTables(JSON.parse(tables)))),
   'to-tables': (profile) => done(canonical(toTables(load(profile)))),

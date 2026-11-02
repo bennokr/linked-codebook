@@ -24,8 +24,11 @@ This is a draft. It may change without notice. Changes are listed in the [change
 10. [Frictionless](#10-frictionless)
 11. [REDCap](#11-redcap)
 12. [Tables](#12-tables)
-13. [Command line](#13-command-line)
-14. [References](#14-references)
+13. [Conditions](#13-conditions)
+14. [Missingness](#14-missingness)
+15. [Statistical files](#15-statistical-files)
+16. [Command line](#16-command-line)
+17. [References](#17-references)
 
 ## 1. Introduction
 
@@ -306,13 +309,63 @@ Sheet and header names are compared in lower case without punctuation. Sheets an
 
 Each fact has one place. Whether a list of values is complete (`closed`) is a fact of the column, so it is on the `Columns` sheet and not repeated on every value. A code that means no value is a row of `Values` with `missing` set; a row with no label and no description is read as an unlabelled missing code (`missing_values`). A numeric range of missing values is `missing_low` and `missing_high`, both or neither. There is no sheet of missing codes that apply to every column: a code that is missing in every column is a row for every column. The order of the codes is the order of the rows. Observed counts are not written: they describe one copy of the data.
 
-A reader MUST fail, naming the sheet and the row (counted as in a spreadsheet, the header being row 1), for a cell that does not fit its header, a row without a required header, a `Values` or `Mappings` row that names a column or code that does not exist, a column listed twice and a `Columns` sheet without columns. The headers `closed`, `is_missing` and `order` of the `Values` sheet and the headers `role`, `measurement`, `type` and `title` of the `Columns` sheet belong to an earlier workbook. They have no meaning here, and `check-tables` reports them.
+A reader MUST fail, naming the sheet and the row (counted as in a spreadsheet, the header being row 1), for a cell that does not fit its header, a row without a required header, a `Values` or `Mappings` row that names a column or code that does not exist, a column listed twice and a `Columns` sheet without columns. A header that is not listed is reported by `check-tables`, which also finds the headers of an earlier workbook (`closed`, `is_missing` or `order` on `Values`; `role`, `measurement`, `type` or `title` on `Columns`).
 
-## 13. Command line
+## 13. Conditions
+
+`applies_when` holds the skip logic of a questionnaire as the source wrote it. A processor MAY parse it into a condition (`parse-condition`, `conditions`). One text syntax covers [REDCap branching logic][redcap] and a subset of SQL `WHERE`; the rules are in [`spec/condition.yaml`](../spec/condition.yaml).
+
+| Text | Meaning |
+| --- | --- |
+| `[name]`, or a bare `name` | a column. In brackets any text but `]` is allowed. |
+| `[name(code)]` | the option `code` of a REDCap checkbox: the column `name___code`, with the code in lower case and other characters replaced by `_`, as `from-redcap` names it |
+| `'text'`, `"text"`, `12`, `-2.5` | a value. A quote is written twice inside a string of the same quote. Double quotes are text, as in REDCap, not names. |
+| `=` `==` `<>` `!=` `<` `<=` `>` `>=` | comparison. Comparing with `''` asks whether the value is blank. |
+| `a IN (1, 2)`, `a IS NULL`, `a IS NOT NULL` | membership and blankness |
+| `NOT`, `AND` `&` `&&`, `OR` `\|` `\|\|` | connectives, in this order of precedence, with parentheses; keywords are not case sensitive |
+
+Functions, references to events (`[event][field]`) and anything else are errors. The condition is a JSON tree in the shape of [JsonLogic](https://jsonlogic.com): `{"var": "smoker"}`, `{"==": [a, b]}` (also `!=`, `<`, `<=`, `>`, `>=`), `{"in": [a, [x, y]]}`, `{"and": [...]}`, `{"or": [...]}`, `{"!": [a]}`, and `{"null": [a]}` for a blank value, which JsonLogic does not have. A chain `a and b and c` is one `and` with three operands.
+
+A condition has three values: true, false and unknown. A comparison with a blank is unknown, as in SQL. A blank is an empty cell or one of white space, or a column that the row does not have. Two values are equal if both are numbers (or text that is a number as defined in [section 7](#7-inference), so `1` and `"1"` are alike) and equal as numbers, or else if they are equal as text. They are ordered the same way, so ISO dates order correctly as text. `and` is false if any operand is false, otherwise unknown if any is unknown; `or` is true if any operand is true, otherwise unknown if any is unknown; `not` of unknown is unknown. `null` is never unknown.
+
+Of the 2,650 different rules of the 985 PhenX REDCap dictionaries, all but one parse (the exception is the text `always|NA`), to the same tree in both libraries.
+
+## 14. Missingness
+
+A processor MAY report why values are missing (`missingness`), for a profile and the data as an object of lists of cells. For each column that the data has, it counts the cells:
+
+| Count | Cells |
+| --- | --- |
+| `present` | a value that is not a declared missing code |
+| `declared` | by code: cells that hold a declared missing code (`missing_values`, a value with `missing`, or a number in `missing_range`) |
+| `blank` | empty cells |
+| `blank_not_applicable` | blank, and the rule `applies_when` of the column is false: skipped by design |
+| `blank_applicable` | blank, and the rule is true: missing although the question applied |
+| `blank_unknown` | blank, and the rule is unknown because it depends on a value that is missing |
+| `answered_not_applicable` | a value (also counted in `present`) where the rule is false |
+| `rule_error` | the reason that `applies_when` could not be parsed |
+
+The last four are left out for a column without a rule, and zero counts are left out except `present` and `blank`. When a rule is evaluated, a declared missing code of another column is a blank: the answer `9 = Refused` does not say that the respondent smokes. A column that the rule names but the data does not have is blank.
+
+## 15. Statistical files
+
+A processor MAY read the variables of a file of a statistical package (SPSS, Stata, SAS) into a profile (`from-readstat`). The library does not open the files. A ReadStat-based reader (`statfmt` in JavaScript, `pyreadstat` in Python) delivers the metadata, and the application hands over a list of variables as plain data; the rules are in [`spec/readstat.yaml`](../spec/readstat.yaml).
+
+| Variable | Profile |
+| --- | --- |
+| `name`, `label` | `name`, `label` |
+| `type`, `format` | `datatype`: `string` for ReadStat type 0; then by format, `date` (SPSS `DATE`, `ADATE`, ...; Stata `%td`), `datetime` (`DATETIME`, `%tc`) or `integer` (no decimals: `F8.0`, `%8.0f`); then `integer` for a Stata byte, int or long; otherwise `number` |
+| `measure` | `level`: nominal, ordinal, scale gives `numerical`. A variable with value labels and no measure is `categorical`. |
+| `valueLabels` | `values`. They do not make the list `closed`, because both packages allow codes without a label. |
+| `missingRanges` | one range (`lo` below `hi`) is `missing_range`; one value (`lo` equal to `hi`) is a code that means no value: `missing` on the value if it has a label, else `missing_values`. More than one range is an error. |
+
+A Stata extended missing value (`.a` to `.z`) is given as that text, and is always a code that means no value. `statfmt` leaves it out of its value labels (it gives `null`), so an application that needs it must read it from the file itself.
+
+## 16. Command line
 
 The command line is defined in [Command line](cli.md). A processor MUST provide the commands listed there, MUST print the same text as every other processor and MUST use the same exit codes.
 
-## 14. References
+## 17. References
 
 - [DSV][dsv]: Dataset-Variable Ontology.
 - [Table Schema][frictionless]: Frictionless Data specification.

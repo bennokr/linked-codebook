@@ -41,6 +41,8 @@ def constants() -> dict[str, Any]:
         "frictionless": load("frictionless"),
         "redcap": load("redcap"),
         "table": load("table"),
+        "condition": load("condition"),
+        "readstat": load("readstat"),
         "schema": schema,
     }
 

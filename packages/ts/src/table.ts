@@ -160,16 +160,14 @@ export function fromTables(tables: Tables): Profile {
 /** What a reader does not use: sheets and headers it does not know, and headers of the earlier workbook. */
 export function tableWarnings(tables: Tables): string[] {
   const titles = new Map((Object.keys(sheets) as Sheet[]).map((sheet) => [key(sheets[sheet].title), sheet]));
-  const retired = table.retired as Record<string, string[]>;
   return Object.entries(tables).flatMap(([name, rows]) => {
     const sheet = titles.get(key(name));
     if (!sheet) return [`sheet ${name} is not used`];
     const known = [...sheets[sheet].headers, ...(sheet === 'dataset' ? ['key', 'value'] : [])].map(key);
-    const old = (retired[sheet] ?? []).map(key);
     return (rows[0] ?? [])
       .filter((head) => head !== null && head !== undefined)
       .map(show)
-      .filter((head) => old.includes(key(head)) || !known.includes(key(head)))
+      .filter((head) => !known.includes(key(head)))
       .map((head) => `${sheets[sheet].title} header ${head} is not used`);
   });
 }

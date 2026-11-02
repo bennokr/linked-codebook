@@ -35,3 +35,15 @@ to-tables:
 check-tables:
   files: [tables]
   summary: List the sheets and headers of tables that a reader does not use. Prints ok if there are none.
+parse-condition:
+  files: [condition]
+  summary: Print a condition of skip logic, REDCap branching logic or a SQL WHERE subset, as a JSON tree.
+conditions:
+  files: [profile]
+  summary: Print the parsed applies_when of every column of a profile that has one, or why it could not be parsed.
+missingness:
+  files: [profile, data]
+  summary: Print how the values of each column divide into values, declared missing codes and blanks, and the blanks into skipped by design, missing and unknown, for a JSON object of value lists.
+from-readstat:
+  files: [variables]
+  summary: Print a profile read from the variables of a statistical file (SPSS, Stata, SAS), as JSON from a ReadStat-based reader.

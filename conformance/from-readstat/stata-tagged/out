@@ -1,0 +1,50 @@
+{
+  "columns": [
+    {
+      "datatype": "integer",
+      "label": "Currently smokes",
+      "level": "categorical",
+      "name": "smoker",
+      "values": [
+        {
+          "code": "0",
+          "label": "No"
+        },
+        {
+          "code": "1",
+          "label": "Yes"
+        },
+        {
+          "code": ".a",
+          "label": "Dont know",
+          "missing": true
+        }
+      ]
+    },
+    {
+      "datatype": "number",
+      "label": "Income",
+      "name": "income"
+    },
+    {
+      "datatype": "integer",
+      "label": "Age in years",
+      "name": "age"
+    },
+    {
+      "datatype": "string",
+      "label": "Name",
+      "name": "name"
+    },
+    {
+      "datatype": "date",
+      "label": "Visit date",
+      "name": "visit"
+    },
+    {
+      "datatype": "datetime",
+      "label": "Timestamp",
+      "name": "stamp"
+    }
+  ]
+}

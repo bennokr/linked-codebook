@@ -24,7 +24,3 @@ sheets:
     title: Dataset
     headers: [title, description, identifier, license, citation, access_rights, landing_page, rows]
     kinds: {title: text, description: text, identifier: text, license: text, citation: text, access_rights: text, landing_page: text, rows: integer}
-# Headers of earlier workbooks, which this format does not read. Reading reports them.
-retired:
-  columns: [role, measurement, type, title]
-  values: [closed, is_missing, order]

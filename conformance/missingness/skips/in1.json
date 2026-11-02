@@ -1,0 +1,46 @@
+{
+ "columns": [
+  {
+   "name": "smoker",
+   "datatype": "integer",
+   "values": [
+    {
+     "code": "1",
+     "label": "Yes"
+    },
+    {
+     "code": "0",
+     "label": "No"
+    },
+    {
+     "code": "9",
+     "label": "Refused",
+     "missing": true
+    }
+   ],
+   "closed": true
+  },
+  {
+   "name": "type",
+   "datatype": "integer"
+  },
+  {
+   "name": "cigs",
+   "datatype": "integer",
+   "applies_when": "[smoker] = '1'",
+   "minimum": 0,
+   "missing_range": {
+    "low": -99,
+    "high": -90
+   }
+  },
+  {
+   "name": "brand",
+   "applies_when": "smoker = 1 AND type IN (1, 2)"
+  },
+  {
+   "name": "odd",
+   "applies_when": "datediff([a],[b]) > 1"
+  }
+ ]
+}

@@ -8,6 +8,7 @@ The package needs Python 3.11 and has no dependencies. It also runs in [Pyodide]
 from linked_codebook import (
     build,
     canonical,
+    from_readstat,
     from_redcap,
     from_sssom,
     from_tables,
@@ -39,6 +40,11 @@ from linked_codebook import (
 | `to_tables(profile)` | Tables for a profile. |
 | `TABLE_SPEC` | The sheets, headers and kinds of cells of the table format, as in `spec/table.yaml`. An application can use it to check the cells of a workbook before it hands them over. |
 | `table_warnings(tables)` | The sheets and headers of tables that `from_tables` does not use. |
+| `parse_condition(text)` | The tree of a condition of skip logic (REDCap branching logic or a SQL `WHERE` subset). Raises `ValueError` for text that is not one. |
+| `evaluate_condition(tree, row)` | `True`, `False`, or `None` (unknown) for a row `{name: cell}`. |
+| `conditions(profile)` | The parsed `applies_when` of every column that has one, or why it could not be parsed. |
+| `missingness(profile, data)` | How the cells of each column divide into values, declared missing codes and blanks, and the blanks into skipped, missing and unknown. `data` is `{name: [cells]}`. |
+| `from_readstat(variables)` | A `Profile` read from the variables of a statistical file, as a list of dicts with the keys of ReadStat (see section 15 of the specification). |
 | `from_sssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatched_sssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |
 | `infer(data)` | A `Profile` with the datatype and level of every column of `{name: values}`, and the `observed` codes of categorical columns. |

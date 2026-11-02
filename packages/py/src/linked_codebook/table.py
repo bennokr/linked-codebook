@@ -165,13 +165,8 @@ def table_warnings(tables: Tables) -> list[str]:
             warnings.append(f"sheet {name} is not used")
             continue
         known = {key(h) for h in [*SHEETS[sheet]["headers"], *(["key", "value"] if sheet == "dataset" else [])]}
-        retired = {key(h) for h in TABLE["retired"].get(sheet, [])}
         heads = (show(h) for h in (rows[0] if rows else []) if h is not None)
-        warnings += [
-            f"{SHEETS[sheet]['title']} header {head} is not used"
-            for head in heads
-            if key(head) in retired or key(head) not in known
-        ]
+        warnings += [f"{SHEETS[sheet]['title']} header {head} is not used" for head in heads if key(head) not in known]
     return warnings
 
 

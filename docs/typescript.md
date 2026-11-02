@@ -8,6 +8,7 @@ The package needs Node 22.18 or later, or a browser. It has no dependencies. The
 import {
   build,
   canonical,
+  fromReadstat,
   fromRedcap,
   fromSssom,
   fromTables,
@@ -38,6 +39,11 @@ import {
 | `toTables(profile)` | Tables for a profile. |
 | `tableSpec` | The sheets, headers and kinds of cells of the table format, as in `spec/table.yaml`. An application can use it to check the cells of a workbook before it hands them over. |
 | `tableWarnings(tables)` | The sheets and headers of tables that `fromTables` does not use. |
+| `parseCondition(text)` | The tree of a condition of skip logic (REDCap branching logic or a SQL `WHERE` subset). Throws an error for text that is not one. |
+| `evaluateCondition(tree, row)` | `true`, `false`, or `null` (unknown) for a row `{name: cell}`. |
+| `conditions(profile)` | The parsed `applies_when` of every column that has one, or why it could not be parsed. |
+| `missingness(profile, data)` | How the cells of each column divide into values, declared missing codes and blanks, and the blanks into skipped, missing and unknown. `data` is `{name: cells}`. |
+| `fromReadstat(variables)` | A `Profile` read from the variables of a statistical file, as `statfmt` delivers them (see section 15 of the specification). |
 | `fromRedcap(text)` | A `Profile` read from a REDCap data dictionary (CSV text). |
 | `fromSssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatchedSssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |
