@@ -23,6 +23,7 @@ jobs:
       - run: make test
       - run: make budget
       - run: make versions
+      - run: make released
 
   browser:
     runs-on: ubuntu-latest

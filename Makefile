@@ -1,4 +1,4 @@
-.PHONY: setup generate pin golden lint test budget versions site smoke check release
+.PHONY: setup generate pin golden lint test budget versions released site smoke check release
 
 setup:
 	uv sync --group dev
@@ -42,7 +42,11 @@ smoke: site
 versions:
 	uv run python scripts/check_versions.py
 
-check: lint test budget versions
+# A published version is immutable: releases/ must not change against the base branch.
+released:
+	uv run python scripts/check_released.py
+
+check: lint test budget versions released
 
 # Add the packages of the current version to releases/. Commit them: they are published with the test page.
 release:
