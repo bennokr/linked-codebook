@@ -1,0 +1,40 @@
+{
+  "brand": {
+    "condition": {
+      "and": [
+        {
+          "==": [
+            {
+              "var": "smoker"
+            },
+            1
+          ]
+        },
+        {
+          "in": [
+            {
+              "var": "type"
+            },
+            [
+              1,
+              2
+            ]
+          ]
+        }
+      ]
+    }
+  },
+  "cigs": {
+    "condition": {
+      "==": [
+        {
+          "var": "smoker"
+        },
+        "1"
+      ]
+    }
+  },
+  "odd": {
+    "error": "function datediff is not supported"
+  }
+}

@@ -28,6 +28,7 @@ def field_of(column: Column) -> Node:
                 for value in (values if column.get("closed") else [])
             ],
             "categoriesOrdered": True if column.get("closed") and values and column.get("level") == "ordinal" else None,
+            "constraints": pick(column, {"minimum": "minimum", "maximum": "maximum"}),
             RULES["extension"]: pick(column, {slot: slot for slot in RULES["extension_slots"]}),
         },
     )

@@ -22,7 +22,7 @@ How claims were checked: *Code* means the repository was read. *Spec* means the 
 | Four meanings of "role" (analysis, graph node, structure, privacy). | Not in the profile. Roles stay in the projects. |
 | Statistics were mixed into curated metadata. | `rows` and `completeness` exist for DSV parity. They describe the data, so importers should not take them from files. |
 | Links to documentation pages were pasted into descriptions. | Resolved in 0.7.0. `source` is written as `dct:source`. |
-| Skip logic (REDCap branching logic) had no place in any profile. | Partly. `applies_when` keeps the source expression; nothing interprets it. |
+| Skip logic (REDCap branching logic) had no place in any profile. | Yes. `applies_when` keeps the source expression, and conditions parse and evaluate it in three values (true, false, unknown), so that `missingness` can tell a skipped question from a missing answer. |
 | Dataset-level fields differed. | The profile has title, description, identifier, license, citation, access rights and landing page. |
 
 ## semsynth and entailmap

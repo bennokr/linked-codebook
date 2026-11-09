@@ -1,0 +1,69 @@
+[
+ {
+  "name": "smoker",
+  "label": "Currently smokes",
+  "type": 1,
+  "format": "%8.0g",
+  "measure": 0,
+  "valueLabels": [
+   {
+    "value": 0,
+    "label": "No"
+   },
+   {
+    "value": 1,
+    "label": "Yes"
+   },
+   {
+    "value": null,
+    "label": "Dont know"
+   }
+  ],
+  "missingRanges": []
+ },
+ {
+  "name": "income",
+  "label": "Income",
+  "type": 5,
+  "format": "%12.2f",
+  "measure": 0,
+  "valueLabels": null,
+  "missingRanges": []
+ },
+ {
+  "name": "age",
+  "label": "Age in years",
+  "type": 2,
+  "format": "%8.0g",
+  "measure": 0,
+  "valueLabels": null,
+  "missingRanges": []
+ },
+ {
+  "name": "name",
+  "label": "Name",
+  "type": 0,
+  "format": "%12s",
+  "measure": 0,
+  "valueLabels": null,
+  "missingRanges": []
+ },
+ {
+  "name": "visit",
+  "label": "Visit date",
+  "type": 5,
+  "format": "%td",
+  "measure": 0,
+  "valueLabels": null,
+  "missingRanges": []
+ },
+ {
+  "name": "stamp",
+  "label": "Timestamp",
+  "type": 5,
+  "format": "%tc",
+  "measure": 0,
+  "valueLabels": null,
+  "missingRanges": []
+ }
+]

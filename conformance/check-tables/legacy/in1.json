@@ -1,0 +1,1 @@
+{"Fields": [["name", "title", "type", "role"], ["a", "A", "string", "identifier"]], "Columns": [["Name", "Role", "Label", "Extra"], ["a", "identifier", "A", "x"]], "Values": [["column", "code", "closed", "is_missing", "order"], ["a", "1", "1", "0", "1"]], "Missing": [["field", "value"], ["*", ""]]}

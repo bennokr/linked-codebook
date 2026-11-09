@@ -1,0 +1,1 @@
+[symptoms(Other-3)] = '1' or [note] = ''

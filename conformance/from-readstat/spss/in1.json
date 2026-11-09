@@ -1,0 +1,88 @@
+[
+ {
+  "name": "smoker",
+  "label": "Currently smokes",
+  "type": 5,
+  "format": "F1.0",
+  "measure": 1,
+  "valueLabels": [
+   {
+    "value": 0,
+    "label": "No"
+   },
+   {
+    "value": 1,
+    "label": "Yes"
+   },
+   {
+    "value": 9,
+    "label": "Refused"
+   }
+  ],
+  "missingRanges": [
+   {
+    "lo": 9,
+    "hi": 9
+   }
+  ]
+ },
+ {
+  "name": "cigs",
+  "label": "Cigarettes per day",
+  "type": 5,
+  "format": "F8.0",
+  "measure": 3,
+  "valueLabels": null,
+  "missingRanges": [
+   {
+    "lo": -99,
+    "hi": -90
+   }
+  ]
+ },
+ {
+  "name": "weight",
+  "label": "Weight (kg)",
+  "type": 5,
+  "format": "F8.2",
+  "measure": 3,
+  "valueLabels": null,
+  "missingRanges": []
+ },
+ {
+  "name": "name",
+  "label": "Name",
+  "type": 0,
+  "format": "A12",
+  "measure": 0,
+  "valueLabels": null,
+  "missingRanges": []
+ },
+ {
+  "name": "dob",
+  "label": "Date of birth",
+  "type": 5,
+  "format": "DATE11",
+  "measure": 3,
+  "valueLabels": null,
+  "missingRanges": []
+ },
+ {
+  "name": "grade",
+  "label": "Grade",
+  "type": 5,
+  "format": "F1.0",
+  "measure": 2,
+  "valueLabels": [
+   {
+    "value": 1,
+    "label": "Low"
+   },
+   {
+    "value": 3,
+    "label": "High"
+   }
+  ],
+  "missingRanges": []
+ }
+]

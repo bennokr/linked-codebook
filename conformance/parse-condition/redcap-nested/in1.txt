@@ -1,0 +1,1 @@
+[smoker] = '1' and ([type] = 1 or [type] = 2)

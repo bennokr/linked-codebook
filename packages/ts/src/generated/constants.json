@@ -6,6 +6,24 @@
       ],
       "summary": "Print a profile as DSV JSON-LD."
     },
+    "check-tables": {
+      "files": [
+        "tables"
+      ],
+      "summary": "List the sheets and headers of tables that a reader does not use. Prints ok if there are none."
+    },
+    "conditions": {
+      "files": [
+        "profile"
+      ],
+      "summary": "Print the parsed applies_when of every column of a profile that has one, or why it could not be parsed."
+    },
+    "from-readstat": {
+      "files": [
+        "variables"
+      ],
+      "summary": "Print a profile read from the variables of a statistical file (SPSS, Stata, SAS), as JSON from a ReadStat-based reader."
+    },
     "from-redcap": {
       "files": [
         "dictionary"
@@ -18,6 +36,12 @@
         "profile"
       ],
       "summary": "Print the mappings in an SSSOM TSV file for the columns and codes of a profile."
+    },
+    "from-tables": {
+      "files": [
+        "tables"
+      ],
+      "summary": "Print a profile read from tables, a JSON object of sheet names and rows (the first row holds the headers)."
     },
     "infer": {
       "files": [
@@ -32,11 +56,24 @@
       ],
       "summary": "Print the first profile completed with the second."
     },
+    "missingness": {
+      "files": [
+        "profile",
+        "data"
+      ],
+      "summary": "Print how the values of each column divide into values, declared missing codes and blanks, and the blanks into skipped by design, missing and unknown, for a JSON object of value lists."
+    },
     "normalize": {
       "files": [
         "profile"
       ],
       "summary": "Print a profile, read from profile JSON or DSV JSON-LD, as canonical JSON."
+    },
+    "parse-condition": {
+      "files": [
+        "condition"
+      ],
+      "summary": "Print a condition of skip logic, REDCap branching logic or a SQL WHERE subset, as a JSON tree."
     },
     "to-frictionless": {
       "files": [
@@ -50,12 +87,72 @@
       ],
       "summary": "Print the mappings of a profile as SSSOM TSV."
     },
+    "to-tables": {
+      "files": [
+        "profile"
+      ],
+      "summary": "Print the profile as tables, a JSON object of sheet names and rows."
+    },
     "validate": {
       "files": [
         "document"
       ],
       "summary": "Check a profile against the model, or DSV JSON-LD against the vocabularies. Exit code 1 if it does not conform."
     }
+  },
+  "condition": {
+    "checkbox": "{name}___{code}",
+    "checkbox_other": "[^a-z0-9_]",
+    "joins": {
+      "&": "and",
+      "&&": "and",
+      "|": "or",
+      "||": "or"
+    },
+    "operators": {
+      "!=": "!=",
+      "<": "<",
+      "<=": "<=",
+      "<>": "!=",
+      "=": "==",
+      "==": "==",
+      ">": ">",
+      ">=": ">="
+    },
+    "tokens": [
+      {
+        "kind": "space",
+        "pattern": "\\s+"
+      },
+      {
+        "kind": "field",
+        "pattern": "\\[[^\\]]*\\]"
+      },
+      {
+        "kind": "number",
+        "pattern": "-?[0-9]+(?:\\.[0-9]+)?"
+      },
+      {
+        "kind": "string",
+        "pattern": "'(?:[^']|'')*'|\"(?:[^\"]|\"\")*\""
+      },
+      {
+        "kind": "join",
+        "pattern": "&&|\\|\\||&|\\|"
+      },
+      {
+        "kind": "op",
+        "pattern": "<=|>=|<>|!=|==|=|<|>"
+      },
+      {
+        "kind": "punct",
+        "pattern": "[(),]"
+      },
+      {
+        "kind": "word",
+        "pattern": "[A-Za-z_][A-Za-z0-9_.]*"
+      }
+    ]
   },
   "enums": {
     "Datatype": {
@@ -96,11 +193,14 @@
       "missing_range",
       "completeness",
       "applies_when",
+      "group",
+      "identifying",
       "mappings"
     ],
     "field": {
       "datatype": "type",
       "description": "description",
+      "format": "format",
       "label": "title",
       "name": "name"
     }
@@ -267,7 +367,12 @@
     "extensions": [
       "missingRange",
       "codeBookClosed",
-      "appliesWhen"
+      "appliesWhen",
+      "minimumValue",
+      "maximumValue",
+      "columnGroup",
+      "identifying",
+      "columnFormat"
     ],
     "imported_reviewer": "imported",
     "iris": {
@@ -425,6 +530,39 @@
       "statistics": "dsv:SummaryStatistics"
     }
   },
+  "readstat": {
+    "extended_missing": "^\\.[a-z]$",
+    "formats": [
+      {
+        "datatype": "datetime",
+        "pattern": "^(?:DATETIME|DTIME|%t[cC])"
+      },
+      {
+        "datatype": "date",
+        "pattern": "^(?:DATE|ADATE|EDATE|SDATE|JDATE|QYR|MOYR|WKYR|%t[dD]|%d)"
+      },
+      {
+        "datatype": "integer",
+        "pattern": "^(?:F|COMMA|DOT|DOLLAR|N|Z)[0-9]+(?:\\.0)?$"
+      },
+      {
+        "datatype": "integer",
+        "pattern": "^%[0-9]+\\.0f$"
+      }
+    ],
+    "integer_types": [
+      1,
+      2,
+      3
+    ],
+    "labelled_level": "categorical",
+    "measure": {
+      "1": "nominal",
+      "2": "ordinal",
+      "3": "numerical"
+    },
+    "string_type": 0
+  },
   "redcap": {
     "builtin": {
       "truefalse": [
@@ -472,8 +610,20 @@
         "choicescalculationsorsliderlabels",
         "selectchoicesorcalculations"
       ],
+      "form": [
+        "formname"
+      ],
+      "identifier": [
+        "identifier"
+      ],
       "label": [
         "fieldlabel"
+      ],
+      "maximum": [
+        "textvalidationmax"
+      ],
+      "minimum": [
+        "textvalidationmin"
       ],
       "name": [
         "variablefieldname",
@@ -489,6 +639,7 @@
         "textvalidationtypeorshowslidernumber"
       ]
     },
+    "identifier_mark": "y",
     "integer_code": "[-+]?[0-9]+",
     "skipped": [
       "descriptive",
@@ -553,6 +704,18 @@
             "description": "Definition of the dataset, column or value.",
             "type": "string"
           },
+          "format": {
+            "description": "How dates, times or numbers are written in the table, for example %d/%m/%Y, in the notation of the source.",
+            "type": "string"
+          },
+          "group": {
+            "description": "Name of the group of columns that the column belongs to, for example the form of a REDCap field.",
+            "type": "string"
+          },
+          "identifying": {
+            "description": "True if the values identify a person or a record: names, record numbers, contact details. Such a column needs care when the data are shared or synthesized.",
+            "type": "boolean"
+          },
           "label": {
             "description": "Human-readable name of the column or value.",
             "type": "string"
@@ -567,6 +730,14 @@
               "$ref": "#/$defs/Mapping"
             },
             "type": "array"
+          },
+          "maximum": {
+            "description": "Largest number the column may hold, apart from missing values.",
+            "type": "number"
+          },
+          "minimum": {
+            "description": "Smallest number the column may hold, apart from missing values. A limit of the source, not the smallest number found.",
+            "type": "number"
           },
           "missing_range": {
             "$ref": "#/$defs/Range",
@@ -867,6 +1038,134 @@
       "skos": "http://www.w3.org/2004/02/skos/core#"
     },
     "subject_prefix": "ds"
+  },
+  "table": {
+    "sheets": {
+      "columns": {
+        "headers": [
+          "name",
+          "label",
+          "description",
+          "datatype",
+          "format",
+          "level",
+          "unit",
+          "unit_iri",
+          "variable",
+          "source",
+          "closed",
+          "missing_low",
+          "missing_high",
+          "completeness",
+          "applies_when",
+          "minimum",
+          "maximum",
+          "group",
+          "identifying"
+        ],
+        "kinds": {
+          "applies_when": "text",
+          "closed": "boolean",
+          "completeness": "number",
+          "datatype": "Datatype",
+          "description": "text",
+          "format": "text",
+          "group": "text",
+          "identifying": "boolean",
+          "label": "text",
+          "level": "Level",
+          "maximum": "number",
+          "minimum": "number",
+          "missing_high": "number",
+          "missing_low": "number",
+          "name": "text",
+          "source": "text",
+          "unit": "text",
+          "unit_iri": "text",
+          "variable": "text"
+        },
+        "required": [
+          "name"
+        ],
+        "title": "Columns"
+      },
+      "dataset": {
+        "headers": [
+          "title",
+          "description",
+          "identifier",
+          "license",
+          "citation",
+          "access_rights",
+          "landing_page",
+          "rows"
+        ],
+        "kinds": {
+          "access_rights": "text",
+          "citation": "text",
+          "description": "text",
+          "identifier": "text",
+          "landing_page": "text",
+          "license": "text",
+          "rows": "integer",
+          "title": "text"
+        },
+        "title": "Dataset"
+      },
+      "mappings": {
+        "headers": [
+          "column",
+          "code",
+          "match_type",
+          "object_id",
+          "object_label",
+          "confidence",
+          "provenance",
+          "retrieved_at",
+          "reviewer_id",
+          "description"
+        ],
+        "kinds": {
+          "code": "text",
+          "column": "text",
+          "confidence": "number",
+          "description": "text",
+          "match_type": "MatchType",
+          "object_id": "text",
+          "object_label": "text",
+          "provenance": "text",
+          "retrieved_at": "text",
+          "reviewer_id": "text"
+        },
+        "required": [
+          "column",
+          "match_type",
+          "object_id"
+        ],
+        "title": "Mappings"
+      },
+      "values": {
+        "headers": [
+          "column",
+          "code",
+          "label",
+          "description",
+          "missing"
+        ],
+        "kinds": {
+          "code": "text",
+          "column": "text",
+          "description": "text",
+          "label": "text",
+          "missing": "boolean"
+        },
+        "required": [
+          "column",
+          "code"
+        ],
+        "title": "Values"
+      }
+    }
   },
   "vocabulary": {
     "pinned_on": "2026-10-30",

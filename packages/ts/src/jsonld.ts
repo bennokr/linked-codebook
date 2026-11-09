@@ -64,6 +64,11 @@ const extensions = (column: Column): Node => ({
   missingRange: column.missing_range,
   codeBookClosed: column.closed || undefined,
   appliesWhen: column.applies_when,
+  minimumValue: column.minimum,
+  maximumValue: column.maximum,
+  columnGroup: column.group,
+  columnFormat: column.format,
+  identifying: column.identifying || undefined,
 });
 
 function columnNode(dataset: string, column: Column): Node {

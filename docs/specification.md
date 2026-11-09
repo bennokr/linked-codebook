@@ -1,6 +1,6 @@
 # Linked Codebook Specification
 
-Draft, version 0.8.0
+Draft, version 0.9.0
 
 ## Abstract
 
@@ -23,8 +23,12 @@ This is a draft. It may change without notice. Changes are listed in the [change
 9. [Validation](#9-validation)
 10. [Frictionless](#10-frictionless)
 11. [REDCap](#11-redcap)
-12. [Command line](#12-command-line)
-13. [References](#13-references)
+12. [Tables](#12-tables)
+13. [Conditions](#13-conditions)
+14. [Missingness](#14-missingness)
+15. [Statistical files](#15-statistical-files)
+16. [Command line](#16-command-line)
+17. [References](#17-references)
 
 ## 1. Introduction
 
@@ -112,14 +116,14 @@ The document is one node, the dataset, with these properties.
 | Dataset | `dcat:Dataset`, `dsv:Dataset` | `title`, `description`, `identifier`, `citation`, `accessRights` and `landingPage` carry the slots of the same meaning. `license` is written as `license` if it starts with `http:` or `https:`, and as `rights` otherwise. `datasetSchema` is the schema node. |
 | Dataset statistics | `dsv:SummaryStatistics` | `numberOfRows` carries `rows` and `numberOfColumns` the number of columns. The node is written only if the profile has `rows`. |
 | Schema | `dsv:DatasetSchema` | `columns` is the list of column nodes, in table order. |
-| Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `appliesWhen`, `columnProperty` and `summaryStatistics`. |
+| Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `appliesWhen`, `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat`, `identifying`, `columnProperty` and `summaryStatistics`. |
 | Column property | `dsv:ColumnProperty` | `hasVariable` is the variable concept. `hasUnit` and `unitText` carry `unit_iri` and `unit`. `hasCodeBook` is the concept scheme of the values. |
 | Summary statistics | `dsv:SummaryStatistics` | `statisticalDataType` is the meaning of the `level` and `columnCompleteness` carries `completeness`. The node is written only if one of them is set. |
 | Variable concept | `skos:Concept` | `skos:prefLabel` is the label, or else the name. `skos:definition` is the description. `dct:source` is the IRI `source`, written as a node reference. |
 | Code book | `skos:ConceptScheme` | `skos:hasTopConcept` lists a concept for every value. |
 | Code concept | `skos:Concept` | `skos:notation` is the code, `skos:prefLabel` the label, `skos:definition` the description and `skos:inScheme` the code book. For an ordinal column, `schema:position` is the place of the code in `values`, counted from 1. |
 
-Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `appliesWhen` carries `applies_when` and is not defined by any vocabulary. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data. RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and as they occur otherwise.
+Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `appliesWhen` carries `applies_when`; `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat` and `identifying` carry `minimum`, `maximum`, `group`, `format` and `identifying` (only if true). None of these is defined by any vocabulary. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data. RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and as they occur otherwise.
 
 Only approved mappings are written. A mapping becomes the property `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch` or `relatedMatch`, according to its `match_type`, of the variable concept or of the code concept. The properties list the `object_id` values. Draft mappings, labels, confidence, provenance and reviewers are not written.
 
@@ -248,10 +252,11 @@ A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. 
 | Profile | Table Schema |
 | --- | --- |
 | `columns` | `fields`, in the same order |
-| `name`, `label`, `description`, `datatype` | the field properties `name`, `title`, `description`, `type` |
+| `name`, `label`, `description`, `datatype`, `format` | the field properties `name`, `title`, `description`, `type`, `format` |
 | `missing_values`, and the codes of values with `missing` set | the field property `missingValues` |
+| `minimum`, `maximum` | the field constraints `minimum` and `maximum` |
 | `values`, if `closed` is true | the field property `categories`: `{ "value": …, "label": … }`, or only the value if there is no label |
-| `level`, `unit`, `unit_iri`, `variable`, `source`, `values`, `closed`, `observed`, `missing_range`, `completeness`, `applies_when`, `mappings` | the field property `x-linked-codebook` |
+| `level`, `unit`, `unit_iri`, `variable`, `source`, `values`, `closed`, `observed`, `missing_range`, `completeness`, `applies_when`, `group`, `identifying`, `mappings` | the field property `x-linked-codebook` |
 | `level` is `ordinal`, and the list is closed | the field property `categoriesOrdered`, set to `true` |
 | the slots of the dataset | the property `x-linked-codebook` of the schema |
 
@@ -267,7 +272,7 @@ Notes:
 
 A processor MAY read a [REDCap][redcap] data dictionary, the CSV file that describes the fields of a REDCap project, into a profile (`from-redcap`). The rules are in [`spec/redcap.yaml`](../spec/redcap.yaml). They were written from the REDCap documentation and sample dictionaries, so check them against a dictionary exported by your REDCap version.
 
-Header names are compared in lower case without punctuation, so `Variable / Field Name` and the API name `field_name` are alike. Fields in quotes may hold commas, doubled quotes and line breaks. Rows that are empty are ignored. A dictionary without fields is an error.
+The reader takes text: the application decodes the file. Dictionaries are usually UTF-8, but some are Windows-1252 (about 3% of the 985 PhenX dictionaries), so try UTF-8 first and then Windows-1252. Header names are compared in lower case without punctuation, so `Variable / Field Name` and the API name `field_name` are alike. Fields in quotes may hold commas, doubled quotes and line breaks. Files do not always follow RFC 4180, so a processor MUST read CSV as Python's `csv` module does: a quote inside a field that does not start with one is text, and after the closing quote of a quoted field any character other than a separator continues the field as text. Rows that are empty are ignored. A dictionary without fields is an error.
 
 | Dictionary | Profile |
 | --- | --- |
@@ -275,6 +280,9 @@ Header names are compared in lower case without punctuation, so `Variable / Fiel
 | Field Label | `label` |
 | Field Note | `description` |
 | Branching Logic | `applies_when`, as written. It is not parsed. |
+| Form Name | `group` |
+| Identifier? | `identifying`, true if the cell is `y` |
+| Text Validation Min, Max | `minimum`, `maximum`, if they are numbers. Limits of dates are not read. |
 | Field Type `dropdown`, `radio` | `values` from the choices, `closed` is true, `level` is `categorical`. |
 | Field Type `yesno`, `truefalse` | The built-in values `1` Yes and `0` No, or `1` True and `0` False, `closed`, `categorical`. |
 | Field Type `checkbox` | One column `name___code` for each choice, with the values `0` Unchecked and `1` Checked. The code is in lower case and other characters become `_`. The label is the field label with the choice label in brackets. |
@@ -282,15 +290,87 @@ Header names are compared in lower case without punctuation, so `Variable / Fiel
 | Field Type `calc`, `slider` | `number` or `integer`, `numerical`. The calculation is not kept. |
 | Field Type `descriptive`, `file` | No column. |
 
-Choices are written `code, label | code, label`. The code ends at the first comma. The datatype is `integer` if every code is a whole number, and `string` otherwise. The form name, section header, minimum and maximum, identifier flag, required flag and the other columns have no slot in the model and are not read.
+Choices are written `code, label | code, label`. The code ends at the first comma. The datatype is `integer` if every code is a whole number, and `string` otherwise. The section header, required flag and the other columns have no slot in the model and are not read.
 
 [redcap]: https://projectredcap.org/
 
-## 12. Command line
+## 12. Tables
+
+A processor MAY read and write a profile as tables: a set of sheets, each a list of rows of cells, the first row holding the headers. This is what a spreadsheet workbook or a folder of CSV files holds. The library does not read workbook files: the application opens them and hands over the cells, so that it can report cells whose type is not what the format expects (a number where a code is wanted loses leading zeros). The rules are in [`spec/table.yaml`](../spec/table.yaml).
+
+Sheet and header names are compared in lower case without punctuation. Sheets and headers that are not listed are ignored by `from-tables` and reported by `check-tables`. A blank cell means that the slot is not specified. Booleans are `true` or `false`; a reader also accepts `yes`, `no`, `1` and `0`. Cells may be text, numbers, booleans or empty.
+
+| Sheet | One row for | Headers |
+| --- | --- | --- |
+| `Columns` | a column, in table order | `name` (required), `label`, `description`, `datatype`, `format`, `level`, `unit`, `unit_iri`, `variable`, `source`, `closed`, `missing_low`, `missing_high`, `completeness`, `applies_when`, `minimum`, `maximum`, `group`, `identifying` |
+| `Values` | a code of a column, in the order of the column | `column` and `code` (required), `label`, `description`, `missing` |
+| `Mappings` | a link to a concept | `column`, `match_type` and `object_id` (required), `code` (empty for a link of the column), `object_label`, `confidence`, `provenance`, `retrieved_at`, `reviewer_id`, `description` |
+| `Dataset` | a slot of the dataset | `key` and `value`: `title`, `description`, `identifier`, `license`, `citation`, `access_rights`, `landing_page`, `rows` |
+
+Each fact has one place. Whether a list of values is complete (`closed`) is a fact of the column, so it is on the `Columns` sheet and not repeated on every value. A code that means no value is a row of `Values` with `missing` set; a row with no label and no description is read as an unlabelled missing code (`missing_values`). A numeric range of missing values is `missing_low` and `missing_high`, both or neither. There is no sheet of missing codes that apply to every column: a code that is missing in every column is a row for every column. The order of the codes is the order of the rows. Observed counts are not written: they describe one copy of the data.
+
+A reader MUST fail, naming the sheet and the row (counted as in a spreadsheet, the header being row 1), for a cell that does not fit its header, a row without a required header, a `Values` or `Mappings` row that names a column or code that does not exist, a column listed twice and a `Columns` sheet without columns. A header that is not listed is reported by `check-tables`, which also finds the headers of an earlier workbook (`closed`, `is_missing` or `order` on `Values`; `role`, `measurement`, `type` or `title` on `Columns`).
+
+## 13. Conditions
+
+`applies_when` holds the skip logic of a questionnaire as the source wrote it. A processor MAY parse it into a condition (`parse-condition`, `conditions`). One text syntax covers [REDCap branching logic][redcap] and a subset of SQL `WHERE`; the rules are in [`spec/condition.yaml`](../spec/condition.yaml).
+
+| Text | Meaning |
+| --- | --- |
+| `[name]`, or a bare `name` | a column. In brackets any text but `]` is allowed. |
+| `[name(code)]` | the option `code` of a REDCap checkbox: the column `name___code`, with the code in lower case and other characters replaced by `_`, as `from-redcap` names it |
+| `'text'`, `"text"`, `12`, `-2.5` | a value. A quote is written twice inside a string of the same quote. Double quotes are text, as in REDCap, not names. |
+| `=` `==` `<>` `!=` `<` `<=` `>` `>=` | comparison. Comparing with `''` asks whether the value is blank. |
+| `a IN (1, 2)`, `a IS NULL`, `a IS NOT NULL` | membership and blankness |
+| `NOT`, `AND` `&` `&&`, `OR` `\|` `\|\|` | connectives, in this order of precedence, with parentheses; keywords are not case sensitive |
+
+Functions, references to events (`[event][field]`) and anything else are errors. The condition is a JSON tree in the shape of [JsonLogic](https://jsonlogic.com): `{"var": "smoker"}`, `{"==": [a, b]}` (also `!=`, `<`, `<=`, `>`, `>=`), `{"in": [a, [x, y]]}`, `{"and": [...]}`, `{"or": [...]}`, `{"!": [a]}`, and `{"null": [a]}` for a blank value, which JsonLogic does not have. A chain `a and b and c` is one `and` with three operands.
+
+A condition has three values: true, false and unknown. A blank is an empty cell or one of white space, or a column that the row does not have. What a comparison with a blank gives depends on the setting `blank`:
+
+- `value` (the default) is how REDCap behaves, as far as published guides say: a blank is the empty value. It equals another blank and differs from everything else, so `[a] <> 1` and `[a] <> 0` are both true when `a` is blank, and `[a] = '1'` is false. Only ordering a blank (`<`, `>`, `<=`, `>=`) is unknown. `a IN (...)` is false for a blank. REDCap stores a missing data code (such as `NASK`) as an ordinary value, so a declared missing code is compared as text.
+- `unknown` is how SQL behaves: every comparison with a blank is unknown, and `IN` too. A declared missing code counts as a blank.
+
+The REDCap behaviour is taken from the guides of several university REDCap teams and a community knowledge base, not from REDCap's own documentation or source: they state that `[nr_pregnancies]<>0` is true for an empty field, that two blank fields count as a match, and that `!=` behaves like `<>`. None says what ordering a blank gives; unknown is the choice here. Check a rule against your REDCap version before relying on it. Two values are equal if both are numbers (or text that is a number as defined in [section 7](#7-inference), so `1` and `"1"` are alike) and equal as numbers, or else if they are equal as text. They are ordered the same way, so ISO dates order correctly as text. `and` is false if any operand is false, otherwise unknown if any is unknown; `or` is true if any operand is true, otherwise unknown if any is unknown; `not` of unknown is unknown. `null` is never unknown. With `blank` set to `value`, a rule is unknown only when it orders a blank.
+
+Of the 2,650 different rules of the 985 PhenX REDCap dictionaries, all but one parse (the exception is the text `always|NA`), to the same tree in both libraries.
+
+## 14. Missingness
+
+A processor MAY report why values are missing (`missingness`), for a profile and the data as an object of lists of cells. For each column that the data has, it counts the cells:
+
+| Count | Cells |
+| --- | --- |
+| `present` | a value that is not a declared missing code |
+| `declared` | by code: cells that hold a declared missing code (`missing_values`, a value with `missing`, or a number in `missing_range`) |
+| `blank` | empty cells |
+| `blank_not_applicable` | blank, and the rule `applies_when` of the column is false: skipped by design |
+| `blank_applicable` | blank, and the rule is true: missing although the question applied |
+| `blank_unknown` | blank, and the rule cannot be decided (with `blank` set to `value` only when it orders a blank) |
+| `answered_not_applicable` | a value (also counted in `present`) where the rule is false |
+| `rule_error` | the reason that `applies_when` could not be parsed |
+
+The last four are left out for a column without a rule, and zero counts are left out except `present` and `blank`. A column that a rule names but the data does not have is blank. The setting `blank` of [section 13](#13-conditions) applies: with `unknown`, a declared missing code of another column is also a blank when the rule is evaluated (the answer `9 = Refused` does not say that the respondent smokes); with `value`, the default, it is an ordinary value, as REDCap stores missing data codes.
+
+## 15. Statistical files
+
+A processor MAY read the variables of a file of a statistical package (SPSS, Stata, SAS) into a profile (`from-readstat`). The library does not open the files. A ReadStat-based reader (`statfmt` in JavaScript, `pyreadstat` in Python) delivers the metadata, and the application hands over a list of variables as plain data; the rules are in [`spec/readstat.yaml`](../spec/readstat.yaml).
+
+| Variable | Profile |
+| --- | --- |
+| `name`, `label` | `name`, `label` |
+| `type`, `format` | `datatype`: `string` for ReadStat type 0; then by format, `date` (SPSS `DATE`, `ADATE`, ...; Stata `%td`), `datetime` (`DATETIME`, `%tc`) or `integer` (no decimals: `F8.0`, `%8.0f`); then `integer` for a Stata byte, int or long; otherwise `number` |
+| `measure` | `level`: nominal, ordinal, scale gives `numerical`. A variable with value labels and no measure is `categorical`. |
+| `valueLabels` | `values`. They do not make the list `closed`, because both packages allow codes without a label. |
+| `missingRanges` | one range (`lo` below `hi`) is `missing_range`; one value (`lo` equal to `hi`) is a code that means no value: `missing` on the value if it has a label, else `missing_values`. More than one range is an error. |
+
+A Stata extended missing value (`.a` to `.z`) is given as that text, and is always a code that means no value. `statfmt` leaves it out of its value labels (it gives `null`), so an application that needs it must read it from the file itself.
+
+## 16. Command line
 
 The command line is defined in [Command line](cli.md). A processor MUST provide the commands listed there, MUST print the same text as every other processor and MUST use the same exit codes.
 
-## 13. References
+## 17. References
 
 - [DSV][dsv]: Dataset-Variable Ontology.
 - [Table Schema][frictionless]: Frictionless Data specification.

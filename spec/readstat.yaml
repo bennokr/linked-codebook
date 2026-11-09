@@ -1,0 +1,21 @@
+# How the variables of a statistical file (SPSS .sav, Stata .dta, SAS) become columns of a profile.
+# The input is the metadata that ReadStat-based readers deliver, as plain JSON: a list of variables (or an object with
+# the list under `variables`), each with
+#   name; label (variable label); type (ReadStat storage type: 0 string, 1 int8, 2 int16, 3 int32, 4 float, 5 double);
+#   format (SPSS "F8.2", Stata "%9.0g"); measure (ReadStat: 0 unknown, 1 nominal, 2 ordinal, 3 scale);
+#   valueLabels: a list of {value, label}; missingRanges: a list of {lo, hi}, with lo equal to hi for one value.
+# Stata's extended missing values (.a to .z) are given as the text ".a" in valueLabels and missingRanges.
+# A code of this form is Stata's extended missing value: always a code that means no value.
+extended_missing: '^\.[a-z]$'
+string_type: 0
+# Stata byte, int and long.
+integer_types: [1, 2, 3]
+measure: {"1": nominal, "2": ordinal, "3": numerical}
+# A variable with value labels and no measure is categorical.
+labelled_level: categorical
+# Datatype by format, the first pattern that matches. A string variable is a string whatever its format.
+formats:
+  - {pattern: '^(?:DATETIME|DTIME|%t[cC])', datatype: datetime}
+  - {pattern: '^(?:DATE|ADATE|EDATE|SDATE|JDATE|QYR|MOYR|WKYR|%t[dD]|%d)', datatype: date}
+  - {pattern: '^(?:F|COMMA|DOT|DOLLAR|N|Z)[0-9]+(?:\.0)?$', datatype: integer}
+  - {pattern: '^%[0-9]+\.0f$', datatype: integer}

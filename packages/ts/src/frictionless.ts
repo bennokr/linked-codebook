@@ -23,6 +23,7 @@ function fieldOf(column: Column): Node {
         : typed(value.code, column.datatype),
     ),
     categoriesOrdered: column.closed && values.length && column.level === 'ordinal' ? true : undefined,
+    constraints: pick(column, { minimum: 'minimum', maximum: 'maximum' }),
     [rules.extension]: pick(column, identity(rules.extension_slots)),
   });
 }

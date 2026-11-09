@@ -1,0 +1,68 @@
+{
+  "columns": [
+    {
+      "datatype": "integer",
+      "label": "Currently smokes",
+      "level": "nominal",
+      "name": "smoker",
+      "values": [
+        {
+          "code": "0",
+          "label": "No"
+        },
+        {
+          "code": "1",
+          "label": "Yes"
+        },
+        {
+          "code": "9",
+          "label": "Refused",
+          "missing": true
+        }
+      ]
+    },
+    {
+      "datatype": "integer",
+      "label": "Cigarettes per day",
+      "level": "numerical",
+      "missing_range": {
+        "high": -90,
+        "low": -99
+      },
+      "name": "cigs"
+    },
+    {
+      "datatype": "number",
+      "label": "Weight (kg)",
+      "level": "numerical",
+      "name": "weight"
+    },
+    {
+      "datatype": "string",
+      "label": "Name",
+      "name": "name"
+    },
+    {
+      "datatype": "date",
+      "label": "Date of birth",
+      "level": "numerical",
+      "name": "dob"
+    },
+    {
+      "datatype": "integer",
+      "label": "Grade",
+      "level": "ordinal",
+      "name": "grade",
+      "values": [
+        {
+          "code": "1",
+          "label": "Low"
+        },
+        {
+          "code": "3",
+          "label": "High"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+not [age] >= 18 and [score] <= -2.5

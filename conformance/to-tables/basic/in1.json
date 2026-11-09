@@ -1,0 +1,107 @@
+{
+  "columns": [
+    {
+      "datatype": "string",
+      "group": "Admin",
+      "identifying": true,
+      "label": "Record ID",
+      "name": "record_id"
+    },
+    {
+      "datatype": "number",
+      "group": "Measures",
+      "label": "Score",
+      "level": "numerical",
+      "mappings": [
+        {
+          "match_type": "exact",
+          "object_id": "http://purl.obolibrary.org/obo/OMIT_0000001",
+          "object_label": "Score",
+          "reviewer_id": "0000-0002-1825-0097"
+        }
+      ],
+      "maximum": 100,
+      "minimum": 0,
+      "missing_range": {
+        "high": -90,
+        "low": -99
+      },
+      "missing_values": [
+        "-98"
+      ],
+      "name": "score",
+      "values": [
+        {
+          "code": "-99",
+          "description": "Participant declined",
+          "label": "Refused",
+          "missing": true
+        }
+      ]
+    },
+    {
+      "closed": true,
+      "datatype": "integer",
+      "group": "Admin",
+      "label": "Status",
+      "level": "nominal",
+      "missing_values": [
+        "8"
+      ],
+      "name": "status",
+      "values": [
+        {
+          "code": "1",
+          "label": "Open",
+          "mappings": [
+            {
+              "match_type": "close",
+              "object_id": "http://example.org/open",
+              "object_label": "Open"
+            }
+          ]
+        },
+        {
+          "code": "2",
+          "label": "Closed"
+        },
+        {
+          "code": "9",
+          "label": "Unknown",
+          "missing": true
+        }
+      ]
+    },
+    {
+      "closed": true,
+      "datatype": "integer",
+      "group": "History",
+      "label": "Smoker",
+      "level": "categorical",
+      "name": "smoker",
+      "values": [
+        {
+          "code": "1",
+          "label": "Yes"
+        },
+        {
+          "code": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "applies_when": "[smoker] = '1'",
+      "datatype": "integer",
+      "group": "History",
+      "label": "Cigarettes per day",
+      "level": "numerical",
+      "maximum": 80,
+      "minimum": 0,
+      "name": "cigs"
+    }
+  ],
+  "license": "CC0-1.0",
+  "rows": 120,
+  "title": "Example"
+}

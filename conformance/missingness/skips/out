@@ -1,0 +1,38 @@
+{
+  "columns": {
+    "brand": {
+      "answered_not_applicable": 1,
+      "blank": 4,
+      "blank_applicable": 1,
+      "blank_not_applicable": 3,
+      "present": 2
+    },
+    "cigs": {
+      "answered_not_applicable": 1,
+      "blank": 2,
+      "blank_applicable": 1,
+      "blank_not_applicable": 1,
+      "declared": {
+        "-99": 1
+      },
+      "present": 3
+    },
+    "odd": {
+      "blank": 4,
+      "present": 2,
+      "rule_error": "function datediff is not supported"
+    },
+    "smoker": {
+      "blank": 1,
+      "declared": {
+        "9": 1
+      },
+      "present": 4
+    },
+    "type": {
+      "blank": 2,
+      "present": 4
+    }
+  },
+  "rows": 6
+}

@@ -4,6 +4,7 @@
       "closed": true,
       "datatype": "integer",
       "description": "Line one\nline two",
+      "group": "exam",
       "label": "Pain, \"worst\" in the last week",
       "level": "categorical",
       "name": "pain",
@@ -29,6 +30,7 @@
     {
       "applies_when": "[pain] > 0",
       "datatype": "string",
+      "group": "exam",
       "label": "Comments",
       "name": "comment"
     }

@@ -5,14 +5,18 @@ from collections.abc import Callable
 from typing import NamedTuple, cast
 
 from .canonical import canonical
+from .condition import parse_condition
 from .constants import COMMANDS as SPEC
 from .frictionless import to_frictionless
 from .infer import infer
 from .jsonld import build
 from .merge import merge
+from .missingness import conditions, missingness
 from .read import parse
+from .readstat import from_readstat
 from .redcap import from_redcap
 from .sssom import from_sssom, to_sssom
+from .table import from_tables, table_warnings, to_tables
 from .types import Profile
 from .validate import validate
 
@@ -41,7 +45,14 @@ def check(text: str) -> Result:
 COMMANDS: dict[str, Callable[..., Result]] = {
     "normalize": lambda profile: done(canonical(load(profile))),
     "build": lambda profile: done(canonical(build(load(profile)))),
+    "parse-condition": lambda text: done(canonical(parse_condition(text))),
+    "conditions": lambda profile: done(canonical(conditions(load(profile)))),
+    "missingness": lambda profile, data: done(canonical(missingness(load(profile), json.loads(data)))),
+    "from-readstat": lambda variables: done(canonical(from_readstat(json.loads(variables)))),
     "from-redcap": lambda dictionary: done(canonical(from_redcap(dictionary))),
+    "from-tables": lambda tables: done(canonical(from_tables(json.loads(tables)))),
+    "to-tables": lambda profile: done(canonical(to_tables(load(profile)))),
+    "check-tables": lambda tables: done("".join(f"{w}\n" for w in table_warnings(json.loads(tables))) or "ok\n"),
     "to-frictionless": lambda profile: done(canonical(to_frictionless(load(profile)))),
     "to-sssom": lambda profile: done(to_sssom(load(profile))),
     "from-sssom": lambda sssom, profile: done(canonical(from_sssom(sssom, load(profile)))),

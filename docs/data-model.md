@@ -28,6 +28,7 @@ One column of the table, described as a variable.
 | `label` | string | no | Human-readable name of the column or value. |
 | `description` | string | no | Definition of the dataset, column or value. |
 | `datatype` | Datatype | no | How values are stored. |
+| `format` | string | no | How dates, times or numbers are written in the table, for example %d/%m/%Y, in the notation of the source. |
 | `level` | Level | no | Level of measurement. |
 | `unit` | string | no | Unit as text, for example years. |
 | `unit_iri` | string | no | IRI of the unit, for example from QUDT. |
@@ -40,6 +41,10 @@ One column of the table, described as a variable.
 | `missing_range` | Range | no | Numbers that mean no value. |
 | `completeness` | float | no | Share of the rows that have a value, between 0 and 1. |
 | `applies_when` | string | no | Condition under which the column has a value, as the source writes it, for example REDCap branching logic. Rows that do not meet it are missing by design. |
+| `minimum` | float | no | Smallest number the column may hold, apart from missing values. A limit of the source, not the smallest number found. |
+| `maximum` | float | no | Largest number the column may hold, apart from missing values. |
+| `group` | string | no | Name of the group of columns that the column belongs to, for example the form of a REDCap field. |
+| `identifying` | boolean | no | True if the values identify a person or a record: names, record numbers, contact details. Such a column needs care when the data are shared or synthesized. |
 | `mappings` | list of Mapping | no | Links to concepts. |
 
 ## Value

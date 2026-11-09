@@ -1,0 +1,27 @@
+# Conditions: the skip logic of a questionnaire ("show this field only if ..."), as written in `applies_when`.
+# One text syntax covers REDCap branching logic and a subset of SQL WHERE:
+#   [smoker] = '1' and ([type] = 1 or [type] = 2)        REDCap
+#   smoker = '1' AND (type IN (1, 2)) AND cigs IS NOT NULL      SQL
+# A condition is parsed into a small JSON tree. The operators are those of JsonLogic, with `null` added:
+#   {"var": "name"}  {"==": [a, b]}  {"!=": ...}  {"<": ...}  {"<=": ...}  {">": ...}  {">=": ...}
+#   {"in": [a, [x, y]]}  {"null": [a]}  {"and": [...]}  {"or": [...]}  {"!": [a]}
+# Strings and numbers stand for themselves. Words are compared without regard to case for keywords only.
+tokens:
+  - {kind: space, pattern: '\s+'}
+  - {kind: field, pattern: '\[[^\]]*\]'}
+  - {kind: number, pattern: '-?[0-9]+(?:\.[0-9]+)?'}
+  - kind: string
+    pattern: |-
+      '(?:[^']|'')*'|"(?:[^"]|"")*"
+  - {kind: join, pattern: '&&|\|\||&|\|'}
+  - {kind: op, pattern: '<=|>=|<>|!=|==|=|<|>'}
+  - {kind: punct, pattern: '[(),]'}
+  - {kind: word, pattern: '[A-Za-z_][A-Za-z0-9_.]*'}
+# Comparison operators as written, and the operator of the tree.
+operators: {"=": "==", "==": "==", "<>": "!=", "!=": "!=", "<": "<", "<=": "<=", ">": ">", ">=": ">="}
+# Symbols that some exports use for and, or.
+joins: {"&": and, "&&": and, "|": or, "||": or}
+# A REDCap checkbox option [name(code)] is the column that `from-redcap` makes for it: name___code.
+checkbox: "{name}___{code}"
+# Characters of the code that are replaced by an underscore, after lower-casing it.
+checkbox_other: "[^a-z0-9_]"

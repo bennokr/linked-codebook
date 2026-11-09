@@ -81,6 +81,18 @@ datatype?: Datatype
  */
 description?: string
 /**
+ * How dates, times or numbers are written in the table, for example %d/%m/%Y, in the notation of the source.
+ */
+format?: string
+/**
+ * Name of the group of columns that the column belongs to, for example the form of a REDCap field.
+ */
+group?: string
+/**
+ * True if the values identify a person or a record: names, record numbers, contact details. Such a column needs care when the data are shared or synthesized.
+ */
+identifying?: boolean
+/**
  * Human-readable name of the column or value.
  */
 label?: string
@@ -89,6 +101,14 @@ level?: Level
  * Links to concepts.
  */
 mappings?: Mapping[]
+/**
+ * Largest number the column may hold, apart from missing values.
+ */
+maximum?: number
+/**
+ * Smallest number the column may hold, apart from missing values. A limit of the source, not the smallest number found.
+ */
+minimum?: number
 missing_range?: Range
 /**
  * Codes that mean no value and have no label.

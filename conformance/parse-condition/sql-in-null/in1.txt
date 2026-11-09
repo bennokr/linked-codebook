@@ -1,0 +1,1 @@
+smoker = '1' AND type IN (1, 2) AND cigs IS NOT NULL
