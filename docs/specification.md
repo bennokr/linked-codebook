@@ -1,6 +1,6 @@
 # Linked Codebook Specification
 
-Draft, version 0.9.0
+Draft, version 0.10.0
 
 ## Abstract
 
@@ -215,6 +215,20 @@ A name is an identifier name if its lower-case form matches the pattern `id|row.
 A processor that proposes a profile for a table (`infer`) adds `observed` to every column of level `categorical`: each distinct value that is not ignored, as text, with the number of times it occurs, in order of first occurrence. A value that is not text is written as JSON writes it, with whole numbers written without a fraction, so `1.0` becomes `1` and `true` becomes `true`.
 
 Numeric columns have a lower limit than text columns because a few distinct numbers are less often codes than a few distinct words. A processor MAY let its caller replace the two limits of 50 and 8.
+
+A processor SHOULD offer the identifier-name test to applications (`is_identifier_name`, `isIdentifierName`), so that they do not keep a copy of the pattern.
+
+### 7.1 Language of a text column
+
+A processor MAY propose the language of a column of prose. The language of a text can only be told by a statistical model, and two models never agree on every text, so this specification does not define a detector. The application supplies one: a function from a text to a lower-case BCP 47 language tag, or to nothing when it cannot tell. What is specified is when the detector is asked and when its answers are accepted, so that every processor reaches the same decision from the same answers. The limits are in [`spec/language.yaml`](../spec/language.yaml) and test cases that every processor MUST pass are in [`spec/cases/language.json`](../spec/cases/language.json).
+
+1. The values `null`, the empty text and `\N` are ignored. A value is *prose* by the rule of the categorical text columns above: more than 80 characters, a line break, or more than 7 words.
+2. The column has no language if it has fewer than 3 prose values, or if fewer than half of its values are prose.
+3. At most 200 prose values are asked: all of them if there are no more, else the value at position `floor(n × i / 200)` for `i` from 0 to 199, counting from 0 over the `n` prose values.
+4. The tags are lower-cased and counted. A value for which the detector gives nothing counts as a different answer from every tag, so it lowers the share.
+5. The most common tag is the language of the column if it is the answer for at least 0.8 of the values that were asked. If two tags are equally common, the smaller one in code point order is taken.
+
+The result is the tag, the share and the number of values asked. A processor that proposes a profile (`infer`) MAY take a detector and then adds the tag as `language` to every column whose datatype is `string`. The slot is written to JSON-LD as `dct:language`. It is written only for columns of prose: a short categorical text has no language, whatever a detector says about the single word.
 
 ## 8. Merging
 

@@ -1,4 +1,4 @@
-pinned_on: '2026-10-30'
+pinned_on: '2026-11-16'
 unverified: []
 vocabularies:
   csvw:
@@ -23,6 +23,7 @@ vocabularies:
       bibliographicCitation: Property
       description: Property
       identifier: Property
+      language: Property
       license: Property
       rights: Property
       source: Property

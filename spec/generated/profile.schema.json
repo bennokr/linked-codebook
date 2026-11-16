@@ -44,6 +44,11 @@
           "description": "Human-readable name of the column or value.",
           "type": "string"
         },
+        "language": {
+          "description": "Language of the text in a free-text column, as a lower-case BCP 47 language tag such as nl or en-gb. Set it only for columns of prose.",
+          "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})*$",
+          "type": "string"
+        },
         "level": {
           "$ref": "#/$defs/Level",
           "description": "Level of measurement."

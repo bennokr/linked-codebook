@@ -14,6 +14,8 @@ from linked_codebook import (
     from_tables,
     infer,
     infer_column,
+    infer_language,
+    is_identifier_name,
     is_numeric,
     merge,
     observe,
@@ -47,7 +49,9 @@ from linked_codebook import (
 | `from_readstat(variables)` | A `Profile` read from the variables of a statistical file, as a list of dicts with the keys of ReadStat (see section 15 of the specification). |
 | `from_sssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatched_sssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |
-| `infer(data)` | A `Profile` with the datatype and level of every column of `{name: values}`, and the `observed` codes of categorical columns. |
+| `infer(data, detect=None)` | A `Profile` with the datatype and level of every column of `{name: values}`, and the `observed` codes of categorical columns. With a `detect` function, text columns also get the `language` that `infer_language` finds. |
+| `infer_language(values, detect)` | `{"language", "share", "cells"}` for a column of prose, or `None`. `detect` maps a text to a lower-case BCP 47 tag or `None`; see section 7.1 of the specification. |
+| `is_identifier_name(name)` | Whether a column name marks an identifier (`id`, `row number`, `respno`, `*_id`). |
 | `observe(values)` | The codes of one column with their counts, in order of first occurrence. |
 | `infer_column(values, name="", *, labelled=False, identifier=None, limits=None)` | `{"datatype": ..., "level": ...}` for one column. `name` marks identifiers, `identifier` says whether the column is one, `labelled` counts value labels and `limits` replaces the limits on distinct values. |
 | `validate(document)` | A list of errors. It is empty if the document conforms. |

@@ -96,6 +96,10 @@ identifying?: boolean
  * Human-readable name of the column or value.
  */
 label?: string
+/**
+ * Language of the text in a free-text column, as a lower-case BCP 47 language tag such as nl or en-gb. Set it only for columns of prose.
+ */
+language?: string
 level?: Level
 /**
  * Links to concepts.

@@ -96,6 +96,7 @@ def column_node(dataset: str, column: Column) -> Node:
             "maximumValue": column.get("maximum"),
             "columnGroup": column.get("group"),
             "columnFormat": column.get("format"),
+            "language": column.get("language"),
             "identifying": column.get("identifying") or None,
             "columnProperty": clean(
                 {

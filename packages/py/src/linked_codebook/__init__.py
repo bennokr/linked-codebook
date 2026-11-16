@@ -6,7 +6,7 @@ from .condition import evaluate as evaluate_condition
 from .condition import parse_condition
 from .constants import TABLE as TABLE_SPEC
 from .frictionless import to_frictionless
-from .infer import infer, infer_column, is_numeric, observe
+from .infer import Detector, infer, infer_column, infer_language, is_identifier_name, is_numeric, observe
 from .jsonld import build
 from .merge import merge
 from .missingness import conditions, missingness
@@ -19,6 +19,7 @@ from .validate import validate
 
 __all__ = [
     "TABLE_SPEC",
+    "Detector",
     "Result",
     "build",
     "canonical",
@@ -30,6 +31,8 @@ __all__ = [
     "from_tables",
     "infer",
     "infer_column",
+    "infer_language",
+    "is_identifier_name",
     "is_numeric",
     "merge",
     "missingness",

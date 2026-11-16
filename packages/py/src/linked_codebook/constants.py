@@ -8,6 +8,7 @@ _ALL: dict[str, Any] = json.loads(files(__package__).joinpath("constants.json").
 
 ENUMS: dict[str, dict[str, str | None]] = _ALL["enums"]
 INFERENCE: dict[str, Any] = _ALL["inference"]
+LANGUAGE: dict[str, Any] = _ALL["language"]
 JSONLD: dict[str, Any] = _ALL["jsonld"]
 SCHEMA: dict[str, Any] = _ALL["schema"]
 SSSOM: dict[str, Any] = _ALL["sssom"]

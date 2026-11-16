@@ -180,6 +180,7 @@ def extensions_of(node: Node) -> Node:
             "maximum": number_of(get(node, "maximumValue")),
             "group": text(get(node, "columnGroup")),
             "format": text(get(node, "columnFormat")),
+            "language": text(get(node, "language")),
             "identifying": get(node, "identifying") is True or None,
         },
     )

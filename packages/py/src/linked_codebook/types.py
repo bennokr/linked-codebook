@@ -58,6 +58,7 @@ class Column(TypedDict):
     group: NotRequired[str]
     identifying: NotRequired[bool]
     label: NotRequired[str]
+    language: NotRequired[str]
     level: NotRequired[Level]
     mappings: NotRequired[list[Mapping]]
     maximum: NotRequired[float]
