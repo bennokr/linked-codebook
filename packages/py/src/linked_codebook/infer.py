@@ -4,20 +4,35 @@ import json
 import math
 import re
 from collections import Counter
-from collections.abc import Mapping, Sequence
-from typing import Any, Literal, cast
+from collections.abc import Callable, Mapping, Sequence
+from typing import Any, Literal, TypedDict, cast
 
 from .constants import INFERENCE as RULES
+from .constants import LANGUAGE
 from .types import Count, Datatype, Level, Profile
 
 Cell = str | int | float | bool | None
 Kind = Literal["empty", "boolean", "date", "datetime", "categorical", "number", "text"]
+Detector = Callable[[str], str | None]
+"""Maps a text to a BCP 47 language tag, or to None when it cannot tell."""
+
+
+class Found(TypedDict):
+    language: str
+    share: float
+    cells: int
+
 
 NUMBER, LEADING_ZERO, DATE, DOTTED, TIME = (
     re.compile(RULES["patterns"][name]) for name in ("number", "leading_zero", "date", "dotted_date", "time")
 )
 IDENTIFIER = re.compile(RULES["identifier_names"])
 DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+
+def is_identifier_name(name: str) -> bool:
+    """Whether a column name marks an identifier: id, row number, respondent number or anything ending in _id."""
+    return IDENTIFIER.fullmatch(name.lower()) is not None
 
 
 def is_missing(cell: Cell) -> bool:
@@ -89,7 +104,7 @@ def is_categorical(
     values: list[Cell], name: str, *, labelled: bool, identifier: bool | None, limits: Mapping[str, int]
 ) -> bool:
     distinct = len({(isinstance(value, str), isinstance(value, bool), value) for value in values})
-    if IDENTIFIER.fullmatch(name.lower()) is not None if identifier is None else identifier:
+    if is_identifier_name(name) if identifier is None else identifier:
         return False
     if not all(is_numeric(value) for value in values):
         return distinct <= limits["text"] and (labelled or is_text_category(values, distinct))
@@ -150,12 +165,37 @@ def observe(cells: Sequence[Cell]) -> list[Count]:
     return [{"code": code, "count": count} for code, count in counts.items()]
 
 
-def infer(data: Mapping[str, Sequence[Cell]]) -> Profile:
-    """Proposes a datatype and a level for every column of `{name: [values]}`, with the codes of categorical columns."""
+def infer_language(cells: Sequence[Cell], detect: Detector) -> Found | None:
+    """The language of a column of prose, or None if it is not prose or the answers do not agree.
+
+    The column must be mostly prose. Up to `sample` prose cells, evenly spaced, are given to `detect`; the most common
+    answer wins, and counts only when it is the answer for `min_share` of the cells that were asked. A cell that the
+    detector cannot place counts against the share. Ties go to the smaller tag.
+    """
+    values = [str(cell) for cell in cells if not is_missing(cell)]
+    prose = [value for value in values if is_prose(value)]
+    total = len(values)
+    if len(prose) < LANGUAGE["min_cells"] or len(prose) < LANGUAGE["prose_share"] * total:
+        return None
+    sample = LANGUAGE["sample"]
+    asked = prose if len(prose) <= sample else [prose[len(prose) * index // sample] for index in range(sample)]
+    votes = Counter(answer.lower() for answer in (detect(text) for text in asked) if answer)
+    ranked = sorted(votes.items(), key=lambda item: (-item[1], item[0]))
+    if not ranked or ranked[0][1] / len(asked) < LANGUAGE["min_share"]:
+        return None
+    return {"language": ranked[0][0], "share": ranked[0][1] / len(asked), "cells": len(asked)}
+
+
+def infer(data: Mapping[str, Sequence[Cell]], detect: Detector | None = None) -> Profile:
+    """Proposes a datatype and a level for every column of `{name: [values]}`, with the codes of categorical columns.
+
+    With a `detect` function, text columns also get the language that `infer_language` finds.
+    """
 
     def column_of(name: str, cells: Sequence[Cell]) -> dict[str, Any]:
         inferred = infer_column(cells, name)
         observed = {"observed": observe(cells)} if inferred.get("level") == "categorical" else {}
-        return {"name": name, **inferred, **observed}
+        found = infer_language(cells, detect) if detect and inferred["datatype"] == "string" else None
+        return {"name": name, **inferred, **observed, **({"language": found["language"]} if found else {})}
 
     return cast("Profile", {"columns": [column_of(name, cells) for name, cells in data.items()]})

@@ -1,7 +1,14 @@
-import { inference as rules } from './constants.ts';
+import { inference as rules, language as languageRules } from './constants.ts';
 import type { Count, Datatype, Level, Profile } from './generated/types.ts';
 
 export type Cell = string | number | boolean | null;
+/** Maps a text to a BCP 47 language tag, or to null when it cannot tell. */
+export type Detector = (text: string) => string | null | undefined;
+export interface FoundLanguage {
+  language: string;
+  share: number;
+  cells: number;
+}
 export interface Inferred {
   datatype: Datatype;
   level?: Level;
@@ -87,8 +94,10 @@ const distinctCount = (values: Cell[]): number => new Set(values.map((value) => 
 const isCodeList = (values: Cell[], distinct: number, limit: number): boolean =>
   values.every(isInteger) && distinct <= limit && distinct < values.length;
 
-const isIdentifier = (options: Options): boolean =>
-  options.identifier ?? IDENTIFIER.test((options.name ?? '').toLowerCase());
+/** Whether a column name marks an identifier: id, row number, respondent number or anything ending in _id. */
+export const isIdentifierName = (name: string): boolean => IDENTIFIER.test(name.toLowerCase());
+
+const isIdentifier = (options: Options): boolean => options.identifier ?? isIdentifierName(options.name ?? '');
 
 function isCategorical(values: Cell[], options: Options): boolean {
   const distinct = distinctCount(values);
@@ -133,11 +142,50 @@ export function observe(cells: Cell[]): Count[] {
   return [...counts].map(([code, count]) => ({ code, count }));
 }
 
-/** Proposes a datatype and a level for every column of `{ name: [values] }`, with the codes of categorical columns. */
-export function infer(data: Record<string, Cell[]>): Profile {
+const evenlySpaced = <T>(items: T[], count: number): T[] =>
+  items.length <= count
+    ? items
+    : Array.from({ length: count }, (_, index) => items[Math.floor((items.length * index) / count)] as T);
+
+const compareTags = (a: string, b: string): number => Number(a > b) - Number(a < b);
+
+/** The most common answer and how often it was given; ties go to the smaller tag. Cells without an answer are ignored. */
+function mostCommon(answers: (string | null | undefined)[]): [string, number] | undefined {
+  const votes = new Map<string, number>();
+  for (const answer of answers) {
+    if (answer) votes.set(answer.toLowerCase(), (votes.get(answer.toLowerCase()) ?? 0) + 1);
+  }
+  return [...votes].sort(([a, x], [b, y]) => y - x || compareTags(a, b))[0];
+}
+
+/**
+ * The language of a column of prose, or undefined if it is not prose or the answers do not agree.
+ *
+ * The column must be mostly prose. Up to `sample` prose cells, evenly spaced, are given to `detect`; the most common
+ * answer wins, and counts only when it is the answer for `min_share` of the cells that were asked. A cell that the
+ * detector cannot place counts against the share. Ties go to the smaller tag.
+ */
+export function inferLanguage(cells: Cell[], detect: Detector): FoundLanguage | undefined {
+  const values = cells.filter((cell) => !isMissing(cell)).map(String);
+  const prose = values.filter(isProse);
+  if (prose.length < languageRules.min_cells || prose.length < languageRules.prose_share * values.length)
+    return undefined;
+  const asked = evenlySpaced(prose, languageRules.sample);
+  const best = mostCommon(asked.map((text) => detect(text)));
+  if (!best || best[1] / asked.length < languageRules.min_share) return undefined;
+  return { language: best[0], share: best[1] / asked.length, cells: asked.length };
+}
+
+/**
+ * Proposes a datatype and a level for every column of `{ name: [values] }`, with the codes of categorical columns.
+ * With a `detect` function, text columns also get the language that `inferLanguage` finds.
+ */
+export function infer(data: Record<string, Cell[]>, detect?: Detector): Profile {
   const columnOf = (name: string, cells: Cell[]) => {
     const inferred = inferColumn(cells, { name });
-    return inferred.level === 'categorical' ? { name, ...inferred, observed: observe(cells) } : { name, ...inferred };
+    const observed = inferred.level === 'categorical' ? { observed: observe(cells) } : {};
+    const found = detect && inferred.datatype === 'string' ? inferLanguage(cells, detect) : undefined;
+    return { name, ...inferred, ...observed, ...(found ? { language: found.language } : {}) };
   };
   return { columns: Object.entries(data).map(([name, cells]) => columnOf(name, cells)) };
 }

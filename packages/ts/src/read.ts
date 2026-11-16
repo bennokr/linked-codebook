@@ -116,6 +116,7 @@ const extensionsOf = (node: Node): Partial<Column> =>
     maximum: numberOf(get(node, 'maximumValue')),
     group: text(get(node, 'columnGroup')),
     format: text(get(node, 'columnFormat')),
+    language: text(get(node, 'language')),
     identifying: get(node, 'identifying') === true || undefined,
   }) as Partial<Column>;
 

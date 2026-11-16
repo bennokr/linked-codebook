@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.10.0
+
+- Added the slot `language` (language of the text in a free-text column, a lower-case BCP 47 tag; JSON-LD `dct:language`). Validation checks the tag against the pattern in the model; the validators of both libraries now apply a `pattern` rule.
+- Added language detection as a protocol, not a detector: `infer_language` / `inferLanguage` take a function from a text to a language tag and decide when it is asked and when its answers are accepted (section 7.1 of the specification, limits in `spec/language.yaml`, cases in `spec/cases/language.json`, run by both libraries). `infer` takes an optional detector and then adds `language` to text columns.
+- Added `is_identifier_name` / `isIdentifierName`: the identifier-name test of the inference rule, so applications can drop their own copies.
+- The statement budgets rise by the language protocol and the pattern check (Python 1060 to 1086, TypeScript 948 to 972).
+
 ## 0.9.0
 
 - Added the slots `format` (how dates or numbers are written, in the notation of the source; Frictionless `format`), `minimum` and `maximum` (limits of a numeric column), `group` (the form of a REDCap field, or any named group of columns) and `identifying` (true if the values identify a person or a record). JSON-LD keys `minimumValue`, `maximumValue`, `columnGroup`, `identifying`; Frictionless `constraints.minimum` and `maximum`; `group` and `identifying` in `x-linked-codebook`.

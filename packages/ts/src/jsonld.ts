@@ -68,6 +68,7 @@ const extensions = (column: Column): Node => ({
   maximumValue: column.maximum,
   columnGroup: column.group,
   columnFormat: column.format,
+  language: column.language,
   identifying: column.identifying || undefined,
 });
 

@@ -10,6 +10,7 @@ interface Schema {
   required?: string[];
   minimum?: number;
   maximum?: number;
+  pattern?: string;
 }
 
 const definitions = schema.$defs as unknown as Record<string, Schema>;
@@ -23,12 +24,17 @@ function kindOf(value: unknown): string {
 const hasType = (value: unknown, type?: string): boolean =>
   !type || kindOf(value) === type || (type === 'integer' && Number.isInteger(value));
 
+const outOfRange = (value: unknown, rule: Schema): boolean =>
+  typeof value === 'number' && (value < (rule.minimum ?? -Infinity) || value > (rule.maximum ?? Infinity));
+
+const breaksPattern = (value: unknown, rule: Schema): boolean =>
+  typeof value === 'string' && rule.pattern !== undefined && !new RegExp(rule.pattern).test(value);
+
 function checkScalar(value: unknown, rule: Schema, path: string): string[] {
   if (rule.enum && !rule.enum.includes(value as string))
     return [`${path}: ${String(value)} is not one of ${rule.enum.join(', ')}`];
-  const outside =
-    typeof value === 'number' && (value < (rule.minimum ?? -Infinity) || value > (rule.maximum ?? Infinity));
-  return outside ? [`${path}: out of range`] : [];
+  if (breaksPattern(value, rule)) return [`${path}: ${String(value)} does not match ${rule.pattern}`];
+  return outOfRange(value, rule) ? [`${path}: out of range`] : [];
 }
 
 function checkObject(value: Record<string, unknown>, rule: Schema, path: string): string[] {

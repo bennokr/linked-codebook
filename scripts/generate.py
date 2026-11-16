@@ -35,6 +35,7 @@ def constants() -> dict[str, Any]:
         "jsonld": {**jsonld, "context": context},
         "sssom": load("sssom"),
         "inference": load("inference"),
+        "language": load("language"),
         "enums": enums,
         "vocabulary": load("vocabulary"),
         "commands": load("commands"),

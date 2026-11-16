@@ -1,0 +1,8 @@
+# How the language of a free-text column is found. The detector itself is not part of the specification: it is
+# a function that an application supplies (a statistical model differs between libraries and versions, so two
+# implementations could never agree on every text). What is specified is when a detector is asked and when its answers are
+# accepted, so that every implementation reaches the same decision from the same answers.
+sample: 200       # at most this many cells are given to the detector, evenly spaced over the column
+min_cells: 3      # fewer prose cells than this and the column has no language
+prose_share: 0.5  # at least this share of the non-missing cells must be prose (inference.yaml defines prose)
+min_share: 0.8    # the language must be the answer for at least this share of the cells that were asked

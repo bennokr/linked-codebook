@@ -2,7 +2,19 @@ export { canonical } from './canonical.ts';
 export { run, type Result } from './cli.ts';
 export type * from './generated/types.ts';
 export { toFrictionless } from './frictionless.ts';
-export { infer, inferColumn, isNumeric, observe, type Cell, type Inferred, type Options } from './infer.ts';
+export {
+  infer,
+  inferColumn,
+  inferLanguage,
+  isIdentifierName,
+  isNumeric,
+  observe,
+  type Cell,
+  type Detector,
+  type FoundLanguage,
+  type Inferred,
+  type Options,
+} from './infer.ts';
 export { evaluateCondition, parseCondition, type Condition, type EvaluateOptions } from './condition.ts';
 export { build } from './jsonld.ts';
 export { merge } from './merge.ts';

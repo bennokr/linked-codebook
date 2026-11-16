@@ -1,5 +1,6 @@
 """Checking profiles against the model and JSON-LD against the vocabularies."""
 
+import re
 from typing import Any
 
 from .constants import JSONLD, SCHEMA, VOCABULARY
@@ -26,6 +27,8 @@ def conform(value: Any, rule: dict[str, Any], path: str) -> list[str]:  # noqa: 
         return [f"{path}: expected {resolved['type']}"]
     if "enum" in resolved and value not in resolved["enum"]:
         return [f"{path}: {show(value)} is not one of {', '.join(resolved['enum'])}"]
+    if kind == "string" and "pattern" in resolved and re.search(resolved["pattern"], value) is None:
+        return [f"{path}: {show(value)} does not match {resolved['pattern']}"]
     if kind == "number" and not resolved.get("minimum", float("-inf")) <= value <= resolved.get(
         "maximum", float("inf")
     ):

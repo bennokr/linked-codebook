@@ -35,6 +35,7 @@ terms:
   numberOfRows: {"@id": dsv:numberOfRows, "@type": xsd:integer}
   numberOfColumns: {"@id": dsv:numberOfColumns, "@type": xsd:integer}
   columnCompleteness: {"@id": dsv:columnCompleteness, "@type": xsd:float}
+  language: dct:language
   unitText: schema:unitText
   hasUnit: {"@id": qudt:hasUnit, "@type": "@id"}
   exactMatch: {"@id": skos:exactMatch, "@type": "@id", "@container": "@set"}
