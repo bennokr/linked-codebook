@@ -7,8 +7,9 @@ name: Release
 # One-time setup:
 #   PyPI: add a trusted publisher (owner bennokr, repository linked-codebook, workflow release.yml, environment pypi) at
 #         https://pypi.org/manage/account/publishing/ (a "pending publisher" works for the first release).
-#   npm:  add the secret NPM_TOKEN (an automation token that may publish `linked-codebook`) to the environment `npm`.
-#         Once the package exists, a trusted publisher on npmjs.com can replace the token.
+#   npm:  the first release needs the secret NPM_TOKEN (a granular token that may publish `linked-codebook`, with 2FA
+#         bypass) in the environment `npm`. Then add a trusted publisher on npmjs.com (repository linked-codebook,
+#         workflow release.yml, environment npm), and delete the token and the secret.
 
 on:
   push:
@@ -81,17 +82,22 @@ jobs:
       name: npm
       url: https://www.npmjs.com/package/linked-codebook
     permissions:
-      id-token: write # for the provenance statement
+      id-token: write # trusted publishing, and the provenance statement
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          registry-url: https://registry.npmjs.org
-      - name: Publish the tarball of releases/
-        run: npm publish "releases/linked-codebook-${{ needs.verify.outputs.version }}.tgz" --access public --provenance
+      - name: npm 11.5.1 or later is needed for trusted publishing
+        run: npm install -g npm@latest && npm --version
+      - name: Use the token, if there is one
+        # Only the first release needs it: a trusted publisher can be added once the package exists. With no secret
+        # nothing is written and npm publishes through OIDC.
+        run: test -z "$NPM_TOKEN" || npm config set "//registry.npmjs.org/:_authToken=${NPM_TOKEN}"
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish the tarball of releases/
+        run: npm publish "./releases/linked-codebook-${{ needs.verify.outputs.version }}.tgz" --access public --provenance
 
   github-release:
     needs: [verify, pypi, npm]

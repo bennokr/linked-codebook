@@ -54,7 +54,7 @@ Other projects install the libraries from PyPI and npm (`pip install linked-code
 ### One-time setup of the registries
 
 - **PyPI:** at <https://pypi.org/manage/account/publishing/> add a *pending* trusted publisher for the project `linked-codebook`: owner `bennokr`, repository `linked-codebook`, workflow `release.yml`, environment `pypi`. No token is stored.
-- **npm:** create an automation token that may publish `linked-codebook` and save it as the secret `NPM_TOKEN` of the GitHub environment `npm`. After the first release, a trusted publisher on npmjs.com can replace it. Packages are published with provenance.
+- **npm:** the first release needs a token, because trusted publishing is set up on a package that exists. Create a granular token that may publish `linked-codebook` (read and write, 2FA bypass) and save it as the secret `NPM_TOKEN` of the GitHub environment `npm`. After the first release, add a trusted publisher on npmjs.com (package settings, GitHub Actions: user `bennokr`, repository `linked-codebook`, workflow `release.yml`, environment `npm`; npm does not check it when you save, so a typo shows up as a failed publish), then delete the token and the secret. The workflow installs npm 11.5.1 or later for this, and publishes with provenance.
 - **GitHub environments:** create the environments `pypi` and `npm`, and require a review on them if a tag alone should not be enough to publish.
 
 ### The JSON-LD context as a file
