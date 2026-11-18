@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.0
+
+- The keys that no vocabulary defined (`missingRange`, `codeBookClosed`, `appliesWhen`, `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat`, `identifying`) now have IRIs, so they stay in the RDF when the document is loaded as JSON-LD. Before, JSON-LD dropped them: skip rules, missing ranges and limits could not be queried. `minimumValue`, `maximumValue` and the `low` and `high` of a missing range are `csvw:minInclusive` and `csvw:maxInclusive` (CSVW puts these facets on a datatype description; here they sit on the column, as `csvw:datatype` already does), and `columnFormat` is `csvw:format`. `appliesWhen`, `codeBookClosed`, `columnGroup`, `identifying` and `missingRange` are slots of this project's own data model, `lc:applies_when`, `lc:closed`, `lc:group`, `lc:identifying` and `lc:missing_range` (`lc` is `https://bennokr.github.io/linked-codebook/profile#`, the namespace of `spec/profile.yaml`, which the test page now serves as `profile.yaml`). `make pin` checks the slots against the model and the others against their vocabularies.
+- The prefix of the DSV ontology in the context and the documents is now `dsvo`, because `dsv` is also the preferred prefix of the Data Specification Vocabulary (`https://w3id.org/dsv#`). The IRIs are the same.
+- A float `NaN` is blank in conditions and in `missingness` (a data frame holds a missing number as `NaN`). JSON cannot contain `NaN`, so the TypeScript library and the conformance cases are unchanged.
+
 ## 0.10.0
 
 - Added the slot `language` (language of the text in a free-text column, a lower-case BCP 47 tag; JSON-LD `dct:language`). Validation checks the tag against the pattern in the model; the validators of both libraries now apply a `pattern` rule.

@@ -33,10 +33,10 @@ This describes the state before the migration. semsynth has since replaced SemMa
 
 - semsynth's "SemMap" is a different model with the same name. Its files declare the context
   `https://w3id.org/semmap/context`, which returns 404, and use terms that DSV does not define
-  (`dsv:QuantitativeDataType`, `dsv:ContinuousDataType`, `dsv:IdentifierDataType`).
+  (`dsvo:QuantitativeDataType`, `dsvo:ContinuousDataType`, `dsvo:IdentifierDataType`).
 - It nests the statistical type under `columnProperty.summaryStatistics`, keeps mappings as bare IRIs without
   review state, and uses `hadRole` for a privacy role. Its `to_privacy_frame` has no case for
-  `dsv:CategoricalDataType`, so a categorical column falls through to the numeric default.
+  `dsvo:CategoricalDataType`, so a categorical column falls through to the numeric default.
 - entailmap has no such model. It covers two halves of the profile on its own: a complete SSSOM table, with a rule
   that a review date needs a reviewer, and a CSVW table-schema editor.
 
@@ -44,7 +44,7 @@ This describes the state before the migration. semsynth has since replaced SemMa
 
 | Standard | What it models at variable level | Relation to the profile |
 | --- | --- | --- |
-| **DSV** (*Spec*) | `dsv:Column` → `dsv:ColumnProperty` → `dsv:hasVariable` and `dsv:hasCodeBook`; `dsv:statisticalDataType`; completeness | The base of the JSON-LD. It has no terms for label, unit, missing codes or mappings, so CSVW, SKOS, QUDT and schema.org fill in. |
+| **DSV** (*Spec*) | `dsvo:Column` → `dsvo:ColumnProperty` → `dsvo:hasVariable` and `dsvo:hasCodeBook`; `dsvo:statisticalDataType`; completeness | The base of the JSON-LD. It has no terms for label, unit, missing codes or mappings, so CSVW, SKOS, QUDT and schema.org fill in. |
 | **DISCO / DDI-RDF** (*Spec*) | `disco:Variable`, `disco:RepresentedVariable`, `disco:concept`, `disco:representation`, `disco:universe`, `disco:question`, `disco:isValid` | Value labels use the same SKOS shape. DISCO adds the question, the universe and the conceptual/represented split. |
 | **DDI-Codebook 2.5** (*Memory*) | `<var>` with label, `<catgry>`, valid and invalid ranges, `@nature`, `@intrvl`, question, universe | The richest description of one variable. It has the missing ranges the others drop. |
 | **DDI-CDI** (*Memory*) | Conceptual, represented and instance variables; sentinel value domains | The principled home for missing codes. Heavy for an editor. |

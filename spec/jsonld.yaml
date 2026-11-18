@@ -1,9 +1,12 @@
-# How a profile is written as JSON-LD, using the DSV ontology (https://w3id.org/dsv-ontology).
+# How a profile is written as JSON-LD, using the DSV ontology (https://w3id.org/dsv-ontology), whose prefix is `dsvo` here
+# because `dsv` is also the prefix of the Data Specification Vocabulary.
 # Every term here is checked against its vocabulary by `make pin` and recorded in vocabulary.yaml.
+# `lc` is this project's own data model (spec/profile.yaml): its slots are the terms that no other vocabulary has.
 
 prefixes:
   csvw: http://www.w3.org/ns/csvw#
-  dsv: https://w3id.org/dsv-ontology#
+  dsvo: https://w3id.org/dsv-ontology#
+  lc: https://bennokr.github.io/linked-codebook/profile#
   skos: http://www.w3.org/2004/02/skos/core#
   qudt: http://qudt.org/schema/qudt/
   schema: https://schema.org/
@@ -21,21 +24,31 @@ terms:
   accessRights: dct:accessRights
   citation: dct:bibliographicCitation
   landingPage: {"@id": dcat:landingPage, "@type": "@id"}
-  datasetSchema: {"@id": dsv:datasetSchema, "@type": "@id"}
-  columns: {"@id": dsv:column, "@container": "@set"}
+  datasetSchema: {"@id": dsvo:datasetSchema, "@type": "@id"}
+  columns: {"@id": dsvo:column, "@container": "@set"}
   name: csvw:name
   titles: csvw:title
   datatype: csvw:datatype
   nullValues: {"@id": csvw:null, "@container": "@set"}
-  columnProperty: {"@id": dsv:columnProperty, "@type": "@id"}
-  hasVariable: {"@id": dsv:hasVariable, "@type": "@id"}
-  hasCodeBook: {"@id": dsv:hasCodeBook, "@type": "@id"}
-  summaryStatistics: {"@id": dsv:summaryStatistics, "@type": "@id"}
-  statisticalDataType: {"@id": dsv:statisticalDataType, "@type": "@id"}
-  numberOfRows: {"@id": dsv:numberOfRows, "@type": xsd:integer}
-  numberOfColumns: {"@id": dsv:numberOfColumns, "@type": xsd:integer}
-  columnCompleteness: {"@id": dsv:columnCompleteness, "@type": xsd:float}
+  columnProperty: {"@id": dsvo:columnProperty, "@type": "@id"}
+  hasVariable: {"@id": dsvo:hasVariable, "@type": "@id"}
+  hasCodeBook: {"@id": dsvo:hasCodeBook, "@type": "@id"}
+  summaryStatistics: {"@id": dsvo:summaryStatistics, "@type": "@id"}
+  statisticalDataType: {"@id": dsvo:statisticalDataType, "@type": "@id"}
+  numberOfRows: {"@id": dsvo:numberOfRows, "@type": xsd:integer}
+  numberOfColumns: {"@id": dsvo:numberOfColumns, "@type": xsd:integer}
+  columnCompleteness: {"@id": dsvo:columnCompleteness, "@type": xsd:float}
   language: dct:language
+  missingRange: lc:missing_range
+  low: csvw:minInclusive
+  high: csvw:maxInclusive
+  codeBookClosed: lc:closed
+  appliesWhen: lc:applies_when
+  minimumValue: csvw:minInclusive
+  maximumValue: csvw:maxInclusive
+  columnGroup: lc:group
+  columnFormat: csvw:format
+  identifying: lc:identifying
   unitText: schema:unitText
   hasUnit: {"@id": qudt:hasUnit, "@type": "@id"}
   exactMatch: {"@id": skos:exactMatch, "@type": "@id", "@container": "@set"}
@@ -51,13 +64,13 @@ keys:
 
 # Classes of the nodes that are written.
 types:
-  dataset: [dcat:Dataset, dsv:Dataset]
-  schema: dsv:DatasetSchema
-  column: dsv:Column
-  property: dsv:ColumnProperty
+  dataset: [dcat:Dataset, dsvo:Dataset]
+  schema: dsvo:DatasetSchema
+  column: dsvo:Column
+  property: dsvo:ColumnProperty
   concept: skos:Concept
   scheme: skos:ConceptScheme
-  statistics: dsv:SummaryStatistics
+  statistics: dsvo:SummaryStatistics
 
 # Keys inside concept nodes.
 node_keys:
@@ -74,7 +87,8 @@ accepted: [schema:Dataset]
 
 # Where each vocabulary is published, for `make pin`.
 sources:
-  dsv: {url: "https://w3id.org/dsv-ontology", format: widoco}
+  dsvo: {url: "https://w3id.org/dsv-ontology", format: widoco}
+  lc: {url: "https://bennokr.github.io/linked-codebook/profile", format: linkml}
   skos: {url: "https://www.w3.org/2004/02/skos/core.rdf", format: xml}
   csvw: {url: "https://www.w3.org/ns/csvw", format: turtle}
   dcat: {url: "https://www.w3.org/ns/dcat.ttl", format: turtle}
@@ -121,6 +135,4 @@ datatype_aliases:
   dateTime: datetime
   dateTimeStamp: datetime
 
-# Keys that are not defined by any vocabulary. JSON-LD ignores them.
 # Observed counts are not written: DSV has no term for them, and they describe one copy of the data.
-extensions: [missingRange, codeBookClosed, appliesWhen, minimumValue, maximumValue, columnGroup, identifying, columnFormat]

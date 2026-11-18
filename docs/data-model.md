@@ -112,12 +112,12 @@ Level of measurement, as defined by DSV.
 
 | Value | Meaning |
 | --- | --- |
-| `categorical` | dsv:CategoricalDataType |
-| `nominal` | dsv:NominalDataType |
-| `ordinal` | dsv:OrdinalDataType |
-| `numerical` | dsv:NumericalDataType |
-| `interval` | dsv:IntervalDataType |
-| `ratio` | dsv:RatioDataType |
+| `categorical` | dsvo:CategoricalDataType |
+| `nominal` | dsvo:NominalDataType |
+| `ordinal` | dsvo:OrdinalDataType |
+| `numerical` | dsvo:NumericalDataType |
+| `interval` | dsvo:IntervalDataType |
+| `ratio` | dsvo:RatioDataType |
 
 ## MatchType
 

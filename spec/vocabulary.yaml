@@ -1,4 +1,4 @@
-pinned_on: '2026-11-16'
+pinned_on: '2026-11-18'
 unverified: []
 vocabularies:
   csvw:
@@ -6,6 +6,9 @@ vocabularies:
     source: https://www.w3.org/ns/csvw
     terms:
       datatype: Property
+      format: Property
+      maxInclusive: Property
+      minInclusive: Property
       name: Property
       'null': Property
       title: Property
@@ -28,7 +31,7 @@ vocabularies:
       rights: Property
       source: Property
       title: Property
-  dsv:
+  dsvo:
     namespace: https://w3id.org/dsv-ontology#
     source: https://w3id.org/dsv-ontology
     terms:
@@ -53,6 +56,15 @@ vocabularies:
       numberOfRows: Data Property
       statisticalDataType: Object Property
       summaryStatistics: Object Property
+  lc:
+    namespace: https://bennokr.github.io/linked-codebook/profile#
+    source: https://bennokr.github.io/linked-codebook/profile
+    terms:
+      applies_when: Slot
+      closed: Slot
+      group: Slot
+      identifying: Slot
+      missing_range: Slot
   qudt:
     namespace: http://qudt.org/schema/qudt/
     source: http://qudt.org/schema/qudt/

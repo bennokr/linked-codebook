@@ -7,7 +7,7 @@ description: A dataset and the variables (columns) of its table, with their data
 license: MIT
 prefixes:
   lc: https://bennokr.github.io/linked-codebook/profile#
-  dsv: https://w3id.org/dsv-ontology#
+  dsvo: https://w3id.org/dsv-ontology#
   skos: http://www.w3.org/2004/02/skos/core#
   linkml: https://w3id.org/linkml/
 imports:
@@ -88,12 +88,12 @@ enums:
   Level:
     description: Level of measurement, as defined by DSV.
     permissible_values:
-      categorical: {meaning: "dsv:CategoricalDataType"}
-      nominal: {meaning: "dsv:NominalDataType"}
-      ordinal: {meaning: "dsv:OrdinalDataType"}
-      numerical: {meaning: "dsv:NumericalDataType"}
-      interval: {meaning: "dsv:IntervalDataType"}
-      ratio: {meaning: "dsv:RatioDataType"}
+      categorical: {meaning: "dsvo:CategoricalDataType"}
+      nominal: {meaning: "dsvo:NominalDataType"}
+      ordinal: {meaning: "dsvo:OrdinalDataType"}
+      numerical: {meaning: "dsvo:NumericalDataType"}
+      interval: {meaning: "dsvo:IntervalDataType"}
+      ratio: {meaning: "dsvo:RatioDataType"}
   MatchType:
     description: Relation of a concept to a column or value, as defined by SKOS.
     permissible_values:

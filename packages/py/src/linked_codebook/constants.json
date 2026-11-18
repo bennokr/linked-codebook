@@ -164,12 +164,12 @@
       "string": null
     },
     "Level": {
-      "categorical": "dsv:CategoricalDataType",
-      "interval": "dsv:IntervalDataType",
-      "nominal": "dsv:NominalDataType",
-      "numerical": "dsv:NumericalDataType",
-      "ordinal": "dsv:OrdinalDataType",
-      "ratio": "dsv:RatioDataType"
+      "categorical": "dsvo:CategoricalDataType",
+      "interval": "dsvo:IntervalDataType",
+      "nominal": "dsvo:NominalDataType",
+      "numerical": "dsvo:NumericalDataType",
+      "ordinal": "dsvo:OrdinalDataType",
+      "ratio": "dsvo:RatioDataType"
     },
     "MatchType": {
       "broad": "skos:broadMatch",
@@ -252,6 +252,7 @@
     },
     "context": {
       "accessRights": "dct:accessRights",
+      "appliesWhen": "lc:applies_when",
       "broadMatch": {
         "@container": "@set",
         "@id": "skos:broadMatch",
@@ -263,35 +264,38 @@
         "@id": "skos:closeMatch",
         "@type": "@id"
       },
+      "codeBookClosed": "lc:closed",
       "columnCompleteness": {
-        "@id": "dsv:columnCompleteness",
+        "@id": "dsvo:columnCompleteness",
         "@type": "xsd:float"
       },
+      "columnFormat": "csvw:format",
+      "columnGroup": "lc:group",
       "columnProperty": {
-        "@id": "dsv:columnProperty",
+        "@id": "dsvo:columnProperty",
         "@type": "@id"
       },
       "columns": {
         "@container": "@set",
-        "@id": "dsv:column"
+        "@id": "dsvo:column"
       },
       "csvw": "http://www.w3.org/ns/csvw#",
       "datasetSchema": {
-        "@id": "dsv:datasetSchema",
+        "@id": "dsvo:datasetSchema",
         "@type": "@id"
       },
       "datatype": "csvw:datatype",
       "dcat": "http://www.w3.org/ns/dcat#",
       "dct": "http://purl.org/dc/terms/",
       "description": "dct:description",
-      "dsv": "https://w3id.org/dsv-ontology#",
+      "dsvo": "https://w3id.org/dsv-ontology#",
       "exactMatch": {
         "@container": "@set",
         "@id": "skos:exactMatch",
         "@type": "@id"
       },
       "hasCodeBook": {
-        "@id": "dsv:hasCodeBook",
+        "@id": "dsvo:hasCodeBook",
         "@type": "@id"
       },
       "hasUnit": {
@@ -299,19 +303,26 @@
         "@type": "@id"
       },
       "hasVariable": {
-        "@id": "dsv:hasVariable",
+        "@id": "dsvo:hasVariable",
         "@type": "@id"
       },
+      "high": "csvw:maxInclusive",
       "identifier": "dct:identifier",
+      "identifying": "lc:identifying",
       "landingPage": {
         "@id": "dcat:landingPage",
         "@type": "@id"
       },
       "language": "dct:language",
+      "lc": "https://bennokr.github.io/linked-codebook/profile#",
       "license": {
         "@id": "dct:license",
         "@type": "@id"
       },
+      "low": "csvw:minInclusive",
+      "maximumValue": "csvw:maxInclusive",
+      "minimumValue": "csvw:minInclusive",
+      "missingRange": "lc:missing_range",
       "name": "csvw:name",
       "narrowMatch": {
         "@container": "@set",
@@ -323,11 +334,11 @@
         "@id": "csvw:null"
       },
       "numberOfColumns": {
-        "@id": "dsv:numberOfColumns",
+        "@id": "dsvo:numberOfColumns",
         "@type": "xsd:integer"
       },
       "numberOfRows": {
-        "@id": "dsv:numberOfRows",
+        "@id": "dsvo:numberOfRows",
         "@type": "xsd:integer"
       },
       "qudt": "http://qudt.org/schema/qudt/",
@@ -340,11 +351,11 @@
       "schema": "https://schema.org/",
       "skos": "http://www.w3.org/2004/02/skos/core#",
       "statisticalDataType": {
-        "@id": "dsv:statisticalDataType",
+        "@id": "dsvo:statisticalDataType",
         "@type": "@id"
       },
       "summaryStatistics": {
-        "@id": "dsv:summaryStatistics",
+        "@id": "dsvo:summaryStatistics",
         "@type": "@id"
       },
       "title": "dct:title",
@@ -365,16 +376,6 @@
       "positiveInteger": "integer",
       "short": "integer"
     },
-    "extensions": [
-      "missingRange",
-      "codeBookClosed",
-      "appliesWhen",
-      "minimumValue",
-      "maximumValue",
-      "columnGroup",
-      "identifying",
-      "columnFormat"
-    ],
     "imported_reviewer": "imported",
     "iris": {
       "code": "{variable}-codes-{code}",
@@ -415,7 +416,8 @@
       "csvw": "http://www.w3.org/ns/csvw#",
       "dcat": "http://www.w3.org/ns/dcat#",
       "dct": "http://purl.org/dc/terms/",
-      "dsv": "https://w3id.org/dsv-ontology#",
+      "dsvo": "https://w3id.org/dsv-ontology#",
+      "lc": "https://bennokr.github.io/linked-codebook/profile#",
       "qudt": "http://qudt.org/schema/qudt/",
       "schema": "https://schema.org/",
       "skos": "http://www.w3.org/2004/02/skos/core#",
@@ -427,6 +429,7 @@
     ],
     "terms": {
       "accessRights": "dct:accessRights",
+      "appliesWhen": "lc:applies_when",
       "broadMatch": {
         "@container": "@set",
         "@id": "skos:broadMatch",
@@ -438,20 +441,23 @@
         "@id": "skos:closeMatch",
         "@type": "@id"
       },
+      "codeBookClosed": "lc:closed",
       "columnCompleteness": {
-        "@id": "dsv:columnCompleteness",
+        "@id": "dsvo:columnCompleteness",
         "@type": "xsd:float"
       },
+      "columnFormat": "csvw:format",
+      "columnGroup": "lc:group",
       "columnProperty": {
-        "@id": "dsv:columnProperty",
+        "@id": "dsvo:columnProperty",
         "@type": "@id"
       },
       "columns": {
         "@container": "@set",
-        "@id": "dsv:column"
+        "@id": "dsvo:column"
       },
       "datasetSchema": {
-        "@id": "dsv:datasetSchema",
+        "@id": "dsvo:datasetSchema",
         "@type": "@id"
       },
       "datatype": "csvw:datatype",
@@ -462,7 +468,7 @@
         "@type": "@id"
       },
       "hasCodeBook": {
-        "@id": "dsv:hasCodeBook",
+        "@id": "dsvo:hasCodeBook",
         "@type": "@id"
       },
       "hasUnit": {
@@ -470,10 +476,12 @@
         "@type": "@id"
       },
       "hasVariable": {
-        "@id": "dsv:hasVariable",
+        "@id": "dsvo:hasVariable",
         "@type": "@id"
       },
+      "high": "csvw:maxInclusive",
       "identifier": "dct:identifier",
+      "identifying": "lc:identifying",
       "landingPage": {
         "@id": "dcat:landingPage",
         "@type": "@id"
@@ -483,6 +491,10 @@
         "@id": "dct:license",
         "@type": "@id"
       },
+      "low": "csvw:minInclusive",
+      "maximumValue": "csvw:maxInclusive",
+      "minimumValue": "csvw:minInclusive",
+      "missingRange": "lc:missing_range",
       "name": "csvw:name",
       "narrowMatch": {
         "@container": "@set",
@@ -494,11 +506,11 @@
         "@id": "csvw:null"
       },
       "numberOfColumns": {
-        "@id": "dsv:numberOfColumns",
+        "@id": "dsvo:numberOfColumns",
         "@type": "xsd:integer"
       },
       "numberOfRows": {
-        "@id": "dsv:numberOfRows",
+        "@id": "dsvo:numberOfRows",
         "@type": "xsd:integer"
       },
       "relatedMatch": {
@@ -508,11 +520,11 @@
       },
       "rights": "dct:rights",
       "statisticalDataType": {
-        "@id": "dsv:statisticalDataType",
+        "@id": "dsvo:statisticalDataType",
         "@type": "@id"
       },
       "summaryStatistics": {
-        "@id": "dsv:summaryStatistics",
+        "@id": "dsvo:summaryStatistics",
         "@type": "@id"
       },
       "title": "dct:title",
@@ -520,16 +532,16 @@
       "unitText": "schema:unitText"
     },
     "types": {
-      "column": "dsv:Column",
+      "column": "dsvo:Column",
       "concept": "skos:Concept",
       "dataset": [
         "dcat:Dataset",
-        "dsv:Dataset"
+        "dsvo:Dataset"
       ],
-      "property": "dsv:ColumnProperty",
-      "schema": "dsv:DatasetSchema",
+      "property": "dsvo:ColumnProperty",
+      "schema": "dsvo:DatasetSchema",
       "scheme": "skos:ConceptScheme",
-      "statistics": "dsv:SummaryStatistics"
+      "statistics": "dsvo:SummaryStatistics"
     }
   },
   "language": {
@@ -1181,7 +1193,7 @@
     }
   },
   "vocabulary": {
-    "pinned_on": "2026-11-16",
+    "pinned_on": "2026-11-18",
     "unverified": [],
     "vocabularies": {
       "csvw": {
@@ -1189,6 +1201,9 @@
         "source": "https://www.w3.org/ns/csvw",
         "terms": {
           "datatype": "Property",
+          "format": "Property",
+          "maxInclusive": "Property",
+          "minInclusive": "Property",
           "name": "Property",
           "null": "Property",
           "title": "Property"
@@ -1217,7 +1232,7 @@
           "title": "Property"
         }
       },
-      "dsv": {
+      "dsvo": {
         "namespace": "https://w3id.org/dsv-ontology#",
         "source": "https://w3id.org/dsv-ontology",
         "terms": {
@@ -1242,6 +1257,17 @@
           "numberOfRows": "Data Property",
           "statisticalDataType": "Object Property",
           "summaryStatistics": "Object Property"
+        }
+      },
+      "lc": {
+        "namespace": "https://bennokr.github.io/linked-codebook/profile#",
+        "source": "https://bennokr.github.io/linked-codebook/profile",
+        "terms": {
+          "applies_when": "Slot",
+          "closed": "Slot",
+          "group": "Slot",
+          "identifying": "Slot",
+          "missing_range": "Slot"
         }
       },
       "qudt": {

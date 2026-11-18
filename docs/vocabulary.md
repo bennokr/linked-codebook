@@ -2,13 +2,13 @@
 
 <!-- Generated from spec/vocabulary.yaml by scripts/generate.py. Do not edit. -->
 
-Every term below was found in its published vocabulary on 2026-11-16.
+Every term below was found in its published vocabulary on 2026-11-18.
 
 ## `csvw`
 
 Namespace: `http://www.w3.org/ns/csvw#`. Source: <https://www.w3.org/ns/csvw>.
 
-`csvw:datatype`, `csvw:name`, `csvw:null`, `csvw:title`
+`csvw:datatype`, `csvw:format`, `csvw:maxInclusive`, `csvw:minInclusive`, `csvw:name`, `csvw:null`, `csvw:title`
 
 ## `dcat`
 
@@ -22,11 +22,17 @@ Namespace: `http://purl.org/dc/terms/`. Source: <https://www.dublincore.org/spec
 
 `dct:accessRights`, `dct:bibliographicCitation`, `dct:description`, `dct:identifier`, `dct:language`, `dct:license`, `dct:rights`, `dct:source`, `dct:title`
 
-## `dsv`
+## `dsvo`
 
 Namespace: `https://w3id.org/dsv-ontology#`. Source: <https://w3id.org/dsv-ontology>.
 
-`dsv:CategoricalDataType`, `dsv:Column`, `dsv:ColumnProperty`, `dsv:Dataset`, `dsv:DatasetSchema`, `dsv:IntervalDataType`, `dsv:NominalDataType`, `dsv:NumericalDataType`, `dsv:OrdinalDataType`, `dsv:RatioDataType`, `dsv:SummaryStatistics`, `dsv:column`, `dsv:columnCompleteness`, `dsv:columnProperty`, `dsv:datasetSchema`, `dsv:hasCodeBook`, `dsv:hasVariable`, `dsv:numberOfColumns`, `dsv:numberOfRows`, `dsv:statisticalDataType`, `dsv:summaryStatistics`
+`dsvo:CategoricalDataType`, `dsvo:Column`, `dsvo:ColumnProperty`, `dsvo:Dataset`, `dsvo:DatasetSchema`, `dsvo:IntervalDataType`, `dsvo:NominalDataType`, `dsvo:NumericalDataType`, `dsvo:OrdinalDataType`, `dsvo:RatioDataType`, `dsvo:SummaryStatistics`, `dsvo:column`, `dsvo:columnCompleteness`, `dsvo:columnProperty`, `dsvo:datasetSchema`, `dsvo:hasCodeBook`, `dsvo:hasVariable`, `dsvo:numberOfColumns`, `dsvo:numberOfRows`, `dsvo:statisticalDataType`, `dsvo:summaryStatistics`
+
+## `lc`
+
+Namespace: `https://bennokr.github.io/linked-codebook/profile#`. Source: <https://bennokr.github.io/linked-codebook/profile>.
+
+`lc:applies_when`, `lc:closed`, `lc:group`, `lc:identifying`, `lc:missing_range`
 
 ## `qudt`
 

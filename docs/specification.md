@@ -1,6 +1,6 @@
 # Linked Codebook Specification
 
-Draft, version 0.10.0
+Draft, version 0.11.0
 
 ## Abstract
 
@@ -113,17 +113,17 @@ The document is one node, the dataset, with these properties.
 
 | Node | Type | Properties |
 | --- | --- | --- |
-| Dataset | `dcat:Dataset`, `dsv:Dataset` | `title`, `description`, `identifier`, `citation`, `accessRights` and `landingPage` carry the slots of the same meaning. `license` is written as `license` if it starts with `http:` or `https:`, and as `rights` otherwise. `datasetSchema` is the schema node. |
-| Dataset statistics | `dsv:SummaryStatistics` | `numberOfRows` carries `rows` and `numberOfColumns` the number of columns. The node is written only if the profile has `rows`. |
-| Schema | `dsv:DatasetSchema` | `columns` is the list of column nodes, in table order. |
-| Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `appliesWhen`, `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat`, `identifying`, `columnProperty` and `summaryStatistics`. |
-| Column property | `dsv:ColumnProperty` | `hasVariable` is the variable concept. `hasUnit` and `unitText` carry `unit_iri` and `unit`. `hasCodeBook` is the concept scheme of the values. |
-| Summary statistics | `dsv:SummaryStatistics` | `statisticalDataType` is the meaning of the `level` and `columnCompleteness` carries `completeness`. The node is written only if one of them is set. |
+| Dataset | `dcat:Dataset`, `dsvo:Dataset` | `title`, `description`, `identifier`, `citation`, `accessRights` and `landingPage` carry the slots of the same meaning. `license` is written as `license` if it starts with `http:` or `https:`, and as `rights` otherwise. `datasetSchema` is the schema node. |
+| Dataset statistics | `dsvo:SummaryStatistics` | `numberOfRows` carries `rows` and `numberOfColumns` the number of columns. The node is written only if the profile has `rows`. |
+| Schema | `dsvo:DatasetSchema` | `columns` is the list of column nodes, in table order. |
+| Column | `dsvo:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `appliesWhen`, `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat`, `identifying`, `columnProperty` and `summaryStatistics`. |
+| Column property | `dsvo:ColumnProperty` | `hasVariable` is the variable concept. `hasUnit` and `unitText` carry `unit_iri` and `unit`. `hasCodeBook` is the concept scheme of the values. |
+| Summary statistics | `dsvo:SummaryStatistics` | `statisticalDataType` is the meaning of the `level` and `columnCompleteness` carries `completeness`. The node is written only if one of them is set. |
 | Variable concept | `skos:Concept` | `skos:prefLabel` is the label, or else the name. `skos:definition` is the description. `dct:source` is the IRI `source`, written as a node reference. |
 | Code book | `skos:ConceptScheme` | `skos:hasTopConcept` lists a concept for every value. |
 | Code concept | `skos:Concept` | `skos:notation` is the code, `skos:prefLabel` the label, `skos:definition` the description and `skos:inScheme` the code book. For an ordinal column, `schema:position` is the place of the code in `values`, counted from 1. |
 
-Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `appliesWhen` carries `applies_when`; `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat` and `identifying` carry `minimum`, `maximum`, `group`, `format` and `identifying` (only if true). None of these is defined by any vocabulary. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data. RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and as they occur otherwise.
+Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise. `appliesWhen` carries `applies_when`; `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat` and `identifying` carry `minimum`, `maximum`, `group`, `format` and `identifying` (only if true). These keys have IRIs, so that they stay in the RDF: `minimumValue`, `maximumValue`, `low` and `high` are `csvw:minInclusive` and `csvw:maxInclusive` (CSVW puts them on a datatype description; here they sit on the column, as `csvw:datatype` does), `columnFormat` is `csvw:format`, and `missingRange`, `codeBookClosed`, `appliesWhen`, `columnGroup` and `identifying` are the slots `missing_range`, `closed`, `applies_when`, `group` and `identifying` of the data model in the namespace `lc` (`https://bennokr.github.io/linked-codebook/profile#`, served as `profile.yaml` next to the test page). `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data. RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and as they occur otherwise.
 
 Only approved mappings are written. A mapping becomes the property `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch` or `relatedMatch`, according to its `match_type`, of the variable concept or of the code concept. The properties list the `object_id` values. Draft mappings, labels, confidence, provenance and reviewers are not written.
 

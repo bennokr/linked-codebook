@@ -17,6 +17,8 @@ await build({
   outfile: join(dist, 'main.js'),
 });
 for (const file of ['index.html', 'style.css']) cpSync(join(root, 'site', file), join(dist, file));
+// The IRIs of the slots that no other vocabulary has (`lc:`) are those of this data model.
+cpSync(join(root, 'spec/profile.yaml'), join(dist, 'profile.yaml'));
 
 execFileSync('uv', ['build', '--wheel', '--out-dir', join(dist, 'wheel'), 'packages/py'], {
   cwd: root,
