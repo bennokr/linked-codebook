@@ -11,10 +11,11 @@ Linked Codebook is a data model for the variables of a table, and the tools to r
 | [Command line](cli.md) | The commands, their inputs and exit codes. |
 | [TypeScript](typescript.md) | The TypeScript library. |
 | [Python](python.md) | The Python library. |
+| [Language detectors](language.md) | Which language detector to use with `infer`, and how. |
 | [Contributing](contributing.md) | How to change the specification and the code. |
 | [Quality baseline](quality-baseline.md) | The checks and configuration shared by the projects that use this model. |
 | [Changelog](changelog.md) | Changes per version. |
 
-The model is written in [LinkML](https://linkml.io) in [`spec/profile.yaml`](../spec/profile.yaml).
-The other files in [`spec/`](../spec) hold the rest of the specification as data.
+The model is written in [LinkML](https://linkml.io) in [`spec/profile.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/profile.yaml).
+The other files in [`spec/`](https://github.com/bennokr/linked-codebook/tree/main/spec) hold the rest of the specification as data.
 The JSON Schema, the types of both libraries and the pages [Data model](data-model.md) and [Vocabulary](vocabulary.md) are generated from them.

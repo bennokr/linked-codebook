@@ -1,8 +1,10 @@
 # Python
 
-The package is not on PyPI yet. Install a released version as described in the [README](../README.md).
+```bash
+pip install linked-codebook
+```
 
-The package needs Python 3.11 and has no dependencies. It also runs in [Pyodide](https://pyodide.org). The types of the data model are `TypedDict`s in `linked_codebook.types`.
+The package needs Python 3.11 and has no dependencies. It also runs in [Pyodide](https://pyodide.org). The command `linked-codebook` is installed with it (see [Command line](cli.md)). The types of the data model are `TypedDict`s in `linked_codebook.types`.
 
 ```python
 from linked_codebook import (
@@ -27,6 +29,9 @@ from linked_codebook import (
     to_tables,
     unmatched_sssom,
     validate,
+    Detector,
+    Result,
+    TABLE_SPEC,
 )
 ```
 
@@ -60,6 +65,23 @@ from linked_codebook import (
 | `run(args, texts)` | The [command line](cli.md) as a function. It returns `(stdout, code)`. |
 
 Functions take and return plain dictionaries and lists. They do not change their arguments.
+
+## Types
+
+The types of the data model (`Profile`, `Column`, `Value`, `Mapping`, …) are `TypedDict`s in `linked_codebook.types`, generated from `spec/profile.yaml` (see [Data model](data-model.md)). The package also exports two names for the arguments and results of the functions:
+
+| Name | Definition | Used by |
+| --- | --- | --- |
+| `Detector` | `Callable[[str], str \| None]` | The language detector that `infer` and `infer_language` take: a function from a text to a lower-case BCP 47 tag, or `None` when it cannot tell. See [Language detectors](language.md). |
+| `Result` | `NamedTuple(stdout: str, code: int)` | What `run` returns. |
+
+## Language of text columns
+
+`infer` takes a detector as a second argument and then adds `language` to the columns of prose. The package has no detector of its own: see [Language detectors](language.md) for which to use, and a snippet.
+
+```python
+profile = infer(data, detect)  # detect: Detector
+```
 
 ## Statistical files
 

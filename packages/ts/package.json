@@ -2,13 +2,43 @@
   "name": "linked-codebook",
   "version": "0.11.0",
   "description": "Read, write and check codebooks of tables whose variables are linked to concepts.",
+  "keywords": [
+    "codebook",
+    "data dictionary",
+    "linked data",
+    "json-ld",
+    "sssom",
+    "redcap",
+    "metadata"
+  ],
   "license": "MIT",
+  "homepage": "https://bennokr.github.io/linked-codebook/docs/",
+  "bugs": "https://github.com/bennokr/linked-codebook/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bennokr/linked-codebook.git",
+    "directory": "packages/ts"
+  },
   "type": "module",
-  "repository": "github:bennokr/linked-codebook",
-  "engines": { "node": ">=22.18" },
-  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
-  "bin": { "linked-codebook": "dist/bin.js" },
-  "files": ["dist"],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "linked-codebook": "dist/bin.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "test": "node --test 'test/*.test.ts'"

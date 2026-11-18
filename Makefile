@@ -1,4 +1,4 @@
-.PHONY: setup generate pin golden lint test budget versions released site smoke check release
+.PHONY: setup generate pin golden lint test budget versions released site docs smoke check release
 
 setup:
 	uv sync --group dev
@@ -35,6 +35,10 @@ budget:
 site:
 	node site/build.ts
 
+# Build only the documentation (VitePress) into site/dist/docs.
+docs:
+	npx vitepress build docs
+
 # Open the built page in a browser (needs network for Pyodide).
 smoke: site
 	node --test site/smoke.test.ts
@@ -48,10 +52,11 @@ released:
 
 check: lint test budget versions released
 
-# Add the packages of the current version to releases/. Commit them: they are published with the test page.
+# Add the packages and the JSON-LD context of the current version to releases/. Commit them: they are published with the test page.
 release:
 	test -z "$$(ls releases/*-$$(node -p "require('./packages/ts/package.json').version")* 2>/dev/null)" || { echo "This version is already released. Raise the version."; exit 1; }
 	npm run build -w linked-codebook
 	npm pack -w linked-codebook --pack-destination releases
 	uv build --wheel --out-dir releases packages/py
+	uv run python scripts/context.py releases --released-only
 	rm -f releases/.gitignore

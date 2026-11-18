@@ -78,7 +78,7 @@ This specification has three conformance classes.
 
 ## 3. Data model
 
-A profile is a JSON object. The classes, slots and enumerations of the model are in [Data model](data-model.md). The model is defined in LinkML, in [`spec/profile.yaml`](../spec/profile.yaml). A JSON Schema is generated from it, in [`spec/generated/profile.schema.json`](../spec/generated/profile.schema.json).
+A profile is a JSON object. The classes, slots and enumerations of the model are in [Data model](data-model.md). The model is defined in LinkML, in [`spec/profile.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/profile.yaml). A JSON Schema is generated from it, in [`spec/generated/profile.schema.json`](https://github.com/bennokr/linked-codebook/blob/main/spec/generated/profile.schema.json).
 
 Unknown properties are errors. A processor that wants to keep extra information MUST NOT put it in a profile.
 
@@ -107,7 +107,7 @@ The canonical form lets different implementations print the same bytes for the s
 
 ### 5.1 Writing
 
-A processor writes a profile as JSON-LD that uses the [DSV ontology][dsv]. The context is the one in the constants generated from [`spec/jsonld.yaml`](../spec/jsonld.yaml). The terms that the document uses are listed in [Vocabulary](vocabulary.md).
+A processor writes a profile as JSON-LD that uses the [DSV ontology][dsv]. The context is the one in the constants generated from [`spec/jsonld.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/jsonld.yaml). The terms that the document uses are listed in [Vocabulary](vocabulary.md).
 
 The document is one node, the dataset, with these properties.
 
@@ -127,7 +127,7 @@ Properties without a value MUST be left out. That includes empty text, empty lis
 
 Only approved mappings are written. A mapping becomes the property `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch` or `relatedMatch`, according to its `match_type`, of the variable concept or of the code concept. The properties list the `object_id` values. Draft mappings, labels, confidence, provenance and reviewers are not written.
 
-The IRI of each node is made from a template in [`spec/jsonld.yaml`](../spec/jsonld.yaml). In the templates, `{id}`, `{name}` and `{code}` are percent-encoded, as by `encodeURIComponent`. The IRI of the dataset is the `identifier` if it starts with `http:`, `https:` or `urn:`. Otherwise it is made from the identifier, the title, or the word `unnamed`. The IRI of the variable concept is the `variable` of the column, if it has one.
+The IRI of each node is made from a template in [`spec/jsonld.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/jsonld.yaml). In the templates, `{id}`, `{name}` and `{code}` are percent-encoded, as by `encodeURIComponent`. The IRI of the dataset is the `identifier` if it starts with `http:`, `https:` or `urn:`. Otherwise it is made from the identifier, the title, or the word `unnamed`. The IRI of the variable concept is the `variable` of the column, if it has one.
 
 ### 5.2 Reading
 
@@ -156,7 +156,7 @@ A document without columns is an error.
 
 A processor writes the mappings of a profile as [SSSOM][sssom] TSV, with one row for each mapping, in the order of the columns, and for each column the mappings of the column before the mappings of its values.
 
-The file starts with a header of comment lines: `#curie_map:`, then one line `#  prefix: IRI` for every prefix that is used, then `#mapping_set_id: IRI`. The header line follows with the names of the columns, as listed in [`spec/sssom.yaml`](../spec/sssom.yaml).
+The file starts with a header of comment lines: `#curie_map:`, then one line `#  prefix: IRI` for every prefix that is used, then `#mapping_set_id: IRI`. The header line follows with the names of the columns, as listed in [`spec/sssom.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/sssom.yaml).
 
 | SSSOM column | Value |
 | --- | --- |
@@ -186,7 +186,7 @@ The result is a profile that has only the columns and values with mappings. It c
 
 ## 7. Inference
 
-A processor MAY propose the datatype and the level of a column from its values. The limits and patterns are in [`spec/inference.yaml`](../spec/inference.yaml). Patterns match the whole text.
+A processor MAY propose the datatype and the level of a column from its values. The limits and patterns are in [`spec/inference.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/inference.yaml). Patterns match the whole text.
 
 The values `null`, the empty text and `\N` are ignored. The kind of the column is the first of these that applies.
 
@@ -220,7 +220,7 @@ A processor SHOULD offer the identifier-name test to applications (`is_identifie
 
 ### 7.1 Language of a text column
 
-A processor MAY propose the language of a column of prose. The language of a text can only be told by a statistical model, and two models never agree on every text, so this specification does not define a detector. The application supplies one: a function from a text to a lower-case BCP 47 language tag, or to nothing when it cannot tell. What is specified is when the detector is asked and when its answers are accepted, so that every processor reaches the same decision from the same answers. The limits are in [`spec/language.yaml`](../spec/language.yaml) and test cases that every processor MUST pass are in [`spec/cases/language.json`](../spec/cases/language.json).
+A processor MAY propose the language of a column of prose. The language of a text can only be told by a statistical model, and two models never agree on every text, so this specification does not define a detector. The application supplies one: a function from a text to a lower-case BCP 47 language tag, or to nothing when it cannot tell. What is specified is when the detector is asked and when its answers are accepted, so that every processor reaches the same decision from the same answers. The limits are in [`spec/language.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/language.yaml) and test cases that every processor MUST pass are in [`spec/cases/language.json`](https://github.com/bennokr/linked-codebook/blob/main/spec/cases/language.json).
 
 1. The values `null`, the empty text and `\N` are ignored. A value is *prose* by the rule of the categorical text columns above: more than 80 characters, a line break, or more than 7 words.
 2. The column has no language if it has fewer than 3 prose values, or if fewer than half of its values are prose.
@@ -261,7 +261,7 @@ A document is checked for the terms it uses, not for the shape of its graph.
 
 ## 10. Frictionless
 
-A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. The projection is one-way. Slots that the Table Schema has no property for are kept in the extension property `x-linked-codebook`, so that nothing is lost. The rules are in [`spec/frictionless.yaml`](../spec/frictionless.yaml).
+A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. The projection is one-way. Slots that the Table Schema has no property for are kept in the extension property `x-linked-codebook`, so that nothing is lost. The rules are in [`spec/frictionless.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/frictionless.yaml).
 
 | Profile | Table Schema |
 | --- | --- |
@@ -284,7 +284,7 @@ Notes:
 
 ## 11. REDCap
 
-A processor MAY read a [REDCap][redcap] data dictionary, the CSV file that describes the fields of a REDCap project, into a profile (`from-redcap`). The rules are in [`spec/redcap.yaml`](../spec/redcap.yaml). They were written from the REDCap documentation and sample dictionaries, so check them against a dictionary exported by your REDCap version.
+A processor MAY read a [REDCap][redcap] data dictionary, the CSV file that describes the fields of a REDCap project, into a profile (`from-redcap`). The rules are in [`spec/redcap.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/redcap.yaml). They were written from the REDCap documentation and sample dictionaries, so check them against a dictionary exported by your REDCap version.
 
 The reader takes text: the application decodes the file. Dictionaries are usually UTF-8, but some are Windows-1252 (about 3% of the 985 PhenX dictionaries), so try UTF-8 first and then Windows-1252. Header names are compared in lower case without punctuation, so `Variable / Field Name` and the API name `field_name` are alike. Fields in quotes may hold commas, doubled quotes and line breaks. Files do not always follow RFC 4180, so a processor MUST read CSV as Python's `csv` module does: a quote inside a field that does not start with one is text, and after the closing quote of a quoted field any character other than a separator continues the field as text. Rows that are empty are ignored. A dictionary without fields is an error.
 
@@ -310,7 +310,7 @@ Choices are written `code, label | code, label`. The code ends at the first comm
 
 ## 12. Tables
 
-A processor MAY read and write a profile as tables: a set of sheets, each a list of rows of cells, the first row holding the headers. This is what a spreadsheet workbook or a folder of CSV files holds. The library does not read workbook files: the application opens them and hands over the cells, so that it can report cells whose type is not what the format expects (a number where a code is wanted loses leading zeros). The rules are in [`spec/table.yaml`](../spec/table.yaml).
+A processor MAY read and write a profile as tables: a set of sheets, each a list of rows of cells, the first row holding the headers. This is what a spreadsheet workbook or a folder of CSV files holds. The library does not read workbook files: the application opens them and hands over the cells, so that it can report cells whose type is not what the format expects (a number where a code is wanted loses leading zeros). The rules are in [`spec/table.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/table.yaml).
 
 Sheet and header names are compared in lower case without punctuation. Sheets and headers that are not listed are ignored by `from-tables` and reported by `check-tables`. A blank cell means that the slot is not specified. Booleans are `true` or `false`; a reader also accepts `yes`, `no`, `1` and `0`. Cells may be text, numbers, booleans or empty.
 
@@ -327,7 +327,7 @@ A reader MUST fail, naming the sheet and the row (counted as in a spreadsheet, t
 
 ## 13. Conditions
 
-`applies_when` holds the skip logic of a questionnaire as the source wrote it. A processor MAY parse it into a condition (`parse-condition`, `conditions`). One text syntax covers [REDCap branching logic][redcap] and a subset of SQL `WHERE`; the rules are in [`spec/condition.yaml`](../spec/condition.yaml).
+`applies_when` holds the skip logic of a questionnaire as the source wrote it. A processor MAY parse it into a condition (`parse-condition`, `conditions`). One text syntax covers [REDCap branching logic][redcap] and a subset of SQL `WHERE`; the rules are in [`spec/condition.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/condition.yaml).
 
 | Text | Meaning |
 | --- | --- |
@@ -368,7 +368,7 @@ The last four are left out for a column without a rule, and zero counts are left
 
 ## 15. Statistical files
 
-A processor MAY read the variables of a file of a statistical package (SPSS, Stata, SAS) into a profile (`from-readstat`). The library does not open the files. A ReadStat-based reader (`statfmt` in JavaScript, `pyreadstat` in Python) delivers the metadata, and the application hands over a list of variables as plain data; the rules are in [`spec/readstat.yaml`](../spec/readstat.yaml).
+A processor MAY read the variables of a file of a statistical package (SPSS, Stata, SAS) into a profile (`from-readstat`). The library does not open the files. A ReadStat-based reader (`statfmt` in JavaScript, `pyreadstat` in Python) delivers the metadata, and the application hands over a list of variables as plain data; the rules are in [`spec/readstat.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/readstat.yaml).
 
 | Variable | Profile |
 | --- | --- |

@@ -1,7 +1,7 @@
 # Quality baseline
 
 The checks that every project in this family runs, and where to copy them from. The files are in
-[`baseline/`](../baseline); linked-codebook itself is the strictest example.
+[`baseline/`](https://github.com/bennokr/linked-codebook/tree/main/baseline); linked-codebook itself is the strictest example.
 
 | Concern | Baseline | Where |
 | --- | --- | --- |

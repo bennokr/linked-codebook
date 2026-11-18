@@ -36,14 +36,27 @@ Regular expressions in the specification use only syntax that JavaScript and Pyt
 
 ## Docs
 
-The pages in `docs/` are Markdown. Pages marked as generated are written by `make generate`.
+The pages in `docs/` are Markdown, built into a site with [VitePress](https://vitepress.dev): `make docs` builds it into `site/dist/docs`, and fails on a link that goes nowhere. `npx vitepress dev docs` serves it while you edit. Pages marked as generated are written by `make generate`. Link to files outside `docs/` with their GitHub URL, because the site does not contain them. Anchors are those of GitHub (`#71-language-of-a-text-column`).
+
+The site is published with the test page by the Pages workflow: the test page at <https://bennokr.github.io/linked-codebook/> and the docs below it, at `/docs/`.
 
 ## Release
 
-Other projects install the libraries from the test page, as described in the [README](../README.md). A version is released when its two packages are in `releases/`. The packages of a version that is not released are rebuilt from the current sources with every deploy and can change, so no project should depend on them.
+Other projects install the libraries from PyPI and npm (`pip install linked-codebook`, `npm install linked-codebook`), or from the test page, which serves every released file by name for projects that pin a checksum. A version is released when its two packages and its context are in `releases/`. The packages of a version that is not released are rebuilt from the current sources with every deploy and can change, so no project should depend on them.
 
 1. Raise the version in `packages/ts/package.json`, `packages/py/pyproject.toml`, the install commands of the README and the line `Draft, version …` of the specification. `make versions` checks that they agree, and `make check` runs it.
-2. Add the version to the [changelog](changelog.md).
-3. Run `make generate` and `make check`, then `make release`, and commit the files in `releases/`.
+2. Add the version to the [changelog](changelog.md). The text of that section becomes the text of the GitHub release.
+3. Run `make generate` and `make check`, then `make release`, and commit the files in `releases/`: the npm tarball, the wheel and `context-<version>.jsonld`.
+4. After the commit is on `main`, tag it `v<version>` (for example `v0.11.0`) and push the tag. The [Release workflow](https://github.com/bennokr/linked-codebook/blob/main/.github/workflows/release.yml) checks that the tag is the version of both packages, runs the checks again, and publishes the files of `releases/` to PyPI and npm, so every channel serves the same bytes. Then it creates the GitHub release with those files attached.
 
-`make release` refuses to overwrite a released version. Never edit or replace a released file: projects keep its checksum.
+`make release` refuses to overwrite a released version. Never edit or replace a released file: projects keep its checksum. A version that was published to PyPI or npm cannot be published again, even after it is deleted, so raise the version.
+
+### One-time setup of the registries
+
+- **PyPI:** at <https://pypi.org/manage/account/publishing/> add a *pending* trusted publisher for the project `linked-codebook`: owner `bennokr`, repository `linked-codebook`, workflow `release.yml`, environment `pypi`. No token is stored.
+- **npm:** create an automation token that may publish `linked-codebook` and save it as the secret `NPM_TOKEN` of the GitHub environment `npm`. After the first release, a trusted publisher on npmjs.com can replace it. Packages are published with provenance.
+- **GitHub environments:** create the environments `pypi` and `npm`, and require a review on them if a tag alone should not be enough to publish.
+
+### The JSON-LD context as a file
+
+`build` embeds the JSON-LD context in every document, so a document needs nothing else. The same context is published as a file, for documents or tools that would rather name it: `https://bennokr.github.io/linked-codebook/context-<version>.jsonld` for a version, which never changes once released, and `https://bennokr.github.io/linked-codebook/context.jsonld` for the current sources. `scripts/context.py` writes it from the same constants that `build` uses; a test checks that the two are equal.
