@@ -761,7 +761,7 @@
             "type": "number"
           },
           "minimum": {
-            "description": "Smallest number the column may hold, apart from missing values. A limit of the source, not the smallest number found.",
+            "description": "Smallest number the column may hold, apart from missing values. This is a limit given by the source and may differ from the smallest number found.",
             "type": "number"
           },
           "missing_range": {
@@ -780,7 +780,7 @@
             "type": "string"
           },
           "observed": {
-            "description": "Codes found in the data, in order of first occurrence, with their counts. They say what occurred, not what is allowed.",
+            "description": "Codes found in the data, in order of first occurrence, with their counts. They record what occurred and do not define which codes are allowed.",
             "items": {
               "$ref": "#/$defs/Count"
             },

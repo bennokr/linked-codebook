@@ -6,8 +6,8 @@ Read, write and check codebooks of tables whose variables are linked to concepts
 pip install linked-codebook
 ```
 
-No dependencies; Python 3.11 or later; also runs in [Pyodide](https://pyodide.org). It installs the command `linked-codebook`, and
-there is a [TypeScript package](https://www.npmjs.com/package/linked-codebook) that gives the same output.
+The package has no dependencies, needs Python 3.11 or later, and also runs in [Pyodide](https://pyodide.org). It installs the
+command `linked-codebook`. A [TypeScript package](https://www.npmjs.com/package/linked-codebook) gives the same output.
 
 ```python
 from linked_codebook import build, from_redcap, validate

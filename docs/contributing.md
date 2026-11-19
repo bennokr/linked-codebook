@@ -26,7 +26,7 @@ This needs [uv](https://docs.astral.sh/uv/), Node 22 and `make`.
 
 ## Keep both libraries equal
 
-Every case in `conformance/<command>/<case>/` has the input files `in1.*`, `in2.*`, the expected output `out` and, if the exit code is not 0, the file `code`. Both libraries must print `out` exactly. `make golden` rewrites the expected outputs with the TypeScript command line. Check the diff by hand before you commit it: the files are the specification by example.
+Every case in `conformance/<command>/<case>/` has the input files `in1.*`, `in2.*`, the expected output `out` and, if the exit code is not 0, the file `code`. Both libraries must print `out` exactly. `make golden` rewrites the expected outputs with the TypeScript command line. Check the diff by hand before you commit it, because these files define the expected behaviour by example.
 
 Regular expressions in the specification use only syntax that JavaScript and Python share, and match the whole text.
 
@@ -36,7 +36,7 @@ Regular expressions in the specification use only syntax that JavaScript and Pyt
 
 ## Docs
 
-The pages in `docs/` are Markdown, built into a site with [VitePress](https://vitepress.dev): `make docs` builds it into `site/dist/docs`, and fails on a link that goes nowhere. `npx vitepress dev docs` serves it while you edit. Pages marked as generated are written by `make generate`. Link to files outside `docs/` with their GitHub URL, because the site does not contain them. Anchors are those of GitHub (`#71-language-of-a-text-column`).
+The pages in `docs/` are Markdown, built into a site with [VitePress](https://vitepress.dev): `make docs` builds it into `site/dist/docs` and fails on a broken link. `npx vitepress dev docs` serves it while you edit. Pages marked as generated are written by `make generate`. Link to files outside `docs/` with their GitHub URL, because the site does not contain them. Anchors are those of GitHub (`#71-language-of-a-text-column`).
 
 The site is published with the test page by the Pages workflow: the test page at <https://bennokr.github.io/linked-codebook/> and the docs below it, at `/docs/`.
 

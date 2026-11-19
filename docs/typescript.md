@@ -4,7 +4,7 @@
 npm install linked-codebook
 ```
 
-The package needs Node 22.18 or later, or a browser. It has no dependencies. The command `linked-codebook` is installed with it (see [Command line](cli.md)). The types of the data model are exported.
+The package needs Node 22.18 or later, or a browser, and has no dependencies. It installs the command `linked-codebook` (see [Command line](cli.md)) and exports the types of the data model.
 
 ```ts
 import {
@@ -61,7 +61,7 @@ import {
 | `canonical(value)` | JSON text with sorted keys. |
 | `run(args, texts)` | The [command line](cli.md) as a function. |
 
-Functions take and return plain objects. They do not change their arguments.
+Functions take and return plain objects and do not change their arguments.
 
 ## Types
 
@@ -83,7 +83,7 @@ The types of the data model (`Profile`, `Column`, `Value`, `Mapping`, …) are g
 
 ## Language of text columns
 
-`infer` takes a detector as a second argument and then adds `language` to the columns of prose. The package has no detector of its own: see [Language detectors](language.md) for which to use, and a snippet.
+`infer` takes a detector as a second argument and then adds `language` to the columns of prose. The package does not include a detector. [Language detectors](language.md) lists detectors that work and shows how to connect them.
 
 ```ts
 const profile = infer(data, detect); // detect: Detector

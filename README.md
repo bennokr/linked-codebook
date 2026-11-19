@@ -1,10 +1,9 @@
 # Linked Codebook
 
 A codebook describes the variables of a table: their names, datatypes, units, value labels and missing codes.
-Linked Codebook adds links from variables and values to concepts in vocabularies and ontologies, and keeps what a
-questionnaire says about when a question applies and which answers mean "no value".
+Linked Codebook adds links from variables and values to concepts in vocabularies and ontologies. It also records when a question applies and which answers mean "no value".
 
-It reads and writes that description in several forms, and checks it:
+It reads and writes that description in several forms and checks it:
 
 - **Read from** a [REDCap](https://projectredcap.org) data dictionary, SPSS, Stata and SAS files (through a ReadStat-based reader), spreadsheet-like tables, or the values of a table (`infer`).
 - **Write to** [DSV](https://w3id.org/dsv-ontology) JSON-LD, [SSSOM](https://mapping-commons.github.io/sssom/) mappings, a [Frictionless Table Schema](https://specs.frictionlessdata.io/table-schema/) or tables.
@@ -38,7 +37,7 @@ pip install https://bennokr.github.io/linked-codebook/linked_codebook-0.11.0-py3
 
 ## Example
 
-A REDCap dictionary says that `packs_per_day` is only asked of smokers:
+In a REDCap dictionary, `packs_per_day` is asked only of smokers:
 
 ```bash
 linked-codebook from-redcap dictionary.csv > profile.json
@@ -49,7 +48,7 @@ linked-codebook conditions profile.json
 { "packs_per_day": { "condition": { "==": [{ "var": "smoker" }, "1"] } } }
 ```
 
-With the data, a blank in `packs_per_day` is no longer one kind of missing:
+With the data, the blanks in `packs_per_day` are counted by cause:
 
 ```bash
 linked-codebook missingness profile.json data.json
@@ -64,7 +63,7 @@ linked-codebook missingness profile.json data.json
 }
 ```
 
-Two of the three blanks are non-smokers, who were never asked. One smoker did not answer. (The output lists the other columns too; they are cut here.)
+Two of the three blanks belong to non-smokers, who were never asked, and one belongs to a smoker who did not answer. The output also lists the other columns, which are left out here.
 
 ## Commands
 
@@ -78,7 +77,7 @@ The Python and the TypeScript package install the same command and print the sam
 | Check | `validate`, `check-tables` |
 | Skip logic and missing values | `parse-condition`, `conditions`, `missingness` |
 
-`infer` proposes datatypes and levels from values; it does not detect the language of text columns, because that needs a detector that only a program can supply (see [Language detectors](docs/language.md)).
+`infer` proposes datatypes and levels from the values. It sets `language` only when a program passes a detector (see [Language detectors](docs/language.md)).
 
 ## Use as a library
 

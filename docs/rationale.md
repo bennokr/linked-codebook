@@ -1,43 +1,43 @@
 # Rationale
 
-Why the profile and the libraries look as they do, and what was left out.
+This page explains the main design decisions of the profile and the libraries, and compares the profile with other standards.
 
-How claims about other standards were checked: *Code* means the source was read. *Spec* means the specification text was fetched. *Memory* means it was not re-read; treat those rows as leads.
+The notes on other standards say how each claim was checked: *Code* means the source was read, *Spec* means the text of the specification was fetched, and *Memory* means the claim was not re-checked and should be verified before use.
 
 ## Decisions
 
 | Question | Decision |
 | --- | --- |
-| How is a variable linked to a concept? | A mapping is an SSSOM record: subject, predicate, object, justification, confidence, reviewer. It counts as approved when it has a `reviewer_id`; `approved` is not an SSSOM slot. Only approved mappings enter the JSON-LD, so a suggestion never becomes a claim. |
-| Storage type or measurement level? | Two slots. `datatype` is a CSVW name; `level` is the DSV level of measurement (`nominal`, `ordinal`, `numerical`, …). A flag is `nominal`. |
-| How does an ordinal order survive RDF? | RDF has no order, and the code concepts of a column are a set. The code concepts of ordinal columns carry `schema:position`, and readers order by it. Frictionless gets `categoriesOrdered`. |
-| How are missing values described? | `missing_values` (codes), `missing` on a value, and `missing_range` for the numeric ranges that SPSS and DDI declare. No vocabulary defines the range, so it is written under `lc:missing_range`. |
-| How are variable IRIs made? | One template, with percent-encoded names, so no two names collide. An IRI found in a file is kept. |
-| Units | `unit` (text) and `unit_iri` are separate slots, because a unit is often only text. |
-| Value labels | `closed` says that a list is complete. The codes counted in the data are kept apart, in `observed`, so a sample never becomes a domain. |
-| Which JSON-LD keys? | One context is published and embedded in every document. Readers ignore prefixes and accept the aliases of older documents. |
-| Roles (analysis, graph node, privacy)? | Not in the profile. They depend on the use of a codebook, not on the table. |
-| Statistics? | `rows` and `completeness` exist for parity with DSV. They describe the data, so an importer should not take them from a file. |
-| Where is skip logic kept? | `applies_when` keeps the source expression (REDCap branching logic). A condition parses into a tree and evaluates in three values (true, false, unknown), so that `missingness` can tell a skipped question from a missing answer. |
-| Is a detector part of the library? | No; see below. |
+| How is a variable linked to a concept? | A mapping is an SSSOM record with a subject, predicate, object, justification, confidence and reviewer. It is approved when it has a `reviewer_id`, because SSSOM has no `approved` slot. Only approved mappings are written to JSON-LD, so unreviewed suggestions do not appear there as statements. |
+| What are datatype and level? | They are two slots. `datatype` is a CSVW name, and `level` is the DSV level of measurement (`nominal`, `ordinal`, `numerical` and so on). A flag has the level `nominal`. |
+| How is the order of an ordinal column kept in RDF? | The code concepts of a column form a set, and RDF has no order. The code concepts of ordinal columns therefore carry `schema:position`, and readers order them by it. Frictionless gets `categoriesOrdered`. |
+| How are missing values described? | `missing_values` lists codes, `missing` on a value marks a labelled code, and `missing_range` holds the numeric ranges that SPSS and DDI declare. No vocabulary defines a range, so it is written as `lc:missing_range`. |
+| How are variable IRIs made? | One template builds them from percent-encoded names, so different names give different IRIs. An IRI found in a file is kept. |
+| How is a unit stored? | `unit` holds the text and `unit_iri` holds an IRI, because many sources have only the text. |
+| How are value labels stored? | `closed` says that a list is complete. The codes counted in the data are stored separately in `observed`, so a sample is never taken for the domain of a column. |
+| Which JSON-LD keys are used? | One context is published and embedded in every document. Readers ignore prefixes and accept the aliases of older documents. |
+| Where are roles (analysis, graph node, privacy)? | Outside the profile, because they depend on how a codebook is used. |
+| Where are statistics stored? | `rows` and `completeness` exist for parity with DSV. They describe the data, so an importer should not take them from a file. |
+| Where is skip logic stored? | `applies_when` keeps the source expression, for example REDCap branching logic. A condition is parsed into a tree and evaluated with three values (true, false and unknown), so that `missingness` can distinguish a skipped question from a missing answer. |
+| How is the language of a text column found? | By a detector that the application supplies. See the next section. |
 
 ## The language protocol
 
-A language detector is a statistical model, and two models disagree on some texts. Two libraries that must print the same output for the same input cannot both embed a model, and one model per library would give two answers. Bundling one would also break the rule that both libraries have no dependencies, and Pyodide cannot run every Python detector.
+A language detector is a statistical model, and different models disagree on some texts. Two libraries that must print the same output for the same input cannot each embed a model. A bundled model would also give up the rule that both libraries have no dependencies, and not every Python detector runs in Pyodide.
 
-So the specification defines the decision rule and not the detector (section 7.1): which values are asked (prose only, at most 200, evenly spaced), and when the answers are accepted (at least 0.8 of them agree). The detector is a function that the application supplies, `text → BCP 47 tag | nothing`. The conformance cases run the rule with a fake detector whose answer is written into the text, so both libraries reach the same decision from the same answers. [Language detectors](language.md) says which ones to use.
+The specification therefore defines the decision rule and leaves out the detector (section 7.1). The rule says which values are passed to the detector (prose only, at most 200, evenly spaced) and when its answers are accepted (at least 0.8 of them agree). The detector is a function from a text to a BCP 47 tag that the application supplies. The conformance cases use a fake detector whose answer is written into the text, so both libraries reach the same decision from the same answers. [Language detectors](language.md) lists detectors that work.
 
-The price is that `infer` on the command line cannot detect language, and that the `language` in a profile depends on the detector that made it. A model version is not recorded in the profile.
+As a result, the `infer` command cannot detect languages, and the `language` in a profile depends on the detector that produced it. The profile does not record the detector or its version.
 
-## Why not visions
+## Why visions is not used
 
-[visions](https://github.com/dylan-profiler/visions) is a Python library of semantic data types (a type system for data analysis) and could have supplied the inference of datatypes and levels. It was not adopted. The reasons are constraints of this project, not the result of a comparison: no benchmark of visions against `infer` was run.
+[visions](https://github.com/dylan-profiler/visions) is a Python library of semantic data types for data analysis. It could have supplied the inference of datatypes and levels. The reasons it is not used follow from the requirements of this project. No benchmark of visions against `infer` was run.
 
-- **Two libraries must agree.** The TypeScript and the Python library print the same text for the same input, and a conformance suite checks it. visions is Python only, and its types are defined by Python and pandas behaviour (what a `Series` can be coerced to), which cannot be written down as rules that a second implementation follows.
-- **Dependencies.** The version on PyPI at the time of writing (0.8.2) requires numpy, pandas, networkx, attrs, multimethod and puremagic. The libraries have none, and have to run in Pyodide and in a browser without them.
-- **Different question.** The profile needs a CSVW datatype and a DSV level for a column of JSON values, with limits that a person can read and change (`spec/inference.yaml`): at most 50 distinct values for a text column to count as categories, and so on. visions answers which of its type hierarchy a data frame column belongs to.
+- **Both libraries must agree.** The TypeScript and Python libraries print the same text for the same input, and the conformance suite checks it. visions exists only for Python, and its types follow the behaviour of Python and pandas, for example what a `Series` can be converted to. A second implementation cannot reproduce those rules from a specification.
+- **Dependencies.** Version 0.8.2 on PyPI requires numpy, pandas, networkx, attrs, multimethod and puremagic. The libraries have no dependencies and have to run in Pyodide and in a browser.
+- **A different question.** The profile needs a CSVW datatype and a DSV level for a column of JSON values, with limits that a person can read and change (`spec/inference.yaml`), such as at most 50 distinct values for a text column to count as categories. visions assigns a column of a data frame to a type in its own hierarchy.
 
-If a project already has pandas and wants visions' types, it can use them and pass the result to the profile as it is; the `infer` function is a proposal, not a requirement.
+A project that already uses pandas can take the types from visions and write them into a profile, because `infer` only proposes values.
 
 ## Other standards
 
@@ -55,4 +55,4 @@ If a project already has pandas and wants visions' types, it can use them and pa
 | **SPSS system files** | Label, value labels, up to three missing codes or a range plus one, level, display format | The source of most real codebooks. |
 | **SSSOM** (*Spec*) | `subject_id`, `predicate_id`, `object_id`, `mapping_justification`, `confidence`, `mapping_date`, `reviewer_id`, `mapping_provider`, `comment` | The exchange format for mappings. |
 
-Two gaps stand out across all of them: none of them models ordinal order in RDF (the profile uses `schema:position`), and nobody except DDI models missing ranges.
+None of these standards models ordinal order in RDF (the profile uses `schema:position`), and only DDI models missing ranges.

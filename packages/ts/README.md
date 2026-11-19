@@ -6,8 +6,8 @@ Read, write and check codebooks of tables whose variables are linked to concepts
 npm install linked-codebook
 ```
 
-No dependencies; Node 22.18 or later, or a browser. It installs the command `linked-codebook`, and
-there is a [Python package](https://pypi.org/project/linked-codebook/) that gives the same output.
+The package has no dependencies and needs Node 22.18 or later, or a browser. It installs the command `linked-codebook`.
+A [Python package](https://pypi.org/project/linked-codebook/) gives the same output.
 
 ```ts
 import { build, fromRedcap, validate } from 'linked-codebook';

@@ -4,7 +4,7 @@
 pip install linked-codebook
 ```
 
-The package needs Python 3.11 and has no dependencies. It also runs in [Pyodide](https://pyodide.org). The command `linked-codebook` is installed with it (see [Command line](cli.md)). The types of the data model are `TypedDict`s in `linked_codebook.types`.
+The package needs Python 3.11, has no dependencies, and also runs in [Pyodide](https://pyodide.org). It installs the command `linked-codebook` (see [Command line](cli.md)). The types of the data model are `TypedDict`s in `linked_codebook.types`.
 
 ```python
 from linked_codebook import (
@@ -64,7 +64,7 @@ from linked_codebook import (
 | `canonical(value)` | JSON text with sorted keys. |
 | `run(args, texts)` | The [command line](cli.md) as a function. It returns `(stdout, code)`. |
 
-Functions take and return plain dictionaries and lists. They do not change their arguments.
+Functions take and return plain dictionaries and lists and do not change their arguments.
 
 ## Types
 
@@ -77,7 +77,7 @@ The types of the data model (`Profile`, `Column`, `Value`, `Mapping`, …) are `
 
 ## Language of text columns
 
-`infer` takes a detector as a second argument and then adds `language` to the columns of prose. The package has no detector of its own: see [Language detectors](language.md) for which to use, and a snippet.
+`infer` takes a detector as a second argument and then adds `language` to the columns of prose. The package does not include a detector. [Language detectors](language.md) lists detectors that work and shows how to connect them.
 
 ```python
 profile = infer(data, detect)  # detect: Detector
