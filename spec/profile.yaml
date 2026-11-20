@@ -3,7 +3,7 @@
 id: https://bennokr.github.io/linked-codebook/profile
 name: linked_codebook
 title: Linked Codebook profile
-description: A dataset and the variables (columns) of its table, with their datatypes, levels, units, value labels, missing values and links to concepts.
+description: A dataset and the variables (columns) of its table, with their datatypes, measurement levels, units, value labels, missing values and links to concepts.
 license: MIT
 prefixes:
   lc: https://bennokr.github.io/linked-codebook/profile#
@@ -51,7 +51,7 @@ slots:
   datatype: {description: "How values are stored.", range: Datatype}
   format: {description: "How dates, times or numbers are written in the table, for example %d/%m/%Y, in the notation of the source."}
   language: {description: "Language of the text in a free-text column, as a lower-case BCP 47 language tag such as nl or en-gb. Set it only for columns of prose.", pattern: "^[a-z]{2,3}(-[a-z0-9]{2,8})*$"}
-  level: {description: "Level of measurement.", range: Level}
+  level: {description: "Measurement level.", range: Level}
   unit: {description: "Unit as text, for example years."}
   unit_iri: {description: "IRI of the unit, for example from QUDT."}
   variable: {description: "IRI of the variable concept the column measures."}
@@ -86,7 +86,7 @@ enums:
     description: Storage type, named as in CSV on the Web.
     permissible_values: {string: {}, number: {}, integer: {}, boolean: {}, date: {}, datetime: {}}
   Level:
-    description: Level of measurement, as defined by DSV.
+    description: Measurement level, as defined by DSV.
     permissible_values:
       categorical: {meaning: "dsvo:CategoricalDataType"}
       nominal: {meaning: "dsvo:NominalDataType"}

@@ -1,18 +1,27 @@
 import { inference as rules, language as languageRules } from './constants.ts';
 import type { Count, Datatype, Level, Profile } from './generated/types.ts';
 
+/** One value of a column that `infer`, `inferColumn`, `inferLanguage` and `observe` read. */
 export type Cell = string | number | boolean | null;
-/** Maps a text to a BCP 47 language tag, or to null when it cannot tell. */
+/**
+ * A language detector: a function from a text to a lower-case BCP 47 tag, or to `null` when it cannot tell.
+ *
+ * `infer` and `inferLanguage` take one. See [Language
+ * detectors](https://bennokr.github.io/linked-codebook/docs/language).
+ */
 export type Detector = (text: string) => string | null | undefined;
+/** The result of `inferLanguage`: the tag, the share of the asked cells that gave it, and how many cells were asked. */
 export interface FoundLanguage {
   language: string;
   share: number;
   cells: number;
 }
+/** The result of `inferColumn`. */
 export interface Inferred {
   datatype: Datatype;
   level?: Level;
 }
+/** The second argument of `inferColumn`. */
 export interface Options {
   /** The header of the column; names such as id mark identifiers. */
   name?: string;
@@ -42,6 +51,7 @@ const DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 const isMissing = (cell: Cell): boolean => cell === null || rules.missing.includes(String(cell));
 
+/** True for a number, or for text that is a plain number. */
 export function isNumeric(cell: Cell): boolean {
   if (typeof cell === 'number') return Number.isFinite(cell);
   return typeof cell === 'string' && NUMBER.test(cell) && !LEADING_ZERO.test(cell) && Number.isFinite(Number(cell));
@@ -94,7 +104,7 @@ const distinctCount = (values: Cell[]): number => new Set(values.map((value) => 
 const isCodeList = (values: Cell[], distinct: number, limit: number): boolean =>
   values.every(isInteger) && distinct <= limit && distinct < values.length;
 
-/** Whether a column name marks an identifier: id, row number, respondent number or anything ending in _id. */
+/** Whether a column name marks an identifier: `id`, `row number`, `respno` or anything ending in `_id`. */
 export const isIdentifierName = (name: string): boolean => IDENTIFIER.test(name.toLowerCase());
 
 const isIdentifier = (options: Options): boolean => options.identifier ?? isIdentifierName(options.name ?? '');
@@ -124,7 +134,12 @@ function datatypeOf(kind: Kind, values: Cell[]): Datatype {
   return values.every(isInteger) ? 'integer' : 'number';
 }
 
-/** Proposes a datatype and a level for the values of a column. */
+/**
+ * Proposes the datatype and measurement level of one column, as `{ datatype, level? }`.
+ *
+ * `level` is left out when the column has none. `options.name` marks identifiers, `options.identifier` says whether the
+ * column is one, `options.labelled` counts value labels and `options.limits` replaces the limits on distinct values.
+ */
 export function inferColumn(cells: Cell[], options: Options = {}): Inferred {
   const values = cells.filter((cell) => !isMissing(cell));
   const kind = kindOf(values, options);
@@ -159,11 +174,13 @@ function mostCommon(answers: (string | null | undefined)[]): [string, number] | 
 }
 
 /**
- * The language of a column of prose, or undefined if it is not prose or the answers do not agree.
+ * The language of a column of prose, as `{ language, share, cells }`, or undefined.
  *
- * The column must be mostly prose. Up to `sample` prose cells, evenly spaced, are given to `detect`; the most common
- * answer wins, and counts only when it is the answer for `min_share` of the cells that were asked. A cell that the
- * detector cannot place counts against the share. Ties go to the smaller tag.
+ * `detect` maps a text to a lower-case BCP 47 tag, or to `null` when it cannot tell. The result is `undefined` if the
+ * column is not mostly prose or the answers do not agree. Up to `sample` prose cells, evenly spaced, are given to
+ * `detect`; the most common answer wins, and counts only when it is the answer for `min_share` of the cells that were
+ * asked. A cell that the detector cannot place counts against the share; ties go to the smaller tag. See section 7.1 of
+ * the specification.
  */
 export function inferLanguage(cells: Cell[], detect: Detector): FoundLanguage | undefined {
   const values = cells.filter((cell) => !isMissing(cell)).map(String);
@@ -177,8 +194,10 @@ export function inferLanguage(cells: Cell[], detect: Detector): FoundLanguage | 
 }
 
 /**
- * Proposes a datatype and a level for every column of `{ name: [values] }`, with the codes of categorical columns.
- * With a `detect` function, text columns also get the language that `inferLanguage` finds.
+ * Proposes a profile for a table `{ name: [values] }`: the datatype and measurement level of every column.
+ *
+ * Categorical columns also get their `observed` codes. With a `detect` function, text columns also get the `language`
+ * that `inferLanguage` finds.
  */
 export function infer(data: Record<string, Cell[]>, detect?: Detector): Profile {
   const columnOf = (name: string, cells: Cell[]) => {

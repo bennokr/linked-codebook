@@ -195,7 +195,10 @@ def compare(operator: str, left: Condition, right: Condition) -> Condition:
 
 
 def parse_condition(text: str) -> Condition:
-    """Parses a condition; raises ValueError for text that is not one, or uses what the language does not have."""
+    """Parses a condition of skip logic (REDCap branching logic or a SQL `WHERE` subset) into a tree.
+
+    Raises `ValueError` for text that is not one, or that uses what the language does not have.
+    """
     return Parser(tokenize(text)).parse()
 
 
@@ -250,11 +253,12 @@ def any_of(results: list[bool | None]) -> bool | None:
 
 
 def evaluate(node: Condition, row: Row, *, blank: str = "value") -> bool | None:
-    """True, False, or None (unknown).
+    """Evaluates a condition tree for a row `{name: cell}`: True, False or None (unknown).
 
-    `blank` says what a blank value is. With "value" (the default, as in REDCap) a blank is the empty value: it equals
-    another blank and differs from anything else, so `[a] <> 1` is true when `a` is blank; only ordering a blank is
-    unknown. With "unknown" (as in SQL) every comparison with a blank is unknown.
+    `node` is a tree from `parse_condition`. `blank` says what a blank value is. With "value" (the default, as in
+    REDCap) a blank is the empty value: it equals another blank and differs from anything else, so `[a] <> 1` is true
+    when `a` is blank; only ordering a blank is unknown. With "unknown" (as in SQL) every comparison with a blank is
+    unknown.
     """
     if blank not in ("value", "unknown"):
         message = f"blank must be 'value' or 'unknown', not {blank!r}"

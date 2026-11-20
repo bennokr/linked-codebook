@@ -10,7 +10,7 @@
  */
 export type Datatype = ("string" | "number" | "integer" | "boolean" | "date" | "datetime")
 /**
- * Level of measurement.
+ * Measurement level.
  */
 export type Level = ("categorical" | "nominal" | "ordinal" | "numerical" | "interval" | "ratio")
 /**

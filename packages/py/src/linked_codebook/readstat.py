@@ -75,9 +75,10 @@ def column_of(variable: Variable) -> Column:
 
 
 def from_readstat(variables: Any) -> Profile:  # noqa: ANN401
-    """Reads the metadata of a statistical file into a profile; see spec/readstat.yaml for the input.
+    """Reads the variables of a statistical file (SPSS, Stata or SAS) into a profile.
 
-    Value labels do not make a list closed: SPSS and Stata allow codes without a label.
+    `variables` is a list of dicts with the keys of ReadStat; see section 15 of the specification. Value labels do not
+    make a list closed: SPSS and Stata allow codes without a label.
     """
     listed = variables.get("variables") if isinstance(variables, dict) else variables
     if not listed:

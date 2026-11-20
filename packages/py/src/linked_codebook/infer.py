@@ -14,7 +14,11 @@ from .types import Count, Datatype, Level, Profile
 Cell = str | int | float | bool | None
 Kind = Literal["empty", "boolean", "date", "datetime", "categorical", "number", "text"]
 Detector = Callable[[str], str | None]
-"""Maps a text to a BCP 47 language tag, or to None when it cannot tell."""
+"""A language detector: a function from a text to a lower-case BCP 47 tag, or to None when it cannot tell.
+
+`infer` and `infer_language` take one. See [Language
+detectors](https://bennokr.github.io/linked-codebook/docs/language).
+"""
 
 
 class Found(TypedDict):
@@ -31,7 +35,7 @@ DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
 def is_identifier_name(name: str) -> bool:
-    """Whether a column name marks an identifier: id, row number, respondent number or anything ending in _id."""
+    """Whether a column name marks an identifier: `id`, `row number`, `respno` or anything ending in `_id`."""
     return IDENTIFIER.fullmatch(name.lower()) is not None
 
 
@@ -40,6 +44,7 @@ def is_missing(cell: Cell) -> bool:
 
 
 def is_numeric(cell: Cell) -> bool:
+    """True for a number, or for text that is a plain number."""
     if isinstance(cell, bool):
         return False
     if isinstance(cell, int | float):
@@ -140,7 +145,11 @@ def infer_column(
     identifier: bool | None = None,
     limits: Mapping[str, int] | None = None,
 ) -> dict[str, Datatype | Level]:
-    """Proposes a datatype and a level for the values of a column."""
+    """Proposes the datatype and measurement level of one column, as `{"datatype": ..., "level": ...}`.
+
+    `level` is left out when the column has none. `name` marks identifiers, `identifier` says whether the column is one,
+    `labelled` counts value labels and `limits` replaces the limits on distinct values.
+    """
     values = [cell for cell in cells if not is_missing(cell)]
     kind = kind_of(values, name, labelled=labelled, identifier=identifier, limits={**RULES["limits"], **(limits or {})})
     level: Level | None = RULES["level"].get(kind)
@@ -166,11 +175,13 @@ def observe(cells: Sequence[Cell]) -> list[Count]:
 
 
 def infer_language(cells: Sequence[Cell], detect: Detector) -> Found | None:
-    """The language of a column of prose, or None if it is not prose or the answers do not agree.
+    """The language of a column of prose, as `{"language", "share", "cells"}`, or None.
 
-    The column must be mostly prose. Up to `sample` prose cells, evenly spaced, are given to `detect`; the most common
-    answer wins, and counts only when it is the answer for `min_share` of the cells that were asked. A cell that the
-    detector cannot place counts against the share. Ties go to the smaller tag.
+    `detect` maps a text to a lower-case BCP 47 tag, or to None when it cannot tell. The result is None if the column is
+    not mostly prose or the answers do not agree. Up to `sample` prose cells, evenly spaced, are given to `detect`; the
+    most common answer wins, and counts only when it is the answer for `min_share` of the cells that were asked. A cell
+    that the detector cannot place counts against the share; ties go to the smaller tag. See section 7.1 of the
+    specification.
     """
     values = [str(cell) for cell in cells if not is_missing(cell)]
     prose = [value for value in values if is_prose(value)]
@@ -187,9 +198,10 @@ def infer_language(cells: Sequence[Cell], detect: Detector) -> Found | None:
 
 
 def infer(data: Mapping[str, Sequence[Cell]], detect: Detector | None = None) -> Profile:
-    """Proposes a datatype and a level for every column of `{name: [values]}`, with the codes of categorical columns.
+    """Proposes a profile for a table `{name: [values]}`: the datatype and measurement level of every column.
 
-    With a `detect` function, text columns also get the language that `infer_language` finds.
+    Categorical columns also get their `observed` codes. With a `detect` function, text columns also get the `language`
+    that `infer_language` finds.
     """
 
     def column_of(name: str, cells: Sequence[Cell]) -> dict[str, Any]:

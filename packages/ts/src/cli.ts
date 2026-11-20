@@ -14,6 +14,7 @@ import { fromSssom, toSssom } from './sssom.ts';
 import { fromTables, tableWarnings, toTables } from './table.ts';
 import { validate } from './validate.ts';
 
+/** What `run` returns: the output text and the exit code. */
 export interface Result {
   stdout: string;
   code: number;
@@ -58,7 +59,12 @@ const usage = `usage: linked-codebook <command> <file>...\n\n${Object.entries(sp
   .map(([name, { files, summary }]) => `  ${[name, ...files.map((file) => `<${file}>`)].join(' ')}\n      ${summary}\n`)
   .join('')}`;
 
-/** Runs a command on the texts of the files it names. It does no input or output itself. */
+/**
+ * The command line as a function: runs a command on the texts of the files it names.
+ *
+ * It returns `{ stdout, code }` and does no input or output itself. See [Command
+ * line](https://bennokr.github.io/linked-codebook/docs/cli).
+ */
 export function run(args: string[], texts: Record<string, string>): Result {
   const [name = '', ...files] = args;
   const command = commands[name];

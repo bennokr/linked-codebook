@@ -126,7 +126,11 @@ function undefinedTerms(value: unknown, context: Context): string[] {
   return [...unknown.map((term) => `${term}: not defined by a pinned vocabulary`), ...below];
 }
 
-/** Checks a profile against the model, or a JSON-LD document against the vocabularies. */
+/**
+ * Checks a profile against the model, or a JSON-LD document against the vocabularies.
+ *
+ * Returns a list of errors; it is empty if the document conforms.
+ */
 export function validate(document: unknown): string[] {
   const record = (typeof document === 'object' && document !== null ? document : {}) as Record<string, unknown>;
   if (!('@context' in record)) return [...new Set([...conform(document, schema as Schema, ''), ...repeated(record)])];

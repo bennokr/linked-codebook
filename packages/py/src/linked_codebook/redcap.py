@@ -89,7 +89,7 @@ def columns_of(row: Row) -> list[Column]:
 
 
 def from_redcap(text: str) -> Profile:
-    """Reads a REDCap data dictionary (CSV) into a profile."""
+    """Reads a REDCap data dictionary (CSV text) into a profile."""
     columns = [column for row in rows_of(text) for column in columns_of(row)]
     if not columns:
         message = "no fields found"

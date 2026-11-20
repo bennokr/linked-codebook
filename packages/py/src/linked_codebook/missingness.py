@@ -88,13 +88,14 @@ def column_report(
 def missingness(profile: Profile, data: Data, *, blank: str = "value") -> dict[str, Any]:
     """Counts, for each column of the profile that the data has, how its values divide.
 
-    `present` is a value; `declared` counts the codes that mean no value; `blank` is an empty cell, divided by the
-    rule `applies_when` into `blank_not_applicable` (skipped by design), `blank_applicable` (missing although the
-    question applied) and `blank_unknown` (the rule cannot be decided). `answered_not_applicable` counts values in
-    rows where the rule says the question does not apply.
+    `data` is `{name: [cells]}`. `present` is a value; `declared` counts the codes that mean no value; `blank` is an
+    empty cell, divided by the rule `applies_when` into `blank_not_applicable` (skipped by design), `blank_applicable`
+    (missing although the question applied) and `blank_unknown` (the rule cannot be decided). `answered_not_applicable`
+    counts values in rows where the rule says the question does not apply.
 
-    `blank` is how rules treat a blank, as in :func:`evaluate`. With "value" (the default, as in REDCap) a declared
-    missing code is an ordinary value in a rule; with "unknown" it is a blank and makes the rule unknown.
+    The argument `blank` is how rules treat a blank, as in `evaluate_condition`. With "value" (the default, as in
+    REDCap) a declared missing code is an ordinary value in a rule; with "unknown" it is a blank and makes the rule
+    unknown.
     """
     rows = rows_of(data)
     answers = rows if blank == "value" else answers_of(profile, rows)

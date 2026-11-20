@@ -61,7 +61,7 @@ def rows(dataset: str, column: Column, prefixes: Prefixes) -> list[str]:
 
 
 def to_sssom(profile: Profile) -> str:
-    """Writes the mappings of a profile as SSSOM TSV."""
+    """Writes the mappings of a profile as SSSOM TSV text."""
     dataset = dataset_iri(profile)
     prefixes: Prefixes = {**SSSOM["prefixes"], SSSOM["subject_prefix"]: f"{dataset}#"}
     body = [line for column in profile["columns"] for line in rows(dataset, column, prefixes)]
@@ -147,9 +147,10 @@ def unmatched_sssom(text: str, profile: Profile) -> list[str]:
 
 
 def from_sssom(text: str, profile: Profile) -> Profile:
-    """Reads SSSOM TSV into the columns and values of a profile that it maps.
+    """Reads SSSOM TSV text into a profile that holds only the mappings found in it.
 
-    A subject is found by its IRI or else by the label of the column; rows with other subjects are dropped.
+    The profile has the columns and values of `profile` that the text maps. A subject is found by its IRI or else by the
+    label of the column; rows with other subjects are dropped.
     """
     prefixes, table = read_table(text)
     targets = targets_of(profile)

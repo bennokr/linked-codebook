@@ -38,7 +38,11 @@ function join(base: Json | undefined, incoming: Json | undefined, slot: string):
   return isEmpty(incoming) ? base : incoming;
 }
 
-/** Adds what the second profile says to the first. Columns, values and mappings are matched by name, code and concept. */
+/**
+ * Completes `base` with what `incoming` says.
+ *
+ * Columns, values and mappings are matched by name, code and concept.
+ */
 export function merge(base: Profile, incoming: Profile): Profile {
   return join(base as unknown as Json, incoming as unknown as Json, '') as unknown as Profile;
 }

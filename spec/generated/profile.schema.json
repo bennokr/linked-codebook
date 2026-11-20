@@ -51,7 +51,7 @@
         },
         "level": {
           "$ref": "#/$defs/Level",
-          "description": "Level of measurement."
+          "description": "Measurement level."
         },
         "mappings": {
           "description": "Links to concepts.",
@@ -155,7 +155,7 @@
       "type": "string"
     },
     "Level": {
-      "description": "Level of measurement, as defined by DSV.",
+      "description": "Measurement level, as defined by DSV.",
       "enum": [
         "categorical",
         "nominal",

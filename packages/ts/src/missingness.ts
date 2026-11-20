@@ -10,6 +10,7 @@ import type { Column, Profile } from './generated/types.ts';
 import { isNumeric } from './infer.ts';
 import { clean } from './jsonld.ts';
 
+/** Column name to cells: the data that `missingness` reads. */
 export type Data = Record<string, unknown[]>;
 type Declared = [codes: Set<string>, column: Column];
 
@@ -103,12 +104,15 @@ function columnReport(column: Column, rows: Row[], answers: Row[], options: Eval
 }
 
 /**
- * Counts, for each column of the profile that the data has, how its values divide. `present` is a value;
- * `declared` counts the codes that mean no value; `blank` is an empty cell, divided by the rule `applies_when` into
- * `blank_not_applicable` (skipped by design), `blank_applicable` (missing although the question applied) and
- * `blank_unknown` (the rule cannot be decided). `answered_not_applicable` counts values in rows where the rule says the
- * question does not apply. `options.blank` is how rules treat a blank, as in `evaluateCondition`: with "value" (the
- * default, as in REDCap) a declared missing code is an ordinary value in a rule; with "unknown" it is a blank.
+ * Counts, for each column of the profile that the data has, how its values divide.
+ *
+ * `data` is `{ name: cells }`. `present` is a value; `declared` counts the codes that mean no value; `blank` is an
+ * empty cell, divided by the rule `applies_when` into `blank_not_applicable` (skipped by design), `blank_applicable`
+ * (missing although the question applied) and `blank_unknown` (the rule cannot be decided). `answered_not_applicable`
+ * counts values in rows where the rule says the question does not apply.
+ *
+ * `options.blank` is how rules treat a blank, as in `evaluateCondition`. With 'value' (the default, as in REDCap) a
+ * declared missing code is an ordinary value in a rule; with 'unknown' it is a blank and makes the rule unknown.
  */
 export function missingness(profile: Profile, data: Data, options: EvaluateOptions = {}): Record<string, unknown> {
   const rows = rowsOf(data);

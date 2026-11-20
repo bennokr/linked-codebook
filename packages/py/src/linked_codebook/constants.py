@@ -18,5 +18,9 @@ COMMANDS: dict[str, Any] = _ALL["commands"]
 FRICTIONLESS: dict[str, Any] = _ALL["frictionless"]
 REDCAP: dict[str, Any] = _ALL["redcap"]
 TABLE: dict[str, Any] = _ALL["table"]
+"""The sheets, headers and kinds of cells of the table format, as in `spec/table.yaml`.
+
+An application can use it to check the cells of a workbook before it hands them over.
+"""
 CONDITION: dict[str, Any] = _ALL["condition"]
 READSTAT: dict[str, Any] = _ALL["readstat"]

@@ -4,7 +4,11 @@ import { clean } from './jsonld.ts';
 
 type Cell = number | string | null;
 
-/** A variable as ReadStat-based readers deliver it (see spec/readstat.yaml). */
+/**
+ * One variable as a ReadStat-based reader delivers it, for `fromReadstat`.
+ *
+ * See section 15 of the specification.
+ */
 export interface StatVariable {
   name: string;
   label?: string | null;
@@ -77,8 +81,10 @@ function columnOf(variable: StatVariable): Column {
 }
 
 /**
- * Reads the metadata of a statistical file (SPSS, Stata, SAS) into a profile; see spec/readstat.yaml for the input.
- * Value labels do not make a list closed: SPSS and Stata allow codes without a label.
+ * Reads the variables of a statistical file (SPSS, Stata or SAS) into a profile.
+ *
+ * `input` is the variables as `statfmt` delivers them (see `StatVariable` and section 15 of the specification). Value
+ * labels do not make a list closed: SPSS and Stata allow codes without a label.
  */
 export function fromReadstat(input: StatVariable[] | { variables: StatVariable[] }): Profile {
   const listed = Array.isArray(input) ? input : input.variables;

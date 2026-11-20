@@ -28,7 +28,7 @@ def join(base: Any, incoming: Any, slot: str) -> Any:  # noqa: ANN401
 
 
 def merge(base: Profile, incoming: Profile) -> Profile:
-    """Adds what the second profile says to the first.
+    """Completes `base` with what `incoming` says.
 
     Columns, values and mappings are matched by name, code and concept.
     """

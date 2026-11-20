@@ -51,7 +51,7 @@ function rows(dataset: string, column: Column, prefixes: Prefixes): string[] {
   ];
 }
 
-/** Writes the mappings of a profile as SSSOM TSV. */
+/** Writes the mappings of a profile as SSSOM TSV text. */
 export function toSssom(profile: Profile): string {
   const dataset = datasetIri(profile);
   const prefixes: Prefixes = new Map([...Object.entries(sssom.prefixes), [sssom.subject_prefix, `${dataset}#`]]);
@@ -162,8 +162,10 @@ export function unmatchedSssom(text: string, profile: Profile): string[] {
 }
 
 /**
- * Reads SSSOM TSV into the columns and values of a profile that it maps. A subject is found by
- * its IRI or else by the label of the column; rows with other subjects are dropped.
+ * Reads SSSOM TSV text into a profile that holds only the mappings found in it.
+ *
+ * The profile has the columns and values of `profile` that the text maps. A subject is found by its IRI or else by the
+ * label of the column; rows with other subjects are dropped.
  */
 export function fromSssom(text: string, profile: Profile): Profile {
   const { prefixes, rows: table } = readTable(text);

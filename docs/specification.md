@@ -4,7 +4,7 @@ Draft, version 0.11.0
 
 ## Abstract
 
-Linked Codebook is a data model for the variables of a table. It records the name, datatype, level of measurement, unit, value labels and missing codes of each column, and links columns and values to concepts. This document defines the model, its serializations as JSON-LD and SSSOM, the inference of datatypes and levels, merging, validation and the command line.
+Linked Codebook is a data model for the variables of a table. It records the name, datatype, measurement level, unit, value labels and missing codes of each column, and links columns and values to concepts. This document defines the model, its serializations as JSON-LD and SSSOM, the profiling of column types (datatype and measurement level), merging, validation and the command line.
 
 ## Status of this document
 
@@ -18,7 +18,7 @@ This is a draft. It may change without notice. Changes are listed in the [change
 4. [Canonical JSON](#4-canonical-json)
 5. [JSON-LD](#5-json-ld)
 6. [SSSOM](#6-sssom)
-7. [Inference](#7-inference)
+7. [Column type profiling](#7-column-type-profiling)
 8. [Merging](#8-merging)
 9. [Validation](#9-validation)
 10. [Frictionless](#10-frictionless)
@@ -85,7 +85,7 @@ Unknown properties are errors. A processor that wants to keep extra information 
 Notes:
 
 - A column is identified by its `name`, a value by its `code` and a mapping by its `object_id`.
-- The `level` is the level of measurement and the `datatype` is the way values are stored. A column of integer codes has the datatype `integer` and the level `categorical`.
+- The `level` is the measurement level and the `datatype` is the way values are stored. A column of integer codes has the datatype `integer` and the measurement level `categorical`.
 - `missing_values` lists codes that mean no value and have no label. A code that has a label is a `value` with `missing` set to true.
 - `values` are the codes a column may hold, as declared by its author. If `closed` is true, no other codes are allowed, apart from missing values. Otherwise the list labels some codes and others may occur.
 - `source` is the IRI of a web page that documents the column or its variable.
@@ -195,13 +195,13 @@ A processor reads SSSOM TSV for the columns and values of a profile it is given.
 
 The result is a profile that has only the columns and values with mappings. It can be [merged](#8-merging) into the profile.
 
-## 7. Inference
+## 7. Column type profiling
 
-A processor MAY propose the datatype and the level of a column from its values. The limits and patterns are in [`spec/inference.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/inference.yaml). Patterns match the whole text.
+A processor MAY propose the datatype and the measurement level of a column from its values. The limits and patterns are in [`spec/inference.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/inference.yaml). Patterns match the whole text.
 
 The values `null`, the empty text and `\N` are ignored. The kind of the column is the first of these that applies.
 
-| Kind | Applies if | Datatype | Level |
+| Kind | Applies if | Datatype | Measurement level |
 | --- | --- | --- | --- |
 | empty | no values are left | `string` | none |
 | boolean | all values are booleans | `boolean` | `categorical` |
@@ -223,7 +223,7 @@ A column is *categorical* if its name is not an identifier and one of the follow
 
 A name is an identifier name if its lower-case form matches the pattern `id|row.?number|resp?no|.*_id`. A processor MAY let its caller say whether a column is an identifier, which replaces the decision from the name.
 
-A processor that proposes a profile for a table (`infer`) adds `observed` to every column of level `categorical`: each distinct value that is not ignored, as text, with the number of times it occurs, in order of first occurrence. A value that is not text is written as JSON writes it, with whole numbers written without a fraction, so `1.0` becomes `1` and `true` becomes `true`.
+A processor that proposes a profile for a table (`infer`) adds `observed` to every column whose measurement level is `categorical`: each distinct value that is not ignored, as text, with the number of times it occurs, in order of first occurrence. A value that is not text is written as JSON writes it, with whole numbers written without a fraction, so `1.0` becomes `1` and `true` becomes `true`.
 
 Numeric columns have a lower limit than text columns because a few distinct numbers are less often codes than a few distinct words. A processor MAY let its caller replace the two limits of 50 and 8.
 
@@ -285,7 +285,7 @@ A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. 
 | `level` is `ordinal`, and the list is closed | the field property `categoriesOrdered`, set to `true` |
 | the slots of the dataset | the property `x-linked-codebook` of the schema |
 
-Codes of `integer` and `number` fields are written as numbers if they are numbers, as defined in [section 7](#7-inference), and as text otherwise.
+Codes of `integer` and `number` fields are written as numbers if they are numbers, as defined in [section 7](#7-column-type-profiling), and as text otherwise.
 
 Notes:
 
@@ -358,7 +358,7 @@ A condition has three values: true, false and unknown. A blank is an empty cell 
 - `value` (the default) is how REDCap behaves, as far as published guides say: a blank is the empty value. It equals another blank and differs from everything else, so `[a] <> 1` and `[a] <> 0` are both true when `a` is blank, and `[a] = '1'` is false. Only ordering a blank (`<`, `>`, `<=`, `>=`) is unknown. `a IN (...)` is false for a blank. REDCap stores a missing data code (such as `NASK`) as an ordinary value, so a declared missing code is compared as text.
 - `unknown` is how SQL behaves: every comparison with a blank is unknown, and `IN` too. A declared missing code counts as a blank.
 
-The REDCap behaviour follows the guides of several university REDCap teams and a community knowledge base. They state that `[nr_pregnancies]<>0` is true for an empty field, that two blank fields count as a match, and that `!=` behaves like `<>`. REDCap's own documentation and source were not consulted. None of the guides says what ordering a blank gives, and this specification treats it as unknown. Verify a rule against your REDCap version before relying on it. Two values are equal if both are numbers (or text that is a number as defined in [section 7](#7-inference), so `1` and `"1"` are alike) and equal as numbers, or else if they are equal as text. They are ordered the same way, so ISO dates order correctly as text. `and` is false if any operand is false, otherwise unknown if any is unknown; `or` is true if any operand is true, otherwise unknown if any is unknown; `not` of unknown is unknown. `null` is never unknown. With `blank` set to `value`, a rule is unknown only when it orders a blank.
+The REDCap behaviour follows the guides of several university REDCap teams and a community knowledge base. They state that `[nr_pregnancies]<>0` is true for an empty field, that two blank fields count as a match, and that `!=` behaves like `<>`. REDCap's own documentation and source were not consulted. None of the guides says what ordering a blank gives, and this specification treats it as unknown. Verify a rule against your REDCap version before relying on it. Two values are equal if both are numbers (or text that is a number as defined in [section 7](#7-column-type-profiling), so `1` and `"1"` are alike) and equal as numbers, or else if they are equal as text. They are ordered the same way, so ISO dates order correctly as text. `and` is false if any operand is false, otherwise unknown if any is unknown; `or` is true if any operand is true, otherwise unknown if any is unknown; `not` of unknown is unknown. `null` is never unknown. With `blank` set to `value`, a rule is unknown only when it orders a blank.
 
 Of the 2,650 different rules of the 985 PhenX REDCap dictionaries, all but one parse (the exception is the text `always|NA`), to the same tree in both libraries.
 

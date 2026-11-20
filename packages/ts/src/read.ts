@@ -148,8 +148,9 @@ function columnOf(nodes: Node[], dataset: string, node: Node, explicit: boolean)
 }
 
 /**
- * Reads DSV JSON-LD, nested or as a flat graph, into a profile. A variable IRI that is the one this library
- * would write is left out, unless `explicit` is set.
+ * Reads DSV JSON-LD, nested or as a flat graph, into a profile.
+ *
+ * A variable IRI that is the one this library would write is left out, unless `options.explicit` is set.
  */
 export function parse(document: unknown, options: { explicit?: boolean } = {}): Profile {
   const nodes = collect(document);

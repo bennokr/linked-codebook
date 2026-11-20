@@ -26,7 +26,7 @@ choice_types: [dropdown, radio]
 # Field type of a checkbox group: one column per choice, named name___code, holding 0 or 1.
 checkbox: checkbox
 checkbox_values: [["0", "Unchecked"], ["1", "Checked"]]
-# Datatype and level of the other field types.
+# Datatype and measurement level of the other field types.
 types:
   calc: {datatype: number, level: numerical}
   slider: {datatype: integer, level: numerical}

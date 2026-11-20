@@ -3,7 +3,11 @@ import type { Column, Profile, Value } from './generated/types.ts';
 import { isNumeric } from './infer.ts';
 import { clean } from './jsonld.ts';
 
-/** Sheet name to rows; the first row holds the headers. Cells may be text, numbers, booleans or null. */
+/**
+ * Sheet name to rows, the first row holding the headers: what `fromTables` reads and `toTables` writes.
+ *
+ * Cells may be text, numbers, booleans or `null`.
+ */
 export type Tables = Record<string, unknown[][]>;
 type Record_ = Record<string, unknown>;
 type Sheet = 'columns' | 'values' | 'mappings' | 'dataset';
@@ -16,6 +20,13 @@ interface SheetSpec {
 }
 
 const sheets = table.sheets as unknown as Record<Sheet, SheetSpec>;
+
+/**
+ * The sheets, headers and kinds of cells of the table format, as in `spec/table.yaml`.
+ *
+ * An application can use it to check the cells of a workbook before it hands them over.
+ */
+export const tableSpec = table;
 const TRUE = ['true', 'yes', '1'];
 const FALSE = ['false', 'no', '0'];
 
@@ -146,9 +157,10 @@ function readDataset(tables: Tables): Record_ {
 }
 
 /**
- * Reads a profile from tables: sheet name to rows, the first row holding the headers. Cells may be text, numbers,
- * booleans or null. Throws an error that names the sheet and row for a cell that does not fit its header or a row
- * that refers to something that does not exist.
+ * Reads a profile from tables: sheet name to rows, the first row holding the headers.
+ *
+ * Cells may be text, numbers, booleans or `null`. Throws an error that names the sheet and row for a cell that does not
+ * fit its header or a row that refers to something that does not exist.
  */
 export function fromTables(tables: Tables): Profile {
   const columns = readColumns(tables);
@@ -157,7 +169,11 @@ export function fromTables(tables: Tables): Profile {
   return { ...readDataset(tables), columns: [...columns.values()] } as unknown as Profile;
 }
 
-/** What a reader does not use: sheets and headers it does not know, and headers of the earlier workbook. */
+/**
+ * The sheets and headers of tables that `fromTables` does not use.
+ *
+ * These are the sheets and headers it does not know, and the headers of the earlier workbook.
+ */
 export function tableWarnings(tables: Tables): string[] {
   const titles = new Map((Object.keys(sheets) as Sheet[]).map((sheet) => [key(sheets[sheet].title), sheet]));
   return Object.entries(tables).flatMap(([name, rows]) => {
@@ -207,7 +223,11 @@ function grid(sheet: Sheet, rows: Record_[]): string[][] {
   return [heads, ...rows.map((row) => heads.map((head) => (head in row ? show(row[head]) : '')))];
 }
 
-/** Writes a profile as tables. Observed counts are left out: they describe one copy of the data. */
+/**
+ * Writes a profile as tables.
+ *
+ * Observed counts are left out: they describe one copy of the data.
+ */
 export function toTables(profile: Profile): Tables {
   const { columns } = profile;
   const parts: [Sheet, Record_[]][] = [
