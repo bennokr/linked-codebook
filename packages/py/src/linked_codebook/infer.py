@@ -198,7 +198,7 @@ def infer_language(cells: Sequence[Cell], detect: Detector) -> Found | None:
 
 
 def infer(data: Mapping[str, Sequence[Cell]], detect: Detector | None = None) -> Profile:
-    """Proposes a profile for a table `{name: [values]}`: the datatype and measurement level of every column.
+    """Proposes a profile for a table `{name: [cells]}`: the datatype and measurement level of every column.
 
     Categorical columns also get their `observed` codes. With a `detect` function, text columns also get the `language`
     that `infer_language` finds.
