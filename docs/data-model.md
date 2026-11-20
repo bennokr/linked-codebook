@@ -37,12 +37,12 @@ One column of the table, described as a variable.
 | `source` | string | no | IRI of a web page that documents the column or its variable. |
 | `values` | list of Value | no | Codes the column may hold, with their labels. Other codes may occur unless closed is true. |
 | `closed` | boolean | no | True if values lists every code the column may hold, apart from missing values. A list taken from data is not closed. |
-| `observed` | list of Count | no | Codes found in the data, in order of first occurrence, with their counts. They say what occurred, not what is allowed. |
+| `observed` | list of Count | no | Codes found in the data, in order of first occurrence, with their counts. They record what occurred and do not define which codes are allowed. |
 | `missing_values` | list of string | no | Codes that mean no value and have no label. |
 | `missing_range` | Range | no | Numbers that mean no value. |
 | `completeness` | float | no | Share of the rows that have a value, between 0 and 1. |
 | `applies_when` | string | no | Condition under which the column has a value, as the source writes it, for example REDCap branching logic. Rows that do not meet it are missing by design. |
-| `minimum` | float | no | Smallest number the column may hold, apart from missing values. A limit of the source, not the smallest number found. |
+| `minimum` | float | no | Smallest number the column may hold, apart from missing values. This is a limit given by the source and may differ from the smallest number found. |
 | `maximum` | float | no | Largest number the column may hold, apart from missing values. |
 | `group` | string | no | Name of the group of columns that the column belongs to, for example the form of a REDCap field. |
 | `identifying` | boolean | no | True if the values identify a person or a record: names, record numbers, contact details. Such a column needs care when the data are shared or synthesized. |
@@ -112,12 +112,12 @@ Level of measurement, as defined by DSV.
 
 | Value | Meaning |
 | --- | --- |
-| `categorical` | dsv:CategoricalDataType |
-| `nominal` | dsv:NominalDataType |
-| `ordinal` | dsv:OrdinalDataType |
-| `numerical` | dsv:NumericalDataType |
-| `interval` | dsv:IntervalDataType |
-| `ratio` | dsv:RatioDataType |
+| `categorical` | dsvo:CategoricalDataType |
+| `nominal` | dsvo:NominalDataType |
+| `ordinal` | dsvo:OrdinalDataType |
+| `numerical` | dsvo:NumericalDataType |
+| `interval` | dsvo:IntervalDataType |
+| `ratio` | dsvo:RatioDataType |
 
 ## MatchType
 

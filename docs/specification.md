@@ -1,6 +1,6 @@
 # Linked Codebook Specification
 
-Draft, version 0.10.0
+Draft, version 0.11.0
 
 ## Abstract
 
@@ -78,7 +78,7 @@ This specification has three conformance classes.
 
 ## 3. Data model
 
-A profile is a JSON object. The classes, slots and enumerations of the model are in [Data model](data-model.md). The model is defined in LinkML, in [`spec/profile.yaml`](../spec/profile.yaml). A JSON Schema is generated from it, in [`spec/generated/profile.schema.json`](../spec/generated/profile.schema.json).
+A profile is a JSON object. The classes, slots and enumerations of the model are in [Data model](data-model.md). The model is defined in LinkML, in [`spec/profile.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/profile.yaml). A JSON Schema is generated from it, in [`spec/generated/profile.schema.json`](https://github.com/bennokr/linked-codebook/blob/main/spec/generated/profile.schema.json).
 
 Unknown properties are errors. A processor that wants to keep extra information MUST NOT put it in a profile.
 
@@ -90,7 +90,7 @@ Notes:
 - `values` are the codes a column may hold, as declared by its author. If `closed` is true, no other codes are allowed, apart from missing values. Otherwise the list labels some codes and others may occur.
 - `source` is the IRI of a web page that documents the column or its variable.
 - `applies_when` is a condition in the words of the source, for example REDCap branching logic. Where the condition is not met the value is missing by design. A processor MUST NOT interpret it.
-- `observed` are the codes found in one copy of the data, with their counts. They say what occurred, not what is allowed. A processor MUST NOT set `closed` because a list was taken from data.
+- `observed` lists the codes found in one copy of the data, with their counts. It records what occurred and does not define which codes are allowed, so a processor MUST NOT set `closed` because a list was taken from data.
 
 ## 4. Canonical JSON
 
@@ -107,27 +107,38 @@ The canonical form lets different implementations print the same bytes for the s
 
 ### 5.1 Writing
 
-A processor writes a profile as JSON-LD that uses the [DSV ontology][dsv]. The context is the one in the constants generated from [`spec/jsonld.yaml`](../spec/jsonld.yaml). The terms that the document uses are listed in [Vocabulary](vocabulary.md).
+A processor writes a profile as JSON-LD that uses the [DSV ontology][dsv]. The context is the one in the constants generated from [`spec/jsonld.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/jsonld.yaml). The terms that the document uses are listed in [Vocabulary](vocabulary.md).
 
 The document is one node, the dataset, with these properties.
 
 | Node | Type | Properties |
 | --- | --- | --- |
-| Dataset | `dcat:Dataset`, `dsv:Dataset` | `title`, `description`, `identifier`, `citation`, `accessRights` and `landingPage` carry the slots of the same meaning. `license` is written as `license` if it starts with `http:` or `https:`, and as `rights` otherwise. `datasetSchema` is the schema node. |
-| Dataset statistics | `dsv:SummaryStatistics` | `numberOfRows` carries `rows` and `numberOfColumns` the number of columns. The node is written only if the profile has `rows`. |
-| Schema | `dsv:DatasetSchema` | `columns` is the list of column nodes, in table order. |
-| Column | `dsv:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `appliesWhen`, `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat`, `identifying`, `columnProperty` and `summaryStatistics`. |
-| Column property | `dsv:ColumnProperty` | `hasVariable` is the variable concept. `hasUnit` and `unitText` carry `unit_iri` and `unit`. `hasCodeBook` is the concept scheme of the values. |
-| Summary statistics | `dsv:SummaryStatistics` | `statisticalDataType` is the meaning of the `level` and `columnCompleteness` carries `completeness`. The node is written only if one of them is set. |
+| Dataset | `dcat:Dataset`, `dsvo:Dataset` | `title`, `description`, `identifier`, `citation`, `accessRights` and `landingPage` carry the slots of the same meaning. `license` is written as `license` if it starts with `http:` or `https:`, and as `rights` otherwise. `datasetSchema` is the schema node. |
+| Dataset statistics | `dsvo:SummaryStatistics` | `numberOfRows` carries `rows` and `numberOfColumns` the number of columns. The node is written only if the profile has `rows`. |
+| Schema | `dsvo:DatasetSchema` | `columns` is the list of column nodes, in table order. |
+| Column | `dsvo:Column` | `name`, `titles` (the label, or else the name), `datatype`, `nullValues`, `missingRange`, `codeBookClosed`, `appliesWhen`, `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat`, `identifying`, `columnProperty` and `summaryStatistics`. |
+| Column property | `dsvo:ColumnProperty` | `hasVariable` is the variable concept. `hasUnit` and `unitText` carry `unit_iri` and `unit`. `hasCodeBook` is the concept scheme of the values. |
+| Summary statistics | `dsvo:SummaryStatistics` | `statisticalDataType` is the meaning of the `level` and `columnCompleteness` carries `completeness`. The node is written only if one of them is set. |
 | Variable concept | `skos:Concept` | `skos:prefLabel` is the label, or else the name. `skos:definition` is the description. `dct:source` is the IRI `source`, written as a node reference. |
 | Code book | `skos:ConceptScheme` | `skos:hasTopConcept` lists a concept for every value. |
 | Code concept | `skos:Concept` | `skos:notation` is the code, `skos:prefLabel` the label, `skos:definition` the description and `skos:inScheme` the code book. For an ordinal column, `schema:position` is the place of the code in `values`, counted from 1. |
 
-Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. `nullValues` lists the `missing_values` and the codes of the values that have `missing` set. `missingRange` is the object `{ "low": …, "high": … }`. It is not defined by any vocabulary and other processors ignore it. `codeBookClosed` is `true` if `closed` is true, and is left out otherwise; it is not defined by any vocabulary either. `appliesWhen` carries `applies_when`; `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat` and `identifying` carry `minimum`, `maximum`, `group`, `format` and `identifying` (only if true). None of these is defined by any vocabulary. `observed` is not written: DSV has no term for counts of codes, and they describe one copy of the data. RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and as they occur otherwise.
+Properties without a value MUST be left out. That includes empty text, empty lists and empty objects. The properties of a column follow these rules.
+
+- `nullValues` lists the `missing_values` and the codes of the values that have `missing` set.
+- `missingRange` is the object `{ "low": …, "high": … }`.
+- `codeBookClosed` is `true` if `closed` is true, and is left out otherwise.
+- `appliesWhen` carries `applies_when`.
+- `minimumValue`, `maximumValue`, `columnGroup`, `columnFormat` and `identifying` carry `minimum`, `maximum`, `group`, `format` and `identifying`. `identifying` is written only if it is true.
+- `observed` is not written. DSV has no term for counts of codes, and the counts describe one copy of the data.
+
+These keys have IRIs, so that they stay in the RDF when the document is loaded as JSON-LD. `minimumValue`, `maximumValue`, `low` and `high` are `csvw:minInclusive` and `csvw:maxInclusive`. CSVW defines these facets on a datatype description, and here they are used on the column, as `csvw:datatype` is. `columnFormat` is `csvw:format`. `missingRange`, `codeBookClosed`, `appliesWhen`, `columnGroup` and `identifying` are the slots `missing_range`, `closed`, `applies_when`, `group` and `identifying` of the data model, in the namespace `lc` (`https://bennokr.github.io/linked-codebook/profile#`, served as `profile.yaml` next to the test page).
+
+RDF has no order, so a reader MUST list the codes by `schema:position` if every code has one, and in the order of occurrence otherwise.
 
 Only approved mappings are written. A mapping becomes the property `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch` or `relatedMatch`, according to its `match_type`, of the variable concept or of the code concept. The properties list the `object_id` values. Draft mappings, labels, confidence, provenance and reviewers are not written.
 
-The IRI of each node is made from a template in [`spec/jsonld.yaml`](../spec/jsonld.yaml). In the templates, `{id}`, `{name}` and `{code}` are percent-encoded, as by `encodeURIComponent`. The IRI of the dataset is the `identifier` if it starts with `http:`, `https:` or `urn:`. Otherwise it is made from the identifier, the title, or the word `unnamed`. The IRI of the variable concept is the `variable` of the column, if it has one.
+The IRI of each node is made from a template in [`spec/jsonld.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/jsonld.yaml). In the templates, `{id}`, `{name}` and `{code}` are percent-encoded, as by `encodeURIComponent`. The IRI of the dataset is the `identifier` if it starts with `http:`, `https:` or `urn:`. Otherwise it is made from the identifier, the title, or the word `unnamed`. The IRI of the variable concept is the `variable` of the column, if it has one.
 
 ### 5.2 Reading
 
@@ -156,7 +167,7 @@ A document without columns is an error.
 
 A processor writes the mappings of a profile as [SSSOM][sssom] TSV, with one row for each mapping, in the order of the columns, and for each column the mappings of the column before the mappings of its values.
 
-The file starts with a header of comment lines: `#curie_map:`, then one line `#  prefix: IRI` for every prefix that is used, then `#mapping_set_id: IRI`. The header line follows with the names of the columns, as listed in [`spec/sssom.yaml`](../spec/sssom.yaml).
+The file starts with a header of comment lines: `#curie_map:`, then one line `#  prefix: IRI` for every prefix that is used, then `#mapping_set_id: IRI`. The header line follows with the names of the columns, as listed in [`spec/sssom.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/sssom.yaml).
 
 | SSSOM column | Value |
 | --- | --- |
@@ -186,7 +197,7 @@ The result is a profile that has only the columns and values with mappings. It c
 
 ## 7. Inference
 
-A processor MAY propose the datatype and the level of a column from its values. The limits and patterns are in [`spec/inference.yaml`](../spec/inference.yaml). Patterns match the whole text.
+A processor MAY propose the datatype and the level of a column from its values. The limits and patterns are in [`spec/inference.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/inference.yaml). Patterns match the whole text.
 
 The values `null`, the empty text and `\N` are ignored. The kind of the column is the first of these that applies.
 
@@ -220,7 +231,7 @@ A processor SHOULD offer the identifier-name test to applications (`is_identifie
 
 ### 7.1 Language of a text column
 
-A processor MAY propose the language of a column of prose. The language of a text can only be told by a statistical model, and two models never agree on every text, so this specification does not define a detector. The application supplies one: a function from a text to a lower-case BCP 47 language tag, or to nothing when it cannot tell. What is specified is when the detector is asked and when its answers are accepted, so that every processor reaches the same decision from the same answers. The limits are in [`spec/language.yaml`](../spec/language.yaml) and test cases that every processor MUST pass are in [`spec/cases/language.json`](../spec/cases/language.json).
+A processor MAY propose the language of a column of prose. The language of a text can only be told by a statistical model, and two models never agree on every text, so this specification does not define a detector. The application supplies one: a function from a text to a lower-case BCP 47 language tag, or to nothing when it cannot tell. What is specified is when the detector is asked and when its answers are accepted, so that every processor reaches the same decision from the same answers. The limits are in [`spec/language.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/language.yaml) and test cases that every processor MUST pass are in [`spec/cases/language.json`](https://github.com/bennokr/linked-codebook/blob/main/spec/cases/language.json).
 
 1. The values `null`, the empty text and `\N` are ignored. A value is *prose* by the rule of the categorical text columns above: more than 80 characters, a line break, or more than 7 words.
 2. The column has no language if it has fewer than 3 prose values, or if fewer than half of its values are prose.
@@ -228,7 +239,7 @@ A processor MAY propose the language of a column of prose. The language of a tex
 4. The tags are lower-cased and counted. A value for which the detector gives nothing counts as a different answer from every tag, so it lowers the share.
 5. The most common tag is the language of the column if it is the answer for at least 0.8 of the values that were asked. If two tags are equally common, the smaller one in code point order is taken.
 
-The result is the tag, the share and the number of values asked. A processor that proposes a profile (`infer`) MAY take a detector and then adds the tag as `language` to every column whose datatype is `string`. The slot is written to JSON-LD as `dct:language`. It is written only for columns of prose: a short categorical text has no language, whatever a detector says about the single word.
+The result is the tag, the share and the number of values asked. A processor that proposes a profile (`infer`) MAY take a detector and then adds the tag as `language` to every column whose datatype is `string`. The slot is written to JSON-LD as `dct:language`. A column of short categorical text, such as single words, gets no language, whatever a detector answers for it.
 
 ## 8. Merging
 
@@ -257,11 +268,11 @@ A JSON-LD document has no errors if every key and every `@type` expands, through
 
 JSON-LD drops a key that the context maps to `null`, together with its value. A key that the context maps to a keyword such as `@nest` is not a property. The check skips both.
 
-A document is checked for the terms it uses, not for the shape of its graph.
+The check covers the terms of a document. It does not examine the shape of its graph.
 
 ## 10. Frictionless
 
-A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. The projection is one-way. Slots that the Table Schema has no property for are kept in the extension property `x-linked-codebook`, so that nothing is lost. The rules are in [`spec/frictionless.yaml`](../spec/frictionless.yaml).
+A processor MAY write a profile as a [Frictionless Table Schema][frictionless]. The projection is one-way. Slots that the Table Schema has no property for are kept in the extension property `x-linked-codebook`, so that nothing is lost. The rules are in [`spec/frictionless.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/frictionless.yaml).
 
 | Profile | Table Schema |
 | --- | --- |
@@ -284,9 +295,11 @@ Notes:
 
 ## 11. REDCap
 
-A processor MAY read a [REDCap][redcap] data dictionary, the CSV file that describes the fields of a REDCap project, into a profile (`from-redcap`). The rules are in [`spec/redcap.yaml`](../spec/redcap.yaml). They were written from the REDCap documentation and sample dictionaries, so check them against a dictionary exported by your REDCap version.
+A processor MAY read a [REDCap][redcap] data dictionary, the CSV file that describes the fields of a REDCap project, into a profile (`from-redcap`). The rules are in [`spec/redcap.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/redcap.yaml). They were written from the REDCap documentation and sample dictionaries, so verify them against a dictionary exported by your REDCap version.
 
-The reader takes text: the application decodes the file. Dictionaries are usually UTF-8, but some are Windows-1252 (about 3% of the 985 PhenX dictionaries), so try UTF-8 first and then Windows-1252. Header names are compared in lower case without punctuation, so `Variable / Field Name` and the API name `field_name` are alike. Fields in quotes may hold commas, doubled quotes and line breaks. Files do not always follow RFC 4180, so a processor MUST read CSV as Python's `csv` module does: a quote inside a field that does not start with one is text, and after the closing quote of a quoted field any character other than a separator continues the field as text. Rows that are empty are ignored. A dictionary without fields is an error.
+The reader takes text, and the application decodes the file. Dictionaries are usually UTF-8, but some are Windows-1252 (about 3% of the 985 PhenX dictionaries), so a decoder should try UTF-8 first and then Windows-1252. Header names are compared in lower case without punctuation, so `Variable / Field Name` and the API name `field_name` match. Fields in quotes may hold commas, doubled quotes and line breaks.
+
+Files do not always follow RFC 4180, so a processor MUST read CSV as Python's `csv` module does: a quote inside a field that does not start with one is text, and after the closing quote of a quoted field any character other than a separator continues the field as text. Rows that are empty are ignored. A dictionary without fields is an error.
 
 | Dictionary | Profile |
 | --- | --- |
@@ -310,7 +323,7 @@ Choices are written `code, label | code, label`. The code ends at the first comm
 
 ## 12. Tables
 
-A processor MAY read and write a profile as tables: a set of sheets, each a list of rows of cells, the first row holding the headers. This is what a spreadsheet workbook or a folder of CSV files holds. The library does not read workbook files: the application opens them and hands over the cells, so that it can report cells whose type is not what the format expects (a number where a code is wanted loses leading zeros). The rules are in [`spec/table.yaml`](../spec/table.yaml).
+A processor MAY read and write a profile as tables: a set of sheets, each a list of rows of cells, the first row holding the headers. This is what a spreadsheet workbook or a folder of CSV files holds. The library does not read workbook files: the application opens them and hands over the cells, so that it can report cells whose type is not what the format expects (a number where a code is wanted loses leading zeros). The rules are in [`spec/table.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/table.yaml).
 
 Sheet and header names are compared in lower case without punctuation. Sheets and headers that are not listed are ignored by `from-tables` and reported by `check-tables`. A blank cell means that the slot is not specified. Booleans are `true` or `false`; a reader also accepts `yes`, `no`, `1` and `0`. Cells may be text, numbers, booleans or empty.
 
@@ -321,13 +334,13 @@ Sheet and header names are compared in lower case without punctuation. Sheets an
 | `Mappings` | a link to a concept | `column`, `match_type` and `object_id` (required), `code` (empty for a link of the column), `object_label`, `confidence`, `provenance`, `retrieved_at`, `reviewer_id`, `description` |
 | `Dataset` | a slot of the dataset | `key` and `value`: `title`, `description`, `identifier`, `license`, `citation`, `access_rights`, `landing_page`, `rows` |
 
-Each fact has one place. Whether a list of values is complete (`closed`) is a fact of the column, so it is on the `Columns` sheet and not repeated on every value. A code that means no value is a row of `Values` with `missing` set; a row with no label and no description is read as an unlabelled missing code (`missing_values`). A numeric range of missing values is `missing_low` and `missing_high`, both or neither. There is no sheet of missing codes that apply to every column: a code that is missing in every column is a row for every column. The order of the codes is the order of the rows. Observed counts are not written: they describe one copy of the data.
+Each fact is stored in one place. For example, whether a list of values is complete (`closed`) is a property of the column, so it is on the `Columns` sheet and is not repeated on every value. A code that means no value is a row of `Values` with `missing` set; a row with no label and no description is read as an unlabelled missing code (`missing_values`). A numeric range of missing values is `missing_low` and `missing_high`, both or neither. A code that is missing in every column has a row for each column. The order of the codes is the order of the rows. Observed counts are not written, because they describe one copy of the data.
 
 A reader MUST fail, naming the sheet and the row (counted as in a spreadsheet, the header being row 1), for a cell that does not fit its header, a row without a required header, a `Values` or `Mappings` row that names a column or code that does not exist, a column listed twice and a `Columns` sheet without columns. A header that is not listed is reported by `check-tables`, which also finds the headers of an earlier workbook (`closed`, `is_missing` or `order` on `Values`; `role`, `measurement`, `type` or `title` on `Columns`).
 
 ## 13. Conditions
 
-`applies_when` holds the skip logic of a questionnaire as the source wrote it. A processor MAY parse it into a condition (`parse-condition`, `conditions`). One text syntax covers [REDCap branching logic][redcap] and a subset of SQL `WHERE`; the rules are in [`spec/condition.yaml`](../spec/condition.yaml).
+`applies_when` holds the skip logic of a questionnaire as the source wrote it. A processor MAY parse it into a condition (`parse-condition`, `conditions`). One text syntax covers [REDCap branching logic][redcap] and a subset of SQL `WHERE`; the rules are in [`spec/condition.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/condition.yaml).
 
 | Text | Meaning |
 | --- | --- |
@@ -345,7 +358,7 @@ A condition has three values: true, false and unknown. A blank is an empty cell 
 - `value` (the default) is how REDCap behaves, as far as published guides say: a blank is the empty value. It equals another blank and differs from everything else, so `[a] <> 1` and `[a] <> 0` are both true when `a` is blank, and `[a] = '1'` is false. Only ordering a blank (`<`, `>`, `<=`, `>=`) is unknown. `a IN (...)` is false for a blank. REDCap stores a missing data code (such as `NASK`) as an ordinary value, so a declared missing code is compared as text.
 - `unknown` is how SQL behaves: every comparison with a blank is unknown, and `IN` too. A declared missing code counts as a blank.
 
-The REDCap behaviour is taken from the guides of several university REDCap teams and a community knowledge base, not from REDCap's own documentation or source: they state that `[nr_pregnancies]<>0` is true for an empty field, that two blank fields count as a match, and that `!=` behaves like `<>`. None says what ordering a blank gives; unknown is the choice here. Check a rule against your REDCap version before relying on it. Two values are equal if both are numbers (or text that is a number as defined in [section 7](#7-inference), so `1` and `"1"` are alike) and equal as numbers, or else if they are equal as text. They are ordered the same way, so ISO dates order correctly as text. `and` is false if any operand is false, otherwise unknown if any is unknown; `or` is true if any operand is true, otherwise unknown if any is unknown; `not` of unknown is unknown. `null` is never unknown. With `blank` set to `value`, a rule is unknown only when it orders a blank.
+The REDCap behaviour follows the guides of several university REDCap teams and a community knowledge base. They state that `[nr_pregnancies]<>0` is true for an empty field, that two blank fields count as a match, and that `!=` behaves like `<>`. REDCap's own documentation and source were not consulted. None of the guides says what ordering a blank gives, and this specification treats it as unknown. Verify a rule against your REDCap version before relying on it. Two values are equal if both are numbers (or text that is a number as defined in [section 7](#7-inference), so `1` and `"1"` are alike) and equal as numbers, or else if they are equal as text. They are ordered the same way, so ISO dates order correctly as text. `and` is false if any operand is false, otherwise unknown if any is unknown; `or` is true if any operand is true, otherwise unknown if any is unknown; `not` of unknown is unknown. `null` is never unknown. With `blank` set to `value`, a rule is unknown only when it orders a blank.
 
 Of the 2,650 different rules of the 985 PhenX REDCap dictionaries, all but one parse (the exception is the text `always|NA`), to the same tree in both libraries.
 
@@ -368,7 +381,7 @@ The last four are left out for a column without a rule, and zero counts are left
 
 ## 15. Statistical files
 
-A processor MAY read the variables of a file of a statistical package (SPSS, Stata, SAS) into a profile (`from-readstat`). The library does not open the files. A ReadStat-based reader (`statfmt` in JavaScript, `pyreadstat` in Python) delivers the metadata, and the application hands over a list of variables as plain data; the rules are in [`spec/readstat.yaml`](../spec/readstat.yaml).
+A processor MAY read the variables of a file of a statistical package (SPSS, Stata, SAS) into a profile (`from-readstat`). The library does not open the files. A ReadStat-based reader (`statfmt` in JavaScript, `pyreadstat` in Python) delivers the metadata, and the application hands over a list of variables as plain data; the rules are in [`spec/readstat.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/readstat.yaml).
 
 | Variable | Profile |
 | --- | --- |

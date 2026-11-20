@@ -1,8 +1,10 @@
 # TypeScript
 
-The package is not on npm yet. Install a released version as described in the [README](../README.md).
+```bash
+npm install linked-codebook
+```
 
-The package needs Node 22.18 or later, or a browser. It has no dependencies. The types of the data model are exported.
+The package needs Node 22.18 or later, or a browser, and has no dependencies. It installs the command `linked-codebook` (see [Command line](cli.md)) and exports the types of the data model.
 
 ```ts
 import {
@@ -59,7 +61,33 @@ import {
 | `canonical(value)` | JSON text with sorted keys. |
 | `run(args, texts)` | The [command line](cli.md) as a function. |
 
-Functions take and return plain objects. They do not change their arguments.
+Functions take and return plain objects and do not change their arguments.
+
+## Types
+
+The types of the data model (`Profile`, `Column`, `Value`, `Mapping`, …) are generated from `spec/profile.yaml` and exported as they are (see [Data model](data-model.md)). The other exported types describe the arguments and results of the functions:
+
+| Type | Definition | Used by |
+| --- | --- | --- |
+| `Cell` | `string \| number \| boolean \| null` | One value of a column that `infer`, `inferColumn`, `inferLanguage` and `observe` read. |
+| `Detector` | `(text: string) => string \| null \| undefined` | The language detector that `infer` and `inferLanguage` take; see [Language detectors](language.md). |
+| `FoundLanguage` | `{ language: string; share: number; cells: number }` | The result of `inferLanguage`: the tag, the share of the asked cells that gave it, and how many cells were asked. |
+| `Inferred` | `{ datatype: Datatype; level?: Level }` | The result of `inferColumn`. |
+| `Options` | `{ name?, identifier?, labelled?, limits? }` | The second argument of `inferColumn`. |
+| `Condition` | `string \| number \| Record<string, unknown>` | A node of the tree that `parseCondition` returns and `evaluateCondition` takes. The tree is shaped like [JsonLogic](https://jsonlogic.com): `{ "==": [{ "var": "smoker" }, "1"] }`. |
+| `EvaluateOptions` | `{ blank?: 'value' \| 'unknown' }` | The third argument of `evaluateCondition` and `missingness`. |
+| `Data` | `Record<string, unknown[]>` | Column name to cells: the data that `missingness` reads. |
+| `Tables` | `Record<string, unknown[][]>` | Sheet name to rows, the first row holding the headers: what `fromTables` reads and `toTables` writes. |
+| `StatVariable` | `{ name; label?; type?; format?; measure?; valueLabels?; missingRanges? }` | One variable as a ReadStat-based reader delivers it, for `fromReadstat`. |
+| `Result` | `{ stdout: string; code: number }` | What `run` returns. |
+
+## Language of text columns
+
+`infer` takes a detector as a second argument and then adds `language` to the columns of prose. The package does not include a detector. [Language detectors](language.md) lists detectors that work and shows how to connect them.
+
+```ts
+const profile = infer(data, detect); // detect: Detector
+```
 
 ## Statistical files
 

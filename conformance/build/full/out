@@ -1,6 +1,7 @@
 {
   "@context": {
     "accessRights": "dct:accessRights",
+    "appliesWhen": "lc:applies_when",
     "broadMatch": {
       "@container": "@set",
       "@id": "skos:broadMatch",
@@ -12,35 +13,38 @@
       "@id": "skos:closeMatch",
       "@type": "@id"
     },
+    "codeBookClosed": "lc:closed",
     "columnCompleteness": {
-      "@id": "dsv:columnCompleteness",
+      "@id": "dsvo:columnCompleteness",
       "@type": "xsd:float"
     },
+    "columnFormat": "csvw:format",
+    "columnGroup": "lc:group",
     "columnProperty": {
-      "@id": "dsv:columnProperty",
+      "@id": "dsvo:columnProperty",
       "@type": "@id"
     },
     "columns": {
       "@container": "@set",
-      "@id": "dsv:column"
+      "@id": "dsvo:column"
     },
     "csvw": "http://www.w3.org/ns/csvw#",
     "datasetSchema": {
-      "@id": "dsv:datasetSchema",
+      "@id": "dsvo:datasetSchema",
       "@type": "@id"
     },
     "datatype": "csvw:datatype",
     "dcat": "http://www.w3.org/ns/dcat#",
     "dct": "http://purl.org/dc/terms/",
     "description": "dct:description",
-    "dsv": "https://w3id.org/dsv-ontology#",
+    "dsvo": "https://w3id.org/dsv-ontology#",
     "exactMatch": {
       "@container": "@set",
       "@id": "skos:exactMatch",
       "@type": "@id"
     },
     "hasCodeBook": {
-      "@id": "dsv:hasCodeBook",
+      "@id": "dsvo:hasCodeBook",
       "@type": "@id"
     },
     "hasUnit": {
@@ -48,19 +52,26 @@
       "@type": "@id"
     },
     "hasVariable": {
-      "@id": "dsv:hasVariable",
+      "@id": "dsvo:hasVariable",
       "@type": "@id"
     },
+    "high": "csvw:maxInclusive",
     "identifier": "dct:identifier",
+    "identifying": "lc:identifying",
     "landingPage": {
       "@id": "dcat:landingPage",
       "@type": "@id"
     },
     "language": "dct:language",
+    "lc": "https://bennokr.github.io/linked-codebook/profile#",
     "license": {
       "@id": "dct:license",
       "@type": "@id"
     },
+    "low": "csvw:minInclusive",
+    "maximumValue": "csvw:maxInclusive",
+    "minimumValue": "csvw:minInclusive",
+    "missingRange": "lc:missing_range",
     "name": "csvw:name",
     "narrowMatch": {
       "@container": "@set",
@@ -72,11 +83,11 @@
       "@id": "csvw:null"
     },
     "numberOfColumns": {
-      "@id": "dsv:numberOfColumns",
+      "@id": "dsvo:numberOfColumns",
       "@type": "xsd:integer"
     },
     "numberOfRows": {
-      "@id": "dsv:numberOfRows",
+      "@id": "dsvo:numberOfRows",
       "@type": "xsd:integer"
     },
     "qudt": "http://qudt.org/schema/qudt/",
@@ -89,11 +100,11 @@
     "schema": "https://schema.org/",
     "skos": "http://www.w3.org/2004/02/skos/core#",
     "statisticalDataType": {
-      "@id": "dsv:statisticalDataType",
+      "@id": "dsvo:statisticalDataType",
       "@type": "@id"
     },
     "summaryStatistics": {
-      "@id": "dsv:summaryStatistics",
+      "@id": "dsvo:summaryStatistics",
       "@type": "@id"
     },
     "title": "dct:title",
@@ -104,21 +115,21 @@
   "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample",
   "@type": [
     "dcat:Dataset",
-    "dsv:Dataset"
+    "dsvo:Dataset"
   ],
   "accessRights": "restricted",
   "citation": "Doe, J. (2024). Full example.",
   "datasetSchema": {
     "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#schema",
-    "@type": "dsv:DatasetSchema",
+    "@type": "dsvo:DatasetSchema",
     "columns": [
       {
         "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#column-smoker",
-        "@type": "dsv:Column",
+        "@type": "dsvo:Column",
         "codeBookClosed": true,
         "columnProperty": {
           "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#property-smoker",
-          "@type": "dsv:ColumnProperty",
+          "@type": "dsvo:ColumnProperty",
           "hasCodeBook": {
             "@id": "https://example.org/variable/smoking-codes",
             "@type": "skos:ConceptScheme",
@@ -174,17 +185,17 @@
         ],
         "summaryStatistics": {
           "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#statistics-smoker",
-          "@type": "dsv:SummaryStatistics",
-          "statisticalDataType": "dsv:CategoricalDataType"
+          "@type": "dsvo:SummaryStatistics",
+          "statisticalDataType": "dsvo:CategoricalDataType"
         },
         "titles": "Smoking status"
       },
       {
         "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#column-height",
-        "@type": "dsv:Column",
+        "@type": "dsvo:Column",
         "columnProperty": {
           "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#property-height",
-          "@type": "dsv:ColumnProperty",
+          "@type": "dsvo:ColumnProperty",
           "hasUnit": "http://qudt.org/vocab/unit/CentiM",
           "hasVariable": {
             "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#variable-height",
@@ -201,9 +212,9 @@
         "name": "height",
         "summaryStatistics": {
           "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#statistics-height",
-          "@type": "dsv:SummaryStatistics",
+          "@type": "dsvo:SummaryStatistics",
           "columnCompleteness": 0.97,
-          "statisticalDataType": "dsv:RatioDataType"
+          "statisticalDataType": "dsvo:RatioDataType"
         },
         "titles": "height"
       }
@@ -215,7 +226,7 @@
   "rights": "Free for research",
   "summaryStatistics": {
     "@id": "urn:linked-codebook:dataset:doi%3A10.0000%2Fexample#statistics",
-    "@type": "dsv:SummaryStatistics",
+    "@type": "dsvo:SummaryStatistics",
     "numberOfColumns": 2,
     "numberOfRows": 299
   },

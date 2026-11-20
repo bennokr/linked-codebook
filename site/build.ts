@@ -1,4 +1,5 @@
-// Builds the test page into site/dist: the bundle, the examples and the packages of both libraries.
+// Builds the site into site/dist: the test page (bundle and examples), the packages of both libraries, the JSON-LD
+// contexts and the documentation (under docs/).
 // The packages are named by version, so that other projects can install them from this site.
 import { execFileSync } from 'node:child_process';
 import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -17,6 +18,8 @@ await build({
   outfile: join(dist, 'main.js'),
 });
 for (const file of ['index.html', 'style.css']) cpSync(join(root, 'site', file), join(dist, file));
+// The IRIs of the slots that no other vocabulary has (`lc:`) are those of this data model.
+cpSync(join(root, 'spec/profile.yaml'), join(dist, 'profile.yaml'));
 
 execFileSync('uv', ['build', '--wheel', '--out-dir', join(dist, 'wheel'), 'packages/py'], {
   cwd: root,
@@ -31,6 +34,13 @@ execFileSync('npm', ['pack', '-w', 'linked-codebook', '--pack-destination', dist
 
 // Released packages are kept in the repository, so that every version stays available to the projects that use it.
 cpSync(join(root, 'releases'), dist, { recursive: true });
+
+// The JSON-LD context, for documents that name it instead of embedding it: the current one, and one file per version
+// (released versions come from `releases/` and are kept as they were).
+execFileSync('uv', ['run', 'python', 'scripts/context.py', dist], { cwd: root, stdio: 'inherit' });
+
+// The documentation, built with VitePress into `dist/docs`.
+execFileSync('npx', ['vitepress', 'build', 'docs'], { cwd: root, stdio: 'inherit' });
 
 const conformance = join(root, 'conformance');
 const examples = readdirSync(conformance).flatMap((command) =>

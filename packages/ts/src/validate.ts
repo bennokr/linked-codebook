@@ -115,11 +115,7 @@ function undefinedTerms(value: unknown, context: Context): string[] {
   const types = [node['@type'] ?? []].flat().map(String);
   // A key whose term is null is dropped by JSON-LD; one mapped to a keyword (such as @nest) is not a property.
   const keys = Object.keys(node).filter(
-    (key) =>
-      !key.startsWith('@') &&
-      !jsonld.extensions.includes(key) &&
-      context[key] !== null &&
-      !String(context[key]).startsWith('@'),
+    (key) => !key.startsWith('@') && context[key] !== null && !String(context[key]).startsWith('@'),
   );
   const unknown = [...keys, ...types].filter(
     (term) => !known.has(expand(term, context)) && !(jsonld.accepted as string[]).includes(term),

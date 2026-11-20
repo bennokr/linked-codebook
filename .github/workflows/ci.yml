@@ -24,6 +24,8 @@ jobs:
       - run: make budget
       - run: make versions
       - run: make released
+      - name: Documentation builds (a dead link fails it)
+        run: make docs
 
   browser:
     runs-on: ubuntu-latest

@@ -1,7 +1,7 @@
 # Quality baseline
 
 The checks that every project in this family runs, and where to copy them from. The files are in
-[`baseline/`](../baseline); linked-codebook itself is the strictest example.
+[`baseline/`](https://github.com/bennokr/linked-codebook/tree/main/baseline); linked-codebook itself is the strictest example.
 
 | Concern | Baseline | Where |
 | --- | --- | --- |
@@ -14,12 +14,12 @@ The checks that every project in this family runs, and where to copy them from. 
 | Dependencies | a lock file in CI (`uv sync --locked`, `npm ci`); monthly grouped Dependabot; a weekly job that installs the newest of everything | semsynth `.github/workflows/canary.yml` |
 | Agent notes | `AGENTS.md` of at most 30 lines; `CLAUDE.md` containing `@AGENTS.md` | `baseline/AGENTS.template.md` |
 
-Two tiers keep this affordable. New code takes the strict settings. Legacy code takes the curated settings, with
-today's violations recorded as an ignore list or a warning count that may only shrink.
+The baseline has two tiers. New code uses the strict settings. Legacy code uses the curated settings, with today's
+violations recorded as an ignore list or a warning count that may only shrink.
 
-Left out on purpose: dead-code scanners such as vulture and knip, and mutation testing. ruff's unused-name and
-unused-argument rules and tsc's unused flags find most of what they would, and the rest is found by running
-vulture once by hand on a legacy project to seed a deletion list.
+The baseline does not include dead-code scanners such as vulture and knip, or mutation testing. The unused-name and
+unused-argument rules of ruff and the unused flags of tsc find most of what those tools would. Running vulture once by
+hand on a legacy project gives a list of code to delete.
 
-Pins to linked-codebook are the one dependency Dependabot cannot follow, because they are URLs. The semsynth canary
-job compares its pin with the latest release and warns; copy that step into other projects that depend on a release.
+Dependabot cannot follow pins to linked-codebook, because they are URLs. The semsynth canary job compares its pin
+with the latest release and warns when they differ. Other projects that depend on a release can copy that step.

@@ -4,16 +4,30 @@ build-backend = "hatchling.build"
 
 [project]
 name = "linked-codebook"
-version = "0.10.0"
+version = "0.11.0"
 description = "Read, write and check codebooks of tables whose variables are linked to concepts."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 dependencies = []
-classifiers = ["Typing :: Typed", "License :: OSI Approved :: MIT License"]
+keywords = ["codebook", "data dictionary", "linked data", "JSON-LD", "SSSOM", "REDCap", "metadata"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Typing :: Typed",
+]
 
 [project.urls]
 Homepage = "https://github.com/bennokr/linked-codebook"
+Documentation = "https://bennokr.github.io/linked-codebook/docs/"
+Changelog = "https://bennokr.github.io/linked-codebook/docs/changelog"
+Issues = "https://github.com/bennokr/linked-codebook/issues"
 
 [project.scripts]
 linked-codebook = "linked_codebook.__main__:main"

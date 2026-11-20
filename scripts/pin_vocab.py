@@ -15,12 +15,13 @@ from rdflib import RDF, Graph
 
 SPEC = Path(__file__).resolve().parent.parent / "spec"
 FORMATS = {"widoco": "text/html", "xml": "application/rdf+xml", "turtle": "text/turtle"}
+LINKML = "linkml"  # this project's own data model: the terms are the slots of spec/profile.yaml, read from the file
 
 
 def curies(value: object) -> set[str]:
     """All prefixed names in a nested YAML value, from strings like dsv:Column or {"@id": dsv:Column}."""
     if isinstance(value, str):
-        return {value} if re.fullmatch(r"[a-z]+:[A-Za-z]+", value) else set()
+        return {value} if re.fullmatch(r"[a-z]+:[A-Za-z_]+", value) else set()
     items = value.values() if isinstance(value, dict) else value if isinstance(value, list) else []
     return set().union(*(curies(item) for item in items)) if items else set()
 
@@ -43,6 +44,8 @@ def fetch(url: str, kind: str) -> str:
 
 def kinds(source: dict[str, Any], namespace: str) -> dict[str, str]:
     """Map each term defined by a vocabulary to the kind of thing it is."""
+    if source["format"] == LINKML:
+        return dict.fromkeys(yaml.safe_load((SPEC / "profile.yaml").read_text())["slots"], "Slot")
     text = fetch(source["url"], source["format"])
     if source["format"] == "widoco":
         found = re.finditer(

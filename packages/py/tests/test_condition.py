@@ -2,6 +2,7 @@
 
 import pytest
 from linked_codebook import evaluate_condition, missingness, parse_condition
+from linked_codebook.types import Profile  # noqa: TC002
 
 # text, row, result when a blank is a value (the default), result when a blank is unknown
 CASES = [
@@ -67,3 +68,12 @@ def test_missing_code_of_the_controlling_question_makes_the_rule_unknown_when_bl
         "blank_unknown": 2,
         "present": 0,
     }
+
+
+def test_a_float_nan_is_blank() -> None:
+    """A data frame holds a missing number as NaN; it must not be a value that is less than 60."""
+    nan = float("nan")
+    assert evaluate_condition(parse_condition("[a] < 60"), {"a": nan}, blank="unknown") is None
+    assert evaluate_condition(parse_condition("[a] is null"), {"a": nan}) is True
+    profile: Profile = {"columns": [{"name": "a"}]}
+    assert missingness(profile, {"a": [1.0, nan, None, ""]})["columns"]["a"] == {"present": 1, "blank": 3}

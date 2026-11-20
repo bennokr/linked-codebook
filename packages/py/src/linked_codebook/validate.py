@@ -107,7 +107,6 @@ def undefined_terms(value: Any, context: dict[str, Any]) -> list[str]:  # noqa: 
         key
         for key in value
         if not key.startswith("@")
-        and key not in JSONLD["extensions"]
         and not str(context.get(key, "")).startswith("@")
         and (key not in context or context[key] is not None)
     ]

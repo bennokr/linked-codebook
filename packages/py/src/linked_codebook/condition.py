@@ -200,7 +200,10 @@ def parse_condition(text: str) -> Condition:
 
 
 def blank(cell: Any) -> bool:  # noqa: ANN401
-    return cell is None or (isinstance(cell, str) and not cell.strip())
+    # None, empty text and a float NaN (how a data frame holds a missing number) are blank.
+    return (
+        cell is None or (isinstance(cell, str) and not cell.strip()) or (isinstance(cell, float) and cell != cell)  # noqa: PLR0124
+    )
 
 
 def value_of(node: Condition, row: Row) -> Any:  # noqa: ANN401

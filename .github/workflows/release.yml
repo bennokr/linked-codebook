@@ -1,0 +1,119 @@
+name: Release
+
+# Publishes the packages of a version to PyPI and npm when a tag `vX.Y.Z` is pushed, and creates the GitHub release.
+# It publishes the files that `make release` put in releases/ (the same bytes that the test page serves and that other
+# projects pin by checksum), after checking that the tag is the version of both packages.
+#
+# One-time setup:
+#   PyPI: add a trusted publisher (owner bennokr, repository linked-codebook, workflow release.yml, environment pypi) at
+#         https://pypi.org/manage/account/publishing/ (a "pending publisher" works for the first release).
+#   npm:  the first release needs the secret NPM_TOKEN (a granular token that may publish `linked-codebook`, with 2FA
+#         bypass) in the environment `npm`. Then add a trusted publisher on npmjs.com (repository linked-codebook,
+#         workflow release.yml, environment npm), and delete the token and the secret.
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: make setup
+      - name: The tag is the version of both packages
+        id: version
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          npm_version=$(node -p "require('./packages/ts/package.json').version")
+          py_version=$(python3 -c 'import tomllib; print(tomllib.load(open("packages/py/pyproject.toml", "rb"))["project"]["version"])')
+          if [ "$version" != "$npm_version" ] || [ "$version" != "$py_version" ]; then
+            echo "Tag ${GITHUB_REF_NAME}, but npm has ${npm_version} and Python has ${py_version}."
+            exit 1
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+      - name: The packages and the context of the version are in releases/
+        run: |
+          v="${{ steps.version.outputs.version }}"
+          for f in "linked-codebook-${v}.tgz" "linked_codebook-${v}-py3-none-any.whl" "context-${v}.jsonld"; do
+            test -f "releases/${f}" || { echo "releases/${f} is missing: run make release and commit it."; exit 1; }
+          done
+          uv run python scripts/context.py releases --released-only
+      - run: make generate && git diff --exit-code
+      - run: make lint
+      - run: make test
+      - run: make budget
+      - run: make versions
+      - run: make docs
+
+  pypi:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/linked-codebook/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: The wheel of releases/ and a source distribution
+        run: |
+          mkdir dist
+          cp "releases/linked_codebook-${{ needs.verify.outputs.version }}-py3-none-any.whl" dist/
+          uv build --sdist --out-dir dist packages/py
+          uvx twine check dist/*
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  npm:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/linked-codebook
+    permissions:
+      id-token: write # trusted publishing, and the provenance statement
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: npm 11.5.1 or later is needed for trusted publishing
+        run: npm install -g npm@latest && npm --version
+      - name: Use the token, if there is one
+        # Only the first release needs it: a trusted publisher can be added once the package exists. With no secret
+        # nothing is written and npm publishes through OIDC.
+        run: test -z "$NPM_TOKEN" || npm config set "//registry.npmjs.org/:_authToken=${NPM_TOKEN}"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish the tarball of releases/
+        run: npm publish "./releases/linked-codebook-${{ needs.verify.outputs.version }}.tgz" --access public --provenance
+
+  github-release:
+    needs: [verify, pypi, npm]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Notes from the changelog
+        run: |
+          awk -v v="${{ needs.verify.outputs.version }}" '$0 == "## " v {on=1; next} /^## /{on=0} on' docs/changelog.md > notes.md
+          test -s notes.md || { echo "No changelog entry for ${{ needs.verify.outputs.version }}."; exit 1; }
+      - name: Create the release
+        run: |
+          v="${{ needs.verify.outputs.version }}"
+          gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --notes-file notes.md \
+            "releases/linked-codebook-${v}.tgz" "releases/linked_codebook-${v}-py3-none-any.whl" "releases/context-${v}.jsonld"
+        env:
+          GH_TOKEN: ${{ github.token }}

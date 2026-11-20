@@ -110,7 +110,7 @@ mappings?: Mapping[]
  */
 maximum?: number
 /**
- * Smallest number the column may hold, apart from missing values. A limit of the source, not the smallest number found.
+ * Smallest number the column may hold, apart from missing values. This is a limit given by the source and may differ from the smallest number found.
  */
 minimum?: number
 missing_range?: Range
@@ -123,7 +123,7 @@ missing_values?: string[]
  */
 name: string
 /**
- * Codes found in the data, in order of first occurrence, with their counts. They say what occurred, not what is allowed.
+ * Codes found in the data, in order of first occurrence, with their counts. They record what occurred and do not define which codes are allowed.
  */
 observed?: Count[]
 /**

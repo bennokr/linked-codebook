@@ -7,7 +7,7 @@ description: A dataset and the variables (columns) of its table, with their data
 license: MIT
 prefixes:
   lc: https://bennokr.github.io/linked-codebook/profile#
-  dsv: https://w3id.org/dsv-ontology#
+  dsvo: https://w3id.org/dsv-ontology#
   skos: http://www.w3.org/2004/02/skos/core#
   linkml: https://w3id.org/linkml/
 imports:
@@ -58,11 +58,11 @@ slots:
   source: {description: "IRI of a web page that documents the column or its variable."}
   values: {description: "Codes the column may hold, with their labels. Other codes may occur unless closed is true.", range: Value, multivalued: true, inlined_as_list: true}
   closed: {description: "True if values lists every code the column may hold, apart from missing values. A list taken from data is not closed.", range: boolean}
-  observed: {description: "Codes found in the data, in order of first occurrence, with their counts. They say what occurred, not what is allowed.", range: Count, multivalued: true, inlined_as_list: true}
+  observed: {description: "Codes found in the data, in order of first occurrence, with their counts. They record what occurred and do not define which codes are allowed.", range: Count, multivalued: true, inlined_as_list: true}
   missing_values: {description: "Codes that mean no value and have no label.", multivalued: true}
   missing_range: {description: "Numbers that mean no value.", range: Range}
   applies_when: {description: "Condition under which the column has a value, as the source writes it, for example REDCap branching logic. Rows that do not meet it are missing by design."}
-  minimum: {description: "Smallest number the column may hold, apart from missing values. A limit of the source, not the smallest number found.", range: float}
+  minimum: {description: "Smallest number the column may hold, apart from missing values. This is a limit given by the source and may differ from the smallest number found.", range: float}
   maximum: {description: "Largest number the column may hold, apart from missing values.", range: float}
   group: {description: "Name of the group of columns that the column belongs to, for example the form of a REDCap field."}
   identifying: {description: "True if the values identify a person or a record: names, record numbers, contact details. Such a column needs care when the data are shared or synthesized.", range: boolean}
@@ -88,12 +88,12 @@ enums:
   Level:
     description: Level of measurement, as defined by DSV.
     permissible_values:
-      categorical: {meaning: "dsv:CategoricalDataType"}
-      nominal: {meaning: "dsv:NominalDataType"}
-      ordinal: {meaning: "dsv:OrdinalDataType"}
-      numerical: {meaning: "dsv:NumericalDataType"}
-      interval: {meaning: "dsv:IntervalDataType"}
-      ratio: {meaning: "dsv:RatioDataType"}
+      categorical: {meaning: "dsvo:CategoricalDataType"}
+      nominal: {meaning: "dsvo:NominalDataType"}
+      ordinal: {meaning: "dsvo:OrdinalDataType"}
+      numerical: {meaning: "dsvo:NumericalDataType"}
+      interval: {meaning: "dsvo:IntervalDataType"}
+      ratio: {meaning: "dsvo:RatioDataType"}
   MatchType:
     description: Relation of a concept to a column or value, as defined by SKOS.
     permissible_values:

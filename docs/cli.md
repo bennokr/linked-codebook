@@ -4,7 +4,7 @@
 linked-codebook <command> <file>...
 ```
 
-The TypeScript package and the Python package install the same command. Both read the files that the arguments name, write the result to standard output and give the same output.
+The TypeScript package (`npm install linked-codebook`) and the Python package (`pip install linked-codebook`) install the same command. Both read the files that the arguments name, write the result to standard output, and print the same text.
 
 <!-- commands: generated from spec/commands.yaml by scripts/generate.py -->
 | Command | Files | Result |
@@ -26,6 +26,8 @@ The TypeScript package and the Python package install the same command. Both rea
 | `missingness` | profile, data | Print how the values of each column divide into values, declared missing codes and blanks, and the blanks into skipped by design, missing and unknown, for a JSON object of value lists. |
 | `from-readstat` | variables | Print a profile read from the variables of a statistical file (SPSS, Stata, SAS), as JSON from a ReadStat-based reader. |
 <!-- /commands -->
+
+`infer` does not set `language`. Detecting a language needs a detector function, which only a program can supply. To add languages, call `infer` from a library with a detector (see [Language detectors](language.md)).
 
 A *profile* file is profile JSON or DSV JSON-LD. A *data* file is a JSON object that maps each column name to a list of its values.
 
