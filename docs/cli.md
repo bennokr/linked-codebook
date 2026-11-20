@@ -14,7 +14,7 @@ The TypeScript package (`npm install linked-codebook`) and the Python package (`
 | `to-sssom` | profile | Print the mappings of a profile as SSSOM TSV. |
 | `from-sssom` | sssom, profile | Print the mappings in an SSSOM TSV file for the columns and codes of a profile. |
 | `merge` | base, incoming | Print the first profile completed with the second. |
-| `infer` | data | Print a profile with the datatype and level of every column of a JSON object of value lists. |
+| `infer` | data | Print a profile with the datatype and measurement level of every column of a JSON object of value lists. |
 | `validate` | document | Check a profile against the model, or DSV JSON-LD against the vocabularies. Exit code 1 if it does not conform. |
 | `from-redcap` | dictionary | Print a profile read from a REDCap data dictionary CSV. |
 | `to-frictionless` | profile | Print the profile as a Frictionless Table Schema, with the other slots in the property x-linked-codebook. |

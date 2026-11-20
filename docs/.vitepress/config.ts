@@ -34,6 +34,7 @@ export default defineConfig({
           { text: 'Command line', link: '/cli' },
           { text: 'TypeScript', link: '/typescript' },
           { text: 'Python', link: '/python' },
+          { text: 'Type profiling', link: '/type-profiling' },
           { text: 'Language detectors', link: '/language' },
         ],
       },

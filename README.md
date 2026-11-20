@@ -77,7 +77,7 @@ The Python and the TypeScript package install the same command and print the sam
 | Check | `validate`, `check-tables` |
 | Skip logic and missing values | `parse-condition`, `conditions`, `missingness` |
 
-`infer` proposes datatypes and levels from the values. It sets `language` only when a program passes a detector (see [Language detectors](docs/language.md)).
+`infer` proposes datatypes and measurement levels from the values. It sets `language` only when a program passes a detector (see [Language detectors](docs/language.md)).
 
 ## Use as a library
 

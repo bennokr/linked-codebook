@@ -30,7 +30,7 @@ One column of the table, described as a variable.
 | `datatype` | Datatype | no | How values are stored. |
 | `format` | string | no | How dates, times or numbers are written in the table, for example %d/%m/%Y, in the notation of the source. |
 | `language` | string | no | Language of the text in a free-text column, as a lower-case BCP 47 language tag such as nl or en-gb. Set it only for columns of prose. |
-| `level` | Level | no | Level of measurement. |
+| `level` | Level | no | Measurement level. |
 | `unit` | string | no | Unit as text, for example years. |
 | `unit_iri` | string | no | IRI of the unit, for example from QUDT. |
 | `variable` | string | no | IRI of the variable concept the column measures. |
@@ -108,7 +108,7 @@ Storage type, named as in CSV on the Web.
 
 ## Level
 
-Level of measurement, as defined by DSV.
+Measurement level, as defined by DSV.
 
 | Value | Meaning |
 | --- | --- |

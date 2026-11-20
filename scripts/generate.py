@@ -105,6 +105,12 @@ def vocabulary_page(vocabulary: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def fill_block(page: Path, name: str, body: str) -> None:
+    """Replace what lies between `<!-- name: ... -->` and `<!-- /name -->` in a page."""
+    pattern = rf"(<!-- {re.escape(name)}:.*?-->\n).*?(<!-- /{re.escape(name)} -->)"
+    page.write_text(re.sub(pattern, lambda m: f"{m[1]}{body}\n{m[2]}", page.read_text(), flags=re.DOTALL))
+
+
 def main() -> None:
     schema = run("gen-json-schema", "--no-include-null", "spec/profile.yaml")
     # The top level is the Profile class; point to it instead of repeating it.
@@ -114,16 +120,9 @@ def main() -> None:
     (SPEC / "generated/profile.schema.json").write_text(json.dumps(root, indent=2) + "\n")
     (ROOT / "docs/data-model.md").write_text(model_page(load("profile")))
     (ROOT / "docs/vocabulary.md").write_text(vocabulary_page(load("vocabulary")))
-    cli = ROOT / "docs/cli.md"
-    table = command_table(load("commands"))
-    cli.write_text(
-        re.sub(
-            r"(<!-- commands:.*?-->\n).*?(<!-- /commands -->)",
-            lambda m: f"{m[1]}{table}\n{m[2]}",
-            cli.read_text(),
-            flags=re.DOTALL,
-        )
-    )
+    fill_block(ROOT / "docs/cli.md", "commands", command_table(load("commands")))
+    rules = (SPEC / "inference.yaml").read_text().rstrip("\n")
+    fill_block(ROOT / "docs/type-profiling.md", "inference.yaml", f"```yaml\n{rules}\n```")
     text = json.dumps(constants(), indent=2, sort_keys=True) + "\n"
     for target in (TS_GENERATED, PY_GENERATED):
         target.mkdir(parents=True, exist_ok=True)

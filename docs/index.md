@@ -11,6 +11,7 @@ Linked Codebook is a data model for the variables of a table, and the tools to r
 | [Command line](cli.md) | The commands, their inputs and exit codes. |
 | [TypeScript](typescript.md) | The TypeScript library. |
 | [Python](python.md) | The Python library. |
+| [Type profiling](type-profiling.md) | How `infer` decides the datatype and the measurement level of a column, and the file of limits behind it. |
 | [Language detectors](language.md) | Which language detector to use with `infer`, and how. |
 | [Contributing](contributing.md) | How to change the specification and the code. |
 | [Quality baseline](quality-baseline.md) | The checks and configuration shared by the projects that use this model. |

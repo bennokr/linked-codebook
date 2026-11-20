@@ -51,7 +51,7 @@ import {
 | `fromRedcap(text)` | A `Profile` read from a REDCap data dictionary (CSV text). |
 | `fromSssom(text, profile)` | A `Profile` with only the mappings found in the SSSOM text. |
 | `unmatchedSssom(text, profile)` | The labels of the SSSOM rows that match nothing in the profile. |
-| `infer(data, detect?)` | A `Profile` with the datatype and level of every column of `{ name: values }`, and the `observed` codes of categorical columns. With a `detect` function, text columns also get the `language` that `inferLanguage` finds. |
+| `infer(data, detect?)` | A `Profile` with the datatype and measurement level of every column of `{ name: values }`, and the `observed` codes of categorical columns. With a `detect` function, text columns also get the `language` that `inferLanguage` finds. |
 | `inferLanguage(values, detect)` | `{ language, share, cells }` for a column of prose, or `undefined`. `detect` maps a text to a lower-case BCP 47 tag or `null`; see section 7.1 of the specification. |
 | `isIdentifierName(name)` | Whether a column name marks an identifier (`id`, `row number`, `respno`, `*_id`). |
 | `observe(values)` | The codes of one column with their counts, in order of first occurrence. |

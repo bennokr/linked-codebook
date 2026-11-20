@@ -1,4 +1,4 @@
-# How datatype and level are inferred from the values of a column.
+# How datatype and measurement level are inferred from the values of a column.
 # Patterns match the whole text. They use only syntax that JavaScript and Python share.
 limits:
   text: 50     # most distinct values of a text column that can still be categorical
