@@ -20,7 +20,7 @@ This needs [uv](https://docs.astral.sh/uv/), Node 22 and `make`.
 | A command | `spec/commands.yaml` and both `cli` files | `make generate` |
 | The behaviour | both libraries | `make golden`, and read the diff |
 
-`make generate` rewrites the JSON Schema, the types, the constants of both libraries and the generated pages of these docs. CI fails if the files in the repository are not up to date.
+`make generate` rewrites the JSON Schema, the types and the constants of both libraries. CI fails if the files in the repository are not up to date.
 
 `make pin` fetches the published vocabularies and checks that every term the JSON-LD form uses is defined there. It needs network access.
 
@@ -33,12 +33,6 @@ Regular expressions in the specification use only syntax that JavaScript and Pyt
 ## Keep the code short
 
 `budget.yaml` limits the number of statements in each library. `make budget` counts them with the Python `ast` module and with the TypeScript compiler. Lint rules limit the complexity and the length of functions. Raise a budget only with a reason.
-
-## Docs
-
-The pages in `docs/` are Markdown, built into a site with [VitePress](https://vitepress.dev): `make docs` builds it into `site/dist/docs` and fails on a broken link. `npx vitepress dev docs` serves it while you edit. Pages marked as generated are written by `make generate`. Link to files outside `docs/` with their GitHub URL, because the site does not contain them. Anchors are those of GitHub (`#71-language-of-a-text-column`).
-
-The site is published with the test page by the Pages workflow: the test page at <https://bennokr.github.io/linked-codebook/> and the docs below it, at `/docs/`.
 
 ## Release
 

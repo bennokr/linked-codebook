@@ -1,6 +1,6 @@
 # Type profiling
 
-`infer` and `infer_column` (`inferColumn` in TypeScript) propose a datatype and a measurement level for a column from its values. They only propose: a person, or a source that says more such as a REDCap dictionary or a statistical file, can override the result, and `merge` lets declared values win over inferred ones. The rules are section 7 of the [specification](specification.md#7-column-type-profiling).
+`infer` and `infer_column` (`inferColumn` in TypeScript) propose a datatype and a measurement level for a column from its values. They only propose them: a manually written codebook file, or a source that says more such as a REDCap dictionary or a statistical file, can override the result, and `merge` lets declared values win over inferred ones. The rules are section 7 of the [specification](specification.md#7-column-type-profiling).
 
 The numbers and patterns of the rules are not in the code of either library. Both read the same file, `spec/inference.yaml`, so they give the same answer for the same values, and a person can read the limits and change them.
 
@@ -21,7 +21,7 @@ The measurement level of each kind is the `level` entry of the file. A column is
 
 ## The rule file
 
-This is a copy of [`spec/inference.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/inference.yaml). The documentation generator (`make generate`) refreshes it, so it cannot differ from the file the libraries read.
+This is a copy of [`spec/inference.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/inference.yaml).
 
 <!-- inference.yaml: copied from spec/inference.yaml by scripts/generate.py -->
 ```yaml

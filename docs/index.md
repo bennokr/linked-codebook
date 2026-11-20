@@ -19,4 +19,4 @@ Linked Codebook is a data model for the variables of a table, and the tools to r
 
 The model is written in [LinkML](https://linkml.io) in [`spec/profile.yaml`](https://github.com/bennokr/linked-codebook/blob/main/spec/profile.yaml).
 The other files in [`spec/`](https://github.com/bennokr/linked-codebook/tree/main/spec) hold the rest of the specification as data.
-The JSON Schema, the types of both libraries and the pages [Data model](data-model.md) and [Vocabulary](vocabulary.md) are generated from them.
+The JSON Schema and the types of both libraries are generated from them.
