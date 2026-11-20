@@ -23,6 +23,5 @@ export { parse } from './read.ts';
 export { fromReadstat, type StatVariable } from './readstat.ts';
 export { fromRedcap } from './redcap.ts';
 export { fromSssom, toSssom, unmatchedSssom } from './sssom.ts';
-export { table as tableSpec } from './constants.ts';
-export { fromTables, tableWarnings, toTables, type Tables } from './table.ts';
+export { fromTables, tableSpec, tableWarnings, toTables, type Tables } from './table.ts';
 export { validate } from './validate.ts';

@@ -19,6 +19,7 @@ This needs [uv](https://docs.astral.sh/uv/), Node 22 and `make`.
 | The Frictionless projection | `spec/frictionless.yaml` | `make generate` |
 | A command | `spec/commands.yaml` and both `cli` files | `make generate` |
 | The behaviour | both libraries | `make golden`, and read the diff |
+| What a function or type does, as the API pages say it | its docstring in `packages/py` and its TSDoc in `packages/ts` | `make generate` |
 
 `make generate` rewrites the JSON Schema, the types and the constants of both libraries. CI fails if the files in the repository are not up to date.
 

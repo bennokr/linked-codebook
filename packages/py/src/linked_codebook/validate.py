@@ -122,7 +122,10 @@ def undefined_terms(value: Any, context: dict[str, Any]) -> list[str]:  # noqa: 
 
 
 def validate(document: Any) -> list[str]:  # noqa: ANN401
-    """Checks a profile against the model, or a JSON-LD document against the vocabularies."""
+    """Checks a profile against the model, or a JSON-LD document against the vocabularies.
+
+    Returns a list of errors; it is empty if the document conforms.
+    """
     record = document if isinstance(document, dict) else {}
     if "@context" not in record:
         return list(dict.fromkeys([*conform(document, SCHEMA, ""), *repeated(record)]))

@@ -28,7 +28,11 @@ function fieldOf(column: Column): Node {
   });
 }
 
-/** Writes a profile as a Frictionless Table Schema. Slots of the dataset are kept in the extension property. */
+/**
+ * Writes a profile as a Frictionless Table Schema.
+ *
+ * Slots of the dataset are kept in the extension property.
+ */
 export function toFrictionless(profile: Profile): Node {
   const { columns, ...dataset } = profile;
   return clean({ fields: columns.map(fieldOf), [rules.extension]: clean(dataset) });

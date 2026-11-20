@@ -22,6 +22,8 @@ from .validate import validate
 
 
 class Result(NamedTuple):
+    """What `run` returns: the output text and the exit code."""
+
     stdout: str
     code: int
 
@@ -68,7 +70,11 @@ USAGE = "usage: linked-codebook <command> <file>...\n\n" + "".join(
 
 
 def run(args: list[str], texts: dict[str, str]) -> Result:
-    """Runs a command on the texts of the files it names. It does no input or output itself."""
+    """The command line as a function: runs a command on the texts of the files it names.
+
+    It returns `(stdout, code)` and does no input or output itself. See [Command
+    line](https://bennokr.github.io/linked-codebook/docs/cli).
+    """
     name, *files = args or [""]
     command = COMMANDS.get(name)
     if command is None or len(SPEC[name]["files"]) != len(files):

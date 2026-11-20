@@ -180,7 +180,7 @@ function columnsOf(row: Row): Column[] {
   return [clean({ name, ...common, ...kindOf(type, row['validation'] ?? ''), ...limits }) as unknown as Column];
 }
 
-/** Reads a REDCap data dictionary (CSV) into a profile. */
+/** Reads a REDCap data dictionary (CSV text) into a profile. */
 export function fromRedcap(text: string): Profile {
   const columns = rowsOf(text).flatMap(columnsOf);
   if (!columns.length) throw new Error('no fields found');

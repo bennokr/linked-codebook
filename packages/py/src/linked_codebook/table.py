@@ -146,7 +146,7 @@ def read_dataset(tables: Tables) -> Record:
 def from_tables(tables: Tables) -> Profile:
     """Reads a profile from tables: sheet name to rows, the first row holding the headers.
 
-    Cells may be text, numbers, booleans or None. Raises ValueError, naming the sheet and row, for a cell that does
+    Cells may be text, numbers, booleans or `None`. Raises `ValueError`, naming the sheet and row, for a cell that does
     not fit its header or a row that refers to something that does not exist.
     """
     columns = read_columns(tables)
@@ -156,7 +156,10 @@ def from_tables(tables: Tables) -> Profile:
 
 
 def table_warnings(tables: Tables) -> list[str]:
-    """What a reader does not use: sheets and headers it does not know, and headers of the earlier workbook."""
+    """The sheets and headers of tables that `from_tables` does not use.
+
+    These are the sheets and headers it does not know, and the headers of the earlier workbook.
+    """
     titles = {key(spec["title"]): sheet for sheet, spec in SHEETS.items()}
     warnings = []
     for name, rows in tables.items():
@@ -200,7 +203,10 @@ def grid(sheet: str, rows: list[Record]) -> list[list[str]]:
 
 
 def to_tables(profile: Profile) -> Tables:
-    """Writes a profile as tables. Observed counts are left out: they describe one copy of the data."""
+    """Writes a profile as tables.
+
+    Observed counts are left out: they describe one copy of the data.
+    """
     columns = profile["columns"]
     records_of = {
         "columns": [column_record(c) for c in columns],

@@ -1,7 +1,12 @@
 import { condition as spec } from './constants.ts';
 import { isNumeric } from './infer.ts';
 
-/** A parsed condition: a variable, a value, or an operator with its operands (see spec/condition.yaml). */
+/**
+ * A node of the tree that `parseCondition` returns and `evaluateCondition` takes.
+ *
+ * It is a variable, a value, or an operator with its operands (see section 13 of the specification). The tree is shaped
+ * like [JsonLogic](https://jsonlogic.com): `{ "==": [{ "var": "smoker" }, "1"] }`.
+ */
 export type Condition = string | number | Record<string, unknown>;
 export type Row = Record<string, unknown>;
 
@@ -195,7 +200,11 @@ class Parser {
   }
 }
 
-/** Parses a condition; throws an error for text that is not one, or uses what the language does not have. */
+/**
+ * Parses a condition of skip logic (REDCap branching logic or a SQL `WHERE` subset) into a tree.
+ *
+ * Throws an error for text that is not one, or that uses what the language does not have.
+ */
 export const parseCondition = (text: string): Condition => new Parser(tokenize(text)).parse();
 
 export const isBlank = (cell: unknown): boolean =>
@@ -247,6 +256,7 @@ function membership(args: unknown[], row: Row, blankIsValue: boolean): boolean |
   return (args[1] as unknown[]).some((option) => same(left, option));
 }
 
+/** The third argument of `evaluateCondition` and `missingness`. */
 export interface EvaluateOptions {
   /**
    * What a blank is. With "value" (the default, as in REDCap) a blank equals another blank and differs from anything
@@ -271,7 +281,14 @@ function evaluateNode(node: Condition, row: Row, blankIsValue: boolean): boolean
   return combine(results, operator === 'or');
 }
 
-/** True, false, or null (unknown). */
+/**
+ * Evaluates a condition tree for a row `{ name: cell }`: true, false or null (unknown).
+ *
+ * `node` is a tree from `parseCondition`. `options.blank` says what a blank value is. With 'value' (the default, as in
+ * REDCap) a blank is the empty value: it equals another blank and differs from anything else, so `[a] <> 1` is true
+ * when `a` is blank; only ordering a blank is unknown. With 'unknown' (as in SQL) every comparison with a blank is
+ * unknown.
+ */
 export function evaluateCondition(node: Condition, row: Row, options: EvaluateOptions = {}): boolean | null {
   const blank = options.blank ?? 'value';
   if (blank !== 'value' && blank !== 'unknown') throw new Error(`blank must be 'value' or 'unknown', not '${blank}'`);

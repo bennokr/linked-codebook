@@ -113,7 +113,7 @@ See [Contributing](docs/contributing.md).
 
 ### Documentation
 
-The pages in `docs/` are Markdown, built into a site with [VitePress](https://vitepress.dev): `make docs` builds it into `site/dist/docs` and fails on a broken link, and `npx vitepress dev docs` serves it while you edit. Pages that are marked as generated in their source are written by `make generate`; edit `spec/` instead. Link to files outside `docs/` with their GitHub URL, because the site does not contain them. Anchors are those of GitHub (`#71-language-of-a-text-column`).
+The pages in `docs/` are Markdown, built into a site with [VitePress](https://vitepress.dev): `make docs` builds it into `site/dist/docs` and fails on a broken link, and `npx vitepress dev docs` serves it while you edit. Pages that are marked as generated in their source are written by `make generate`; edit `spec/` instead. The tables of the Python and TypeScript pages come from the docstrings and TSDoc comments of the packages. Link to files outside `docs/` with their GitHub URL, because the site does not contain them. Anchors are those of GitHub (`#71-language-of-a-text-column`).
 
 The Pages workflow publishes the site below the test page: the test page at <https://bennokr.github.io/linked-codebook/> and the docs at `/docs/`.
 
