@@ -83,11 +83,11 @@ function columnOf(variable: StatVariable): Column {
 /**
  * Reads the variables of a statistical file (SPSS, Stata or SAS) into a profile.
  *
- * `input` is the variables as `statfmt` delivers them (see `StatVariable` and section 15 of the specification). Value
- * labels do not make a list closed: SPSS and Stata allow codes without a label.
+ * `variables` is the variables as `statfmt` delivers them, or the dataset that holds them (see `StatVariable` and
+ * section 15 of the specification). Value labels do not make a list closed: SPSS and Stata allow codes without a label.
  */
-export function fromReadstat(input: StatVariable[] | { variables: StatVariable[] }): Profile {
-  const listed = Array.isArray(input) ? input : input.variables;
+export function fromReadstat(variables: StatVariable[] | { variables: StatVariable[] }): Profile {
+  const listed = Array.isArray(variables) ? variables : variables.variables;
   if (!listed?.length) throw new Error('no variables found');
   return { columns: listed.map(columnOf) };
 }
